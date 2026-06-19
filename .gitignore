@@ -89,6 +89,7 @@
 !/composer.json
 !/composer.lock
 !/docker-compose.dev.yaml
+!/docker-compose.prod.yaml
 !/Dockerfile
 !/*.env.example
 
