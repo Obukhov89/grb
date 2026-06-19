@@ -187,5 +187,3 @@ source /tmp/dump.sql;
 - `app` ↔ `mysql` (через сеть `mysql-net`)
 - `app` ↔ `push-server` (через сеть `app-net`)
 - `push-server` ↔ `redis` (через сеть `push-net`)
-
----
