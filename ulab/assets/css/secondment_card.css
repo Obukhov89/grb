@@ -1,0 +1,81 @@
+.btn-group-toolbar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    transition: 0.2s;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    z-index: 1000;
+}
+#workarea *:not(.rounded) {
+    border-radius: 0;
+}
+
+.btn-count-wrap {
+    margin-left: 3px;
+}
+
+.btn-count-wrap button {
+    padding: 3px 6px 4px 6px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/*.stage-item {*/
+/*    width: 100px;*/
+/*    background-color: #f1f1f1;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    font-weight: bold;*/
+/*    pointer-events: fill;*/
+/*    border-top-left-radius: 15px !important;*/
+/*    border-top-right-radius: 15px !important;*/
+/*    border-width: 1px 0 0 1px !important;*/
+/*    border-style: solid;*/
+/*    border-color: gray;*/
+/*    cursor: pointer;*/
+/*}*/
+
+.stage-item-selected {
+  //  color: white;
+  //  background-color: #0d6efd;
+// border-bottom: 1px solid white;
+  //  position: relative;
+    font-weight: bold;
+}
+
+.panel-body {
+    //width: 50%;
+}
+
+.select2-hidden-accessible {
+    position: relative !important;
+}
+
+.dataTables_scroll
+{
+    overflow:auto;
+}
+
+input {
+    min-height: 40px;
+}
+
+select {
+    height: 40px !important;
+}
+
+.m_t_n-1 {
+    margin-top: -1px;
+}
+
+.m_t-1 {
+    margin-top: 1px;
+}
+
+.select2-selection__choice {
+    width: calc(100% - 5px);
+}

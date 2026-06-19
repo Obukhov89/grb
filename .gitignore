@@ -1,0 +1,136 @@
+# 1. Игнорируем абсолютно всё по умолчанию.
+*
+
+# 2. Разрешаем отслеживание самих каталогов (без этого шага Git не будет смотреть внутрь).
+# Затем разрешаем всё их содержимое с помощью **.
+
+# --- Модули, библиотеки, Docker ---
+!company/
+!company/**
+!online/
+!online/**
+!crm/
+!crm/**
+!workgroups/
+!workgroups/**
+!marketplace/
+!marketplace/**
+!marketing/
+!marketing/**
+!market/
+!market/**
+!devops/
+!devops/**
+!shop/
+!shop/**
+!sites/
+!sites/**
+!mail/
+!mail/**
+!services/
+!services/**
+!about/
+!about/**
+!configs/
+!configs/**
+!planerka/
+!planerka/**
+!ulab/
+!ulab/**
+!local/
+!local/**
+!protocol_generator/
+!protocol_generator/**
+!Classes/
+!Classes/**
+!Quarry/
+!Quarry/**
+!PHPMailer/
+!PHPMailer/**
+!fancybox/
+!fancybox/**
+!jszip/
+!jszip/**
+!tinymce/
+!tinymce/**
+!select2/
+!select2/**
+!docker/
+!docker/**
+!init/
+!init/**
+!docs/
+!docs/**
+!phpqrcode/
+!phpqrcode/**
+!include/
+!include/**
+
+# 3. Разрешаем файлы по маске в корне и во всех разрешенных подкаталогах.
+
+# --- PHP-файлы ---
+!*.php
+!**/*.php
+
+# --- Шаблоны документов ---
+!*.doc
+!*.docx
+!*.docm
+!**/*.doc
+!**/*.docx
+!**/*.docm
+
+# --- Конфигурационные файлы ---
+!/.gitignore
+!/.dockerignore
+!/.htaccess
+!/.htaccess.restore
+!/web.config
+!/composer.json
+!/composer.lock
+!/docker-compose.dev.yaml
+!/Dockerfile
+!/*.env.example
+
+# --- Документация ---
+!/README.md
+!/readme.md
+!*.md
+!**/*.md
+
+# 4. Явно запрещаем то, что никогда не должно попасть в репозиторий,
+# даже если оно попало под разрешающее правило выше.
+# Эти правила имеют приоритет над разрешающими.
+
+/bitrix/
+/upload/
+/vendor/
+/node_modules/
+/tmp/
+/.cache/
+/.pki/
+/.ssh/
+/.idea/
+/.vscode/
+
+# Исключаем archive внутри protocol_generator
+protocol_generator/**/archive*/
+protocol_generator/**/archive*/**
+protocol_generator/**/Archive*/
+protocol_generator/**/Archive*/**
+
+# Ulab
+ulab/upload
+ulab/install
+
+# --- Логи, дампы, кэш и прочие временные файлы ---
+*.log
+*.sql
+*.zip
+*.tar
+*.gz
+*.7z
+*.bak
+*.swp
+.DS_Store
+Thumbs.db

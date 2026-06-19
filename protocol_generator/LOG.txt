@@ -1,0 +1,20 @@
+2022.05.19 13:02:32
+Array
+(
+    [ID] => 676
+    [NUMBER] => 50
+    [DATE] => 2022-05-12
+    [CLIENT_ID] => 2103
+    [SUMM] => 0
+    [DEAL_ID] => 
+    [TZ_ID] => 5447
+    [ACTUAL_VER] => Договор_153_23-04-2021_14-20-49
+    [SEND_DATE] => 
+    [LONGTERM] => 1
+    [PAYMENT] => 0
+    [PDF] => 
+    [CLIENT_NUMBER] => 1
+    [CONTRACT_TYPE] => Муниципальный контракт
+    [FLOW_DATE] => 0
+)
+

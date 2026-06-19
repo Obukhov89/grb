@@ -1,0 +1,5 @@
+{
+    "require": {
+        "wapmorgan/morphos": "^3.2"
+    }
+}

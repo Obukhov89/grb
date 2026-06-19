@@ -1,0 +1,95 @@
+tr {
+    height: 30px !important;
+}
+
+td {
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+}
+
+td:hover {
+    /*background-color: #f0f0f0;*/
+}
+
+#gantt_table td {
+    width: 40px !important;
+    /*position: relative !important;*/
+}
+
+.fixed-column {
+    position: sticky !important;
+    left: 0;
+    background-color: #fff;
+    max-width: 250px !important;
+    min-width: 200px !important;
+    cursor: pointer;
+}
+
+/*#gantt_table th{*/
+/*    max-width: 300px !important;*/
+/*    min-width: 200px !important;*/
+/*}*/
+
+.scrollable-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.scrollable-table th,
+.scrollable-table td {
+    /*border-left: 1px solid #ccc;*/
+    /*border-right: 1px solid #ccc;*/
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.scrollable-table th:first-child,
+.scrollable-table td:first-child {
+    /*position: sticky;*/
+    left: 0;
+    background-color: #f8f8f8;
+    z-index: 2;
+}
+
+.scrollable-table thead th:first-child {
+    z-index: 3;
+}
+
+.timeline {
+    background-color: #007bff;
+    z-index: 1;
+    position: absolute;
+    height: 20px;
+    cursor: auto;
+    font-size: 15px;
+    text-align: center;
+    margin-top: -10px;
+
+    border: 1px solid black;
+    border-radius: 5px !important;
+
+    left: 0;
+}
+
+.left-grab {
+    width: 15px;
+    height: 100%;
+    float: left;
+    /*cursor: grab;*/
+}
+
+.right-grab {
+    width: 15px;
+    height: 100%;
+    float: right;
+    /*cursor: grab;*/
+}
+
+.scrollable-table {
+    position: relative;
+    overflow-x: scroll;
+}
+
+.scrollable-table::-webkit-scrollbar {
+    display: none;
+}

@@ -1,0 +1,2 @@
+крутой плагин для модальных окон
+https://dimsemenov.com/plugins/magnific-popup/

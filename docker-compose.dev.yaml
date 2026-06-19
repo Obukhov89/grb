@@ -1,0 +1,80 @@
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: docker/php/dev.Dockerfile
+    entrypoint: ["/usr/local/bin/app-entrypoint.sh"]
+    networks:
+      - traefik_net
+      - mysql-net
+      - app-net
+      - push-net
+    volumes:
+      - ./local:/var/www/html/local
+      - ./ulab:/var/www/html/ulab
+      - ./index.php:/var/www/html/index.php
+      - ./composer.json:/var/www/html/composer.json
+      - ./composer.lock:/var/www/html/composer.lock
+      - protocol-generator-data:/var/www/html/protocol_generator
+      - upload-data:/var/www/html/upload
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_net"
+      - "traefik.http.routers.ic-app.rule=Host(`ic.dev.local`)"
+      - "traefik.http.services.ic-app.loadbalancer.server.port=80"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: Europe/Moscow
+      MYSQL_SQL_MODE: "NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER,STRICT_TRANS_TABLES"
+    ports:
+      - "${MYSQL_EXTERNAL_PORT}:3306"
+    networks:
+      mysql-net:
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+
+  push-server:
+    build:
+      context: ./docker/push-server
+      dockerfile: Dockerfile
+    networks:
+      - app-net
+      - push-net
+      - traefik_net
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    command: ["/bin/sh", "/opt/push-server/push-server-multi.sh", "start"]
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    networks:
+      - push-net
+    volumes:
+      - ./docker/redis/data:/data
+
+volumes:
+  protocol-generator-data:
+  upload-data:
+  mysql-data:
+
+networks:
+  app-net:
+  push-net:
+  mysql-net:
+  traefik_net:
+    external: true

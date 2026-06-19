@@ -1,0 +1,22 @@
+[
+	{ "s": "CALL", "p": [18] },
+	{ "s": "CAN", "p": [18] },
+	{ "s": "CANBAN", "p": [18] },
+	{ "s": "CARD", "p": [18] },
+	{ "s": "CARDS", "p": [18] },
+	{ "s": "CATALOG", "p": [14] },
+	{ "s": "CLIENT", "p": [18] },
+	{ "s": "CLIENTS", "p": [18] },
+	{ "s": "CLOUD", "p": [18] },
+	{ "s": "CLOUD-REALISED", "p": [18] },
+	{ "s": "COLUMN", "p": [18] },
+	{ "s": "COMPANY", "p": [18] },
+	{ "s": "CONSISTS", "p": [18] },
+	{ "s": "CONTAINS", "p": [18] },
+	{ "s": "CONVERSATIONS", "p": [18] },
+	{ "s": "COULD", "p": [18] },
+	{ "s": "CRM", "p": [18, 16, 15, 14, 12] },
+	{ "s": "CRM-MODULE", "p": [18] },
+	{ "s": "CURRENT", "p": [18] },
+	{ "s": "CUSTOMIZE", "p": [18] }
+]

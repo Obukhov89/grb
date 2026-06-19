@@ -1,0 +1,58 @@
+# ---------------------------------------------
+#  Что не попадёт в контекст docker build
+# ---------------------------------------------
+
+# Папки этапа разработки
+docker/
+
+# VCS
+.git
+.gitignore
+
+# Документация и тесты
+docs/
+*.md
+tests/
+coverage/
+
+# IDE / редакторы
+.idea/
+.vscode/
+.qodo
+
+# Зависимости (установим внутри контейнера)
+vendor/
+
+# Кеш, загрузки, времянка
+upload/
+tmp/
+backup/
+archive*/
+BackUpProt/
+bitrix_cache/
+bitrix_images/
+#dist/
+build/
+
+# Логи, дампы, базы
+*.log
+*.sql
+*.dump
+
+# Тяжёлые бинарные/статические ресурсы
+*.pdf
+*.ppt*
+*.gif
+*.bmp
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# Прочие
+#PHPMailer/
+#fancybox/
+#jszip/
+#tinymce/
+#select2/

@@ -1,0 +1,1025 @@
+#popup-window-content-thank textarea {
+    width: 555px;
+    height: 318px;
+    resize: none;
+}
+
+a {
+    cursor:pointer;
+}
+.disk-templates {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: stretch;
+    justify-content: space-between;
+    width: 660px;
+    padding-bottom: 20px;
+}
+
+.disk-templates .template {
+    flex-grow: 1;
+    flex-basis: 29%;
+    margin-bottom: 10px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.disk-templates .template:hover {
+    background-color: rgba(32, 103, 176, 0.2);
+}
+
+.disk-templates-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: #0b65c3;
+    text-align: center;
+    padding-bottom: 30px;
+}
+
+table.equipment{
+	    width: 100%;
+}
+
+.equipment #second {
+	max-width: 100%;
+}
+
+.equipment .validEquipment {
+	width: 50%;
+	padding-right: 2%;
+}
+
+#first + span.select2 select2-container select2-container--default { 	width: 100%;
+}
+
+#tz th,
+#r_card th,
+#tz2 th,
+#probe th,
+#results_isp th,
+#results_isp2 th,
+#results_isp_ex th,
+#results_isp_ex2 th,
+#oborud th,
+#dogovor th,
+#mat_table th,
+#gost-table th{
+    color: #484848;
+    border-bottom: 2px #eef2f4 solid;
+    padding: 16px 16px 16px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    font-size: 11px;
+}
+#tz td,
+#tz2 td,
+#probe td,
+#results_isp td,
+#results_isp2 td,
+#dogovor td,
+#oborud td,
+#mat_table td,
+#gost-table td {
+    color: #484848;
+    border-bottom: 1px #ccc solid;
+    padding: 8px 16px 8px;
+}
+
+#r_card td {
+    color: #484848;
+    border-bottom: 1px #ccc solid;
+    padding: 18px 16px 18px;
+}
+
+#tz,
+#tz2,
+#probe,
+#results_isp,
+#results_isp2,
+#dogovor,
+#oborud,
+#results_isp_ex,
+#results_isp_ex2,
+#mat_table,
+#gost-table{
+    border: 0;
+    border-spacing: 0;
+}
+
+#results_isp_ex td
+{
+    color: #484848;
+    border-bottom: 1px #ccc solid;
+    padding: 6px 6px 6px;
+	vertical-align: middle;
+}
+
+
+#results_isp_ex2 td {
+    color: #484848;
+
+    padding: 6px 6px 6px;
+	vertical-align: middle;
+}
+
+#obl_tab td,
+#oborud_table td
+{
+    color: #484848;
+    padding: 6px 6px 6px;
+}
+
+#tz thead,
+#r_card thead,
+#tz2 thead,
+#probe thead,
+#results_isp thead,
+#results_isp2 thead,
+#oborud thead,
+#dogovor thead,
+#results_isp_ex thead,
+#mat_table thead,
+#gost-table thead {
+	background-color: #3bc8f557;
+    border-bottom: 2px #eef2f4 solid;
+}
+
+button.btnPdf,
+#add,
+input[type="submit"]{
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    margin: 20px 0 0 0px;
+    background-color: rgb(59, 200, 245);
+    line-height: 34px;
+    border: 1px solid  rgb(59, 200, 245);
+    padding: 0 20px;
+    display: block;
+    cursor: pointer;
+    max-width: 250px;
+}
+
+#workarea {
+	position: relative;
+}
+
+#buttonRightTable,
+#buttonLeftTable {
+	width: 50px;
+	height: 50px;
+	position:absolute;
+	top: 210px;
+	z-index:1001;
+	border-radius: 50%;
+	opacity: 0.6;
+}
+
+#buttonRightTable {
+	right: 0;
+	background: #ededed url('/DataTables/DataTables-1.10.18/images/right-btn.png') center no-repeat;
+}
+
+#buttonLeftTable {
+	left: 0;
+	background: #ededed url('/DataTables/DataTables-1.10.18/images/left-btn.png') center no-repeat;
+}
+
+/*----------------'При выборе материала, добавление методик' начало---------------------*/
+/*tbody[name="tz_body"] tr > td:nth-last-child(1) {*/
+.btn-method-add-del {
+	min-width: 90px;
+}
+/*----------------'При выборе материала, добавление методик' окончание---------------------*/
+
+#tz tr .add2,
+#tz tr .del {
+	display: inline-block;
+}
+
+input[type="button"]{
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    #margin: 5px 0 0 0px;
+    background-color: rgb(59, 200, 245);
+    line-height: 27px;
+    border: 1px solid  rgb(59, 200, 245);
+    padding: 0 13px;
+    display: block;
+    cursor: pointer;
+    max-width: 250px;
+}
+
+input[class="tz"],
+input[class="gost"],
+input[class="gost_new"],
+select,
+textarea {
+	display: block;
+	width: 100%;
+	max-width: 500px;
+	height: 40px;
+	padding: 8px 10px 8px 10px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background: #f9f9f9;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: normal;
+	outline: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: border-color ease-in-out 0.5s;
+	-moz-transition: border-color ease-in-out 0.5s;
+	transition: border-color ease-in-out 0.5s;
+}
+
+input[name="NUM_P"] {
+	width: 60%;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.actField,
+.tzHiddenСontract,
+input[type="number"],
+input[type="date"]
+{
+	display: block;
+	width: 40%;
+	height: 40px;
+	padding: 8px 5px 8px 10px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background: #f9f9f9;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: normal;
+	outline: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: border-color ease-in-out 0.5s;
+	-moz-transition: border-color ease-in-out 0.5s;
+	transition: border-color ease-in-out 0.5s;
+}
+
+input[class="res"],
+select[class="res"]
+{
+display: block;
+	width: 136px;
+	//max-width: 500px;
+	height: 30px;
+	padding: 5px 5px 5px 5px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background: #f9f9f9;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: normal;
+	outline: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: border-color ease-in-out 0.5s;
+	-moz-transition: border-color ease-in-out 0.5s;
+	transition: border-color ease-in-out 0.5s;
+
+}
+
+input[class="obl"],
+input[class="oborud"],
+textarea[class="oborud"],
+select[class="obl"],
+select[class="oborud"],
+.oborudDash
+{
+display: block;
+	width: 80%;
+	min-width: 60px;
+	max-width: 500px;
+	height: 30px;
+	padding: 5px 5px 5px 5px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background: #f9f9f9;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: normal;
+	outline: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: border-color ease-in-out 0.5s;
+	-moz-transition: border-color ease-in-out 0.5s;
+	transition: border-color ease-in-out 0.5s;
+
+}
+
+#oborud_table input,
+#oborud_table textarea,
+#oborud_table select {
+	width: 100%;
+}
+
+input[name="fileСertificate"] {
+	margin-left: 15px;
+}
+
+textarea[name="certificate_of_verification"] {
+	display: inline-block;
+}
+
+input[class="obl_num"],
+input[class="oborud_num"]
+{
+display: block;
+	width: 30%;
+	max-width: 500px;
+
+	height: 30px;
+	padding: 5px 5px 5px 5px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background: #f9f9f9;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: normal;
+	outline: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: border-color ease-in-out 0.5s;
+	-moz-transition: border-color ease-in-out 0.5s;
+	transition: border-color ease-in-out 0.5s;
+
+}
+
+input[class='tz'],
+input[name='delMaterial'],
+input[name='discountName'],
+input[name='submitDiscont'] {
+	display: inline-block;
+}
+
+input[name='discountName'] {
+	height: 35px;
+	margin-left: 10px;
+}
+
+/*----------------'При выборе материала, добавление методик' начало---------------------*/
+/*input[name='delMaterial'] {*/
+.delMaterial {
+	margin-left: 10px;
+	border-radius: 5px;
+}
+
+input[name='delMaterial'],
+input[name='submitDiscont'] {
+	line-height: 35px;
+	padding: 0 16px;
+}
+/*----------------'При выборе материала, добавление методик' окончание---------------------*/
+
+#date_filter,
+#tz_filter,
+#cost_filter,
+#request_filter,
+#dates_filter,
+#deadline_filter,
+#act_filter,
+#num_tz_filter,
+#protocol_filter,
+#sum_filter,
+#num_filter {
+	width: 100%;
+	min-width: 80px;
+}
+
+.trSearch > th > input {
+	width: 100%;
+	min-width: 80px;
+}
+
+checkbox {
+	position: absolute;
+	top: 1px;
+	left: 0;
+	display: block;
+	width: 13px;
+	height: 13px;
+	border: 2px solid #ccc;
+	background: #fff;
+	outline: none;
+}
+
+#a_filter {
+	margin: 0 5px 0 10px;
+}
+
+.dataTables_length {
+	margin-top: 10px;
+	margin-left: 0 !important;
+}
+
+.dataTables_length select
+{
+
+	-webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: black;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    -webkit-appearance: menulist;
+    box-sizing: border-box;
+    align-items: center;
+    white-space: pre;
+    -webkit-rtl-ordering: logical;
+    background-color: white;
+    cursor: default;
+    margin: 0em;
+    font: 400 13.3333px Arial;
+    border-radius: 0px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    border-image: initial;
+	height: 20px;
+	padding:0;
+	width: 25%;
+
+}
+
+#tz tbody tr.even,
+#probe tbody tr.even,
+#results_isp tbody tr.even,
+#oborud tbody tr.even,
+#dogovor tbody tr.even,
+#mat_table tbody tr.even,
+#gost-table tbody tr.even {
+  background-color: #3bc0f508;
+}
+
+#first {
+    margin-top: -71px;
+}
+.result-lable {
+    margin-bottom: 15px;
+    display: inline-block;
+    padding-left: 20px;
+}
+
+#results_isp select,
+#results_isp input
+{
+    margin-bottom: 15px;
+}
+
+#results_isp2 select,
+#results_isp2 input
+{
+    margin-bottom: 15px;
+}
+
+.actNum td:nth-child(5) .oborud,
+.payment td:nth-child(5) .oborud {
+	display: inline-block;
+    max-width: 140px;
+    vertical-align: middle;
+    margin: 0px 10px 0px 0px;
+}
+
+.paymentTransactions #fillPayment,
+.actNum td:nth-child(5) #fillBtn,
+.actNum td:nth-child(5) #actNumberBtn,
+.payment td:nth-child(5) #oplata_bt {
+	display: inline-block;
+    vertical-align: middle;
+    margin: 0px;
+}
+
+.paymentTransactions #fillPayment,
+.actNum td:nth-child(5) #fillBtn {
+	margin-left: 10px;
+}
+
+.payment td.paymentTransactions .oborud {
+	display: none;
+	margin-bottom: 15px
+}
+
+.object_gallery_link {
+
+    text-transform: uppercase;
+    height: 54px;
+    line-height: 54px;
+    background: #fff;
+	padding-left: 7 px;
+}
+
+.docFile {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	background: #ffffff url('/DataTables/DataTables-1.10.18/images/document.png') center no-repeat;
+}
+
+.delFile {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	background: #ffffff url('/DataTables/DataTables-1.10.18/images/del.png') center no-repeat;
+}
+
+.errorDiscount {
+	display: inline-block;
+	color: red;
+	margin-left: 10px;
+	display: none;
+}
+
+.successDiscount {
+	display: inline-block;
+	margin-left: 10px;
+	display: none;
+}
+
+div#protDownload {
+	display: inline-block;
+}
+
+.fill,
+div.return,
+div.edit,
+div.list,
+div.card,
+div.download,
+div.copy,
+div.remove,
+div.add,
+div.report,
+div.further,
+.download,
+.edit,
+.send,
+.toForm,
+.complete,
+.contribute,
+.downloadAct {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+div.return.disable,
+div.edit.disable,
+div.list.disable,
+div.card.disable,
+div.download.disable,
+div.copy.disable,
+div.remove.disable,
+div.add.disable,
+div.report.disable,
+div.further.disable {
+	background-color: #f7f5f5;
+	filter: grayscale(100%);
+}
+
+div.return {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/return.png') center no-repeat;
+}
+
+div.edit,
+.edit {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/edit.png') 100% 75% no-repeat;
+}
+
+div.list {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/list.png') 70% 45% no-repeat;
+}
+
+div.card {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/card.png') 60% 45% no-repeat;
+}
+
+div.download,
+.download {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/download.png') 60% 35% no-repeat;
+}
+
+downloadOborud {
+  position: relative;
+}
+
+.downloadMenu {
+	position: absolute;
+    left: 6%;
+    top: 2.5%;
+    width: 235px;
+    background: #fafafa;
+    border: 1px solid #ededed;
+	border-radius: 5px;
+    z-index: 5;
+    visibility: hidden;
+    opacity: 0;
+	transform: scale(.8);
+    transition: .4s ease-in-out;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.downloadMenu li a {
+	text-decoration: none;
+	outline: none;
+	display: block;
+	transition: .4s ease-in-out;
+	padding: 15px 0;
+    margin: 0 10px;
+    border-bottom: 1px solid #efefef;
+}
+
+.downloadOborud:hover .downloadMenu {
+	cursor: pointer;
+	visibility: visible;
+	opacity: 1;
+	transform: scale(1);
+}
+
+div.copy {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/copy.png')  60% 50% no-repeat;
+}
+
+div.remove {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/remove.png')  100% 65% no-repeat;
+}
+
+div.add {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/add.png')  100% 65% no-repeat;
+}
+
+.report {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/report.png')  100% 65% no-repeat;
+}
+
+.further {
+	background: #e8f6ff url('/DataTables/DataTables-1.10.18/images/further.png')  50% 30% no-repeat;
+}
+
+input[type="button"].downloadAct,
+input[type="button"].edit,
+input[type="button"].download,
+input[type="button"].send,
+input[type="button"].toForm {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.send {
+	background: url('/DataTables/DataTables-1.10.18/images/mail2.png')  48% 50% no-repeat;
+}
+
+.toForm {
+	background: url('/DataTables/DataTables-1.10.18/images/toForm.png')  35% 40% no-repeat;
+}
+
+.complete {
+	background: url('/DataTables/DataTables-1.10.18/images/complete.png')  50% 40% no-repeat;
+}
+
+.contribute {
+	background: url('/DataTables/DataTables-1.10.18/images/contribute.png')  50% 40% no-repeat;
+}
+
+.downloadAct {
+	background: url('/DataTables/DataTables-1.10.18/images/download_act.png')  50% 40% no-repeat;
+}
+
+.fill {
+	background: url('/DataTables/DataTables-1.10.18/images/fill.png')  70% 30% no-repeat;
+}
+
+input[name="btnTestEnd"] {
+	margin-top: 0;
+}
+
+input[name="btnTestEnd"]:disabled {
+    background-color: #C0C0C0;
+    border: 1px solid #C0C0C0;
+    cursor: default;
+}
+
+/*----------------'При выборе материала, добавление методик' начало---------------------*/
+#new_tz,
+#new_material {
+	display: inline-block;
+	line-height: 35px;
+	padding: 0 16px;
+	border-radius: 5px;
+}
+
+#new_material {
+	margin-left: 10px;
+}
+/*----------------'При выборе материала, добавление методик' окончание---------------------*/
+.frost {
+    width: 100%;
+    height: 40px;
+    padding: 8px 5px 8px 10px;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background: #f9f9f9;
+    outline: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: border-color ease-in-out 0.5s;
+    -moz-transition: border-color ease-in-out 0.5s;
+    transition: border-color ease-in-out 0.5s;
+}
+
+.tableFrost {
+	width: 52%;
+	border-collapse: collapse;
+}
+
+.tableFrost tr td {
+	border-bottom: 1px #ccc solid;
+    padding: 8px 16px 8px;
+}
+
+.tableFrost tr td:first-child {
+	width: 35%;
+}
+
+.tableFrost tr td:last-child {
+	width: 25%;
+}
+
+.tzNoСontract,
+.tzNoSamples {
+	margin-left: 25px;
+}
+
+input[type="text"].tzHiddenСontract,
+input[type="number"].tzHidden {
+	display: none;
+}
+
+.redStars {
+	color: red;
+}
+
+select[name='DOGOVOR_NUM'],
+input.tzHiddenСontract {
+	/*width: 55%;*/
+	width: 300px;
+	display: inline-block;
+}
+
+.fieldAct {
+	text-align:right;
+	line-height:25px;
+	margin-bottom:10px;
+}
+
+label[for="actNumber"],
+label[for="dateAct"],
+label[for="placeProbe"],
+label[for="dateProbe"] {
+	float:left;
+	padding-right:10px;
+}
+
+.mainAct {
+	float:left
+}
+
+input.actField {
+	width: 100%;
+}
+/*----------------'При выборе материала, добавление методик' начало---------------------*/
+/*tbody[name='tz_body'] tr td:nth-child(5) {
+	min-width: 80px;
+}
+
+tbody[name='tz_body'] tr td:nth-child(1) {
+	min-width: 390px;
+}*/
+
+div.notMatch {
+	white-space: nowrap;
+	margin-top: 14%;
+	cursor: pointer;
+}
+
+div.methodsLinkPng {
+	width: 25px;
+	height: 30px;
+	background: url('/DataTables/DataTables-1.10.18/images/methods.png')  center no-repeat;
+}
+
+.methodsLink {
+	display: inline-block;
+	/*vertical-align: middle;
+	margin-left: 15px;
+    margin-right: -10px;
+    cursor: pointer;*/
+}
+/*----------------'При выборе материала, добавление методик' окончание---------------------*/
+.tableContract {
+	border-spacing: 0 20px;
+}
+
+input[name='CONTRACT_NUM'] {
+	width: 80px;
+}
+
+.annexСontract {
+	position: relative;
+}
+
+.wrapperOverall {
+	position: absolute;
+    right: -149px;
+    top: -98px;
+    display: flex;
+}
+
+
+input[type="button"].btnOverall {
+	width: 50px;
+    height: 118px;
+    height: 50px;
+    border-radius: 50%;
+    background: #3bc8f5 url(/DataTables/DataTables-1.10.18/images/mail.png) 50% 50% no-repeat;
+    margin: auto 10px auto 0;
+}
+
+.btnOverall:hover {
+	cursor: pointer;
+}
+
+.bracket {
+	width: 86px;
+    height: 286px;
+    background: url(/DataTables/DataTables-1.10.18/images/bracket.png) -4% 50% no-repeat;
+    background-size: cover;
+    transform: rotate(180deg);
+	filter: invert(32%);
+}
+
+.dataTemperature,
+.dataHumidity,
+.dataPressure {
+	align-items: center;
+}
+
+.notTemperature,
+.notHumidity,
+.notPressure {
+	margin-left: 15px;
+	max-width: 1rem;
+}
+
+.notNormalized {
+	min-width: 7rem;
+}
+
+.wrepperCompanyEmployees {
+	flex-direction: column;
+	position: fixed;
+	top: 30%;
+	left: 40%;
+	width: auto;
+	height: 140px;
+	background-color: #efefef;
+	display: none;
+	padding: 15px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+}
+
+.companyEmployees {
+	margin-bottom: 80px;
+}
+
+.btnCloseWindow,
+.btnAddUser {
+	display: inline-block;
+	padding: 10px;
+	border-radius: 5px;
+	border: none;
+	outline: none;
+	background-color: #3bc8f5;
+	color: #fff;
+	font-weight: 700;
+	font-size: 11px;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+.wrapperBtn {
+	text-align: right;
+}
+
+/*-------------------'При выборе материала, добавление методик' начало--------*/
+.tr-select-gost {
+	display: none;
+}
+
+.visible-block {
+	display: table-row;
+}
+
+.abbreviation-gost {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.wrapperBtnGost {
+	min-width: 80px;
+}
+
+input.add-gost,
+input.del-gost {
+	display: inline-block;
+	margin-left: 5px;
+}
+
+.number-material {
+	font-weight: bold;
+}
+
+.amount {
+	max-width: 80px;
+}
+
+.amount input[name^='obiem'] {
+	width: 100%;
+}
+
+.wrapperMaterial {
+	margin-bottom: 50px;
+}
+
+.wrapperMaterial:nth-child(even) {
+	width: 100vw;
+	background-color: rgba(59, 192, 245, 0.04);
+}
+
+.method {
+	text-align: center;
+}
+
+.price-method {
+	max-width: 95px;
+	min-width: 95px;
+}
+/*-------------------'При выборе материала, добавление методик' окончание--------*/
+/*-----------------'Отправка писам' начало------------------*/
+/*--Чекбоксы Договор, Прил. к договору (ТЗ), Счет - request_card.php--*/
+.check-mail {
+	vertical-align: 100%;
+	outline: none;
+	margin-left: 30px;
+}
+/*-----------------'Отправка писам' окончание-----------------*/
+@media only screen and (min-width: 1500px){
+	.equipment .select2-container {
+	    width: 100%!important;
+	}
+}
+
+@media only screen and (min-width: 2520px){
+	#buttonRightTable,
+	#buttonLeftTable {
+		display: none;
+	}
+}

@@ -1,0 +1,1526 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Технический проект модуля "КК Шухарта" для ВЛК</title>
+    <link rel="stylesheet" type="text/css" href="/ulab/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/ulab/assets/plugins/fontawesome/css/all.min.css" />
+</head>
+<body>
+<div class="wrapper-card m-auto">
+    <div class="container">
+        <div class="row mt-3 mb-3">
+            <div class="col">
+                <h2 class="text-center">КК Шухарта</h2>
+
+                <p>Контроль стабильности результатов измерений с использованием контрольных карт Шухарта
+                    представляет собой графический способ контроля показателей точности результатов измерений
+                    для принятия оперативных мер по управлению процессом измерений.</p>
+
+                <p>Контрольные карты Шухарта строят для контроля показателей повторяемости, внутрилабораторной прицинзионности,
+                и точности (погрешности) результатов измерений.</p>
+
+                <p>Для построения КК Шухарта используют результаты измерений определяемой характеристики
+                    в СО, АС, контрольной пробе,
+                    используемых для контроля стабильности градуировочных характеристик
+                    (для верхнего и нижнего пределов диапазона измерений) или оперативного контроля процедуры выполнения измерений.</p>
+
+                <ul>
+                    <li>
+                        <a href="/ulab/oborud/sampleList/" class="text-decoration-none">Образцы контроля</a>
+                        - журнал содержит информацию обо всех образцах контроля, созданных в системе ЛИМС U-Lab за все время работы.
+                        Из него можно перейти в карточку образцов, используемых для контроля стабильности градуировочных характеристик.
+                    </li>
+                    <li>
+                        <a href="/ulab/vlk/methodComponentList/" class="text-decoration-none">Журнал методик и образцов контроля с метрологическими характеристиками</a>
+                        - содержит информацию обо всех методиках и назначеных образцах контроля с метрологическими характеристиками.
+                        Данный журнал служит для выбора образцов контроля и метрологических характеристик по которым будем контролировать методику.
+                        Из него можно перейти в карточку результаты измерений определяемой характеристики.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            <div class="row text-center mt-3 mb-3">
+                <div class="col">
+                    <h2>Технический проект "Образцы контроля" для ВЛК</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h3>Структура файлов проекта</h3>
+
+                    <table class="table table-bordered text-center caption-top">
+                        <caption>Образцы контроля</caption>
+                        <thead>
+                        <tr class="table-secondary align-middle">
+                            <th scope="col">Наименование каталога (путь к каталогу)</th>
+                            <th scope="col">Перечень файлов в каталоге</th>
+                            <th scope="col">Перечень функционала в файле</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">/ulab/application/controllers/</th>
+                            <td>OborudController.php</td>
+                            <td>
+                                sampleList
+                            </td>
+                            <td>
+                                Страница образцов контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getSampleListAjax
+                            </td>
+                            <td>
+                                Получение данных для образцов контроля Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getSampleHistoryAjax
+                            </td>
+                            <td>
+                                Получает историю образцов контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                sampleCard
+                            </td>
+                            <td>
+                                Страница создания и обновления образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                validateSample
+                            </td>
+                            <td>
+                                Валидация данных образцов контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                sampleInsertUpdate
+                            </td>
+                            <td>
+                                Сохранение/обновление данных образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getRoomByLabIdAjax
+                            </td>
+                            <td>
+                                Получение помещений по выбранным лабораториям
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                nonActualSample
+                            </td>
+                            <td>
+                                Сделать образец контроля не актуальным
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                validateComponent
+                            </td>
+                            <td>
+                                Валидация данных метрологических хар-к
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                componentInsert
+                            </td>
+                            <td>
+                                Создание данных компонента
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getComponentAjax
+                            </td>
+                            <td>
+                                Полученние данных компонента Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                removeComponentAjax
+                            </td>
+                            <td>
+                                Удалить данные компонента Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/models/</th>
+                            <td>Oborud.php</td>
+                            <td>
+                                getSampleStage
+                            </td>
+                            <td>
+                                Получает стадию образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getSampleList
+                            </td>
+                            <td>
+                                Получает данные для таблицы "Образцы контроля"
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getSample
+                            </td>
+                            <td>
+                                Получить данные образца контроля по id
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                addSample
+                            </td>
+                            <td>
+                                Добавить данные образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                updateSample
+                            </td>
+                            <td>
+                                Обновить данные образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                updateFieldSample
+                            </td>
+                            <td>
+                                Обновить наименование загруженного файла для образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                saveSampleFile
+                            </td>
+                            <td>
+                                Сохранить(загрузить) файл для образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getSampleHistory
+                            </td>
+                            <td>
+                                Получить историю образцов контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                addHistorySample
+                            </td>
+                            <td>
+                                Добавить историю изменения образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getComponentsBySampleId
+                            </td>
+                            <td>
+                                Получить данные компонентов по id образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getComponent
+                            </td>
+                            <td>
+                                Получить данные компонента по id
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                addComponent
+                            </td>
+                            <td>
+                                Добавить данные компонента
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                updateComponent
+                            </td>
+                            <td>
+                                Обновить данные компонента
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                removeComponent
+                            </td>
+                            <td>
+                                Удалить данные компонента
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/views/oborud/</th>
+                            <td>sample_card.php</td>
+                            <td></td>
+                            <td>
+                                Карточка образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/views/oborud/</th>
+                            <td>sample_list.php</td>
+                            <td></td>
+                            <td>
+                                Список образцов контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/assets/js/oborud/</th>
+                            <td>sample-card.js</td>
+                            <td>`click .delete_file`</td>
+                            <td>
+                                Обработчик события удаления файла
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .non-actual-sample`</td>
+                            <td>
+                                Обработчик события изменения статуса образца контроля на неактуальный
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .popup-with-component`</td>
+                            <td>
+                                Обработчик событий отображения окна с данными компонента
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .update-component`</td>
+                            <td>
+                                Обработчик событий обновления данных компонента
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .remove-component`</td>
+                            <td>
+                                Обработчик событий удаления данных компонента
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`change #select-lab`</td>
+                            <td>
+                                Срабатывает при изменении лаборатории
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h3>Описание таблиц</h3>
+
+                    <table class="table table-bordered text-center caption-top">
+                        <caption>Образцы контроля</caption>
+                        <thead>
+                        <tr class="table-secondary align-middle">
+                            <th scope="col">Наименование таблицы</th>
+                            <th scope="col">Комментарий</th>
+                            <th scope="col">Поле</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">ST_SAMPLE</th>
+                            <td>
+                                Образцы контроля
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>Добавлены поля</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">ulab_component</th>
+                            <td>
+                                Компоненты образцов контроля
+                            </td>
+                            <td>
+                                id
+                            </td>
+                            <td>Идентификатор записи</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>st_sample_id</td>
+                            <td>ИД образца контроля</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>name</td>
+                            <td>Наименование</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>certified_value</td>
+                            <td>Аттестованное значение</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>certified_unit_id</td>
+                            <td>ИД единицы измерения аттестованного значение из ulab_dimension</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>uncertainty_unit_id</td>
+                            <td>ИД единицы измерения неопределённости из ulab_dimension</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>error_characteristic</td>
+                            <td>Характеристика погрешности аттестованного значения</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>characteristic_unit_id</td>
+                            <td>ИД единицы измерения характеристики погрешности аттестованного значения из ulab_dimension</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">ulab_st_samples_history</th>
+                            <td>
+                                История образцов контроля
+                            </td>
+                            <td>
+                                id
+                            </td>
+                            <td>Идентификатор записи</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                user_id
+                            </td>
+                            <td>ИД пользователя</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                st_sample_id
+                            </td>
+                            <td>ИД образца контроля</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                date
+                            </td>
+                            <td>Дата изменений</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                action
+                            </td>
+                            <td>Действие</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="row text-center mt-3 mb-3">
+                <div class="col">
+                    <h2>Технический проект "Журнал методик и образцов контроля с метрологическими характеристиками" для ВЛК</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h3>Структура файлов проекта</h3>
+
+                    <table class="table table-bordered text-center caption-top">
+                        <caption>Журнал методик и образцов контроля с метрологическими характеристиками</caption>
+                        <thead>
+                        <tr class="table-secondary align-middle">
+                            <th scope="col">Наименование каталога (путь к каталогу)</th>
+                            <th scope="col">Перечень файлов в каталоге</th>
+                            <th scope="col">Перечень функционала в файле</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">/ulab/application/controllers/</th>
+                            <td>VlkController.php</td>
+                            <td>
+                                methodComponentList
+                            </td>
+                            <td>
+                                Журнал методик и образцов контроля с метрологическими характеристиками
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getMethodListAjax
+                            </td>
+                            <td>
+                                Получение данных для журнала методов и образцов контроля с метрологическими характеристиками Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getComponentsByMethodAjax
+                            </td>
+                            <td>
+                                Получение данных образцов контроля c метрологической характеристикой для методики Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                insertMethodComponent
+                            </td>
+                            <td>
+                                Создание связи методики и метрологической характеристики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                deleteMethodComponentAjax
+                            </td>
+                            <td>
+                                Открепить данные метрологической характеристики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getMethodComponentHistoryAjax
+                            </td>
+                            <td>
+                                Получает историю связи метода и метрологической характеристики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/models/</th>
+                            <td>Vlk.php</td>
+                            <td>
+                                getMethodList
+                            </td>
+                            <td>
+                                Получение данных для журнала методов и образцов контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getComponentsByMethod
+                            </td>
+                            <td>
+                                Получает назначенные метрологические характеристики для текущей методики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getMethodComponent
+                            </td>
+                            <td>
+                                Получает данные связи методики и образца контроля с метрологическими характеристиками
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                hasMethodComponentRelation
+                            </td>
+                            <td>
+                                Проверить существует ли связи методики и метрологической характеристики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                addMethodComponent
+                            </td>
+                            <td>
+                                Назначает образец контроля с метрологической характеристикой для методики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                deleteMethodComponent
+                            </td>
+                            <td>
+                                Открепляем назначенный образец контроля от методики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                editMethodComponent
+                            </td>
+                            <td>
+                                Изменяет данные связи методики и образца контроля с метрологической характеристикой
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>Oborud.php</td>
+                            <td>
+                                getStSamples
+                            </td>
+                            <td>
+                                Получает данные образца контроля
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getValidComponents
+                            </td>
+                            <td>
+                                Получает актуальные образцы контроля с метрологическими характеристиками
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/views/vlk/</th>
+                            <td>method_component.php</td>
+                            <td>
+                            </td>
+                            <td>
+                                Страница журнала методик и образцов контроля с метрологическими характеристиками
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/assets/js/vlk/</th>
+                            <td>method-component.js</td>
+                            <td>
+                                journalDataTable
+                            </td>
+                            <td>
+                                Таблица методик и образцов контроля с метрологическими характеристиками
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                `click td.details-control`
+                            </td>
+                            <td>
+                                Обработчик событий для открытия и закрытия сведений об образцах контроля с метрологическими характеристиками
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                `click .method-component-history`
+                            </td>
+                            <td>
+                                Обработчик события просмотра истории назначения образца контроля с метрологической характеристикой для текущей методики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                `click .add-st-component`
+                            </td>
+                            <td>
+                                Обработчик события добавления образцов контроля с метрологическими характеристиками к методике
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                `submit #methodComponentModalForm`
+                            </td>
+                            <td>
+                                Обработчик события сохранения связи образца контроля c метрологической характеристикой и методики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                `click .delete-component`
+                            </td>
+                            <td>
+                                Обработчик события открепления образца контроля с метрологической хар-кой от методики
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                createChild
+                            </td>
+                            <td>
+                                Создаёт дочерний элемент образцов контроля и метрологических хар-к
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h3>Описание таблиц</h3>
+
+                    <table class="table table-bordered text-center caption-top">
+                        <caption>Журнал методик и образцов контроля с метрологическими характеристиками</caption>
+                        <thead>
+                        <tr class="table-secondary align-middle">
+                            <th scope="col">Наименование таблицы</th>
+                            <th scope="col">Комментарий</th>
+                            <th scope="col">Поле</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">ulab_method_component</th>
+                            <td>
+                                Связь методик и метрологической характеристики
+                            </td>
+                            <td>
+                                id
+                            </td>
+                            <td>Идентификатор записи</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                method_id
+                            </td>
+                            <td>ИД методики</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                component_id
+                            </td>
+                            <td>ИД метрологической характеристики</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                create_user_id
+                            </td>
+                            <td>Пользователь создавший связь</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                create_at
+                            </td>
+                            <td>Дата и время создания связи</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                delete_user_id
+                            </td>
+                            <td>Пользователь удаливший связь</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                delete_at
+                            </td>
+                            <td>Дата и время удаления связи</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                is_deleted
+                            </td>
+                            <td>Пометка мягкого удаления</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                measuring_count
+                            </td>
+                            <td>Количество результатов параллельных измерений</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="row text-center mt-3 mb-3">
+                <div class="col">
+                    <h2>Технический проект "Результаты измерений" для ВЛК</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h3>Структура файлов проекта</h3>
+
+                    <table class="table table-bordered text-center caption-top">
+                        <caption>Результаты измерений</caption>
+                        <thead>
+                        <tr class="table-secondary align-middle">
+                            <th scope="col">Наименование каталога (путь к каталогу)</th>
+                            <th scope="col">Перечень файлов в каталоге</th>
+                            <th scope="col">Перечень функционала в файле</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">/ulab/application/controllers/</th>
+                            <td>VlkController.php</td>
+                            <td>
+                                measuring
+                            </td>
+                            <td>
+                                Страница результатов измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                saveMeasuringCounts
+                            </td>
+                            <td>
+                                Сохранить количество результатов параллельных измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                insertUpdateMeasuring
+                            </td>
+                            <td>
+                                Добавить/обновить данные измерений ВЛК
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                insertUpdateMeasuring
+                            </td>
+                            <td>
+                                Добавить/обновить данные измерений ВЛК
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getVlkMeasuringByIdAjax
+                            </td>
+                            <td>
+                                Получить данные измерений ВЛК по id Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                delVlkMeasuringAjax
+                            </td>
+                            <td>
+                                Удалить данные измерений ВЛК по id Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getVlkMeasuringAjax
+                            </td>
+                            <td>
+                                Получение данных для журнала измерений ВЛК Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getHistoryMeasuringAjax
+                            </td>
+                            <td>
+                                Получает историю измерений ВЛК Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                Vlk.php
+                            </td>
+                            <td>
+                                getVlkMeasuring
+                            </td>
+                            <td>
+                                Получает все результаты измерений ВЛК по id привязки методик и образцов контроля с метрологическими характеристиками
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getVlkMeasuringById
+                            </td>
+                            <td>
+                                Получает результаты измерений по id измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                addVlkMeasuring
+                            </td>
+                            <td>
+                                Добавляет результаты измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                editVlkMeasuring
+                            </td>
+                            <td>
+                                Редактирует результаты измерений по id
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                softDelVlkMeasuring
+                            </td>
+                            <td>
+                                Мягкое удаление результатов измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                addHistoryMeasuring
+                            </td>
+                            <td>
+                                Добавляет историю результатов измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getHistoryMeasuring
+                            </td>
+                            <td>
+                                Получает историю измерений по id измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getVlkMeasuringList
+                            </td>
+                            <td>
+                                Журнал(таблица) измерений ВЛК
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                getVlkMeasuringByDate
+                            </td>
+                            <td>
+                                Получает результаты измерений ВЛК по выбранному временному диапазону
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                Methods.php
+                            </td>
+                            <td>
+                                findUncertaintyData
+                            </td>
+                            <td>
+                                Получает данные неопределённости в диапазоне от и до
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                updateUncertainty
+                            </td>
+                            <td>
+                                Сохраняет данные неопределённости
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/views/vlk/</th>
+                            <td>
+                                measuring.php
+                            </td>
+                            <td></td>
+                            <td>
+                                Страница результатов измерений. Блок "Общая информация". Блок "Таблица результатов измерений"
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/views/gost/</th>
+                            <td>
+                                method.php
+                            </td>
+                            <td></td>
+                            <td>
+                                Поля "Rл", "r", "Кт" (Показатели и нормативы контроля точности)
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/assets/js/vlk/</th>
+                            <td>
+                                measuring.js
+                            </td>
+                            <td>`click .new-table`</td>
+                            <td>
+                                Событие отображения нового интерфейса таблицы результатов расчётов
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`input #measuringCount`</td>
+                            <td>
+                                Событие изменений количества результатов параллельных измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`submit #measuringForm`</td>
+                            <td>
+                                Событие сохранения количества результатов параллельных измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .add-measuring`</td>
+                            <td>
+                                Обрабатывает событие добавления нового измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`submit #measuringModalForm`</td>
+                            <td>
+                                Обрабатывает событие сохранения результатов измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .update-measuring`</td>
+                            <td>
+                                Обрабатывает событие обновления результатов измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .del-measuring`</td>
+                            <td>
+                                Обрабатывает событие удаления результатов измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .measuring-history`</td>
+                            <td>
+                                Обработка событий отображения истории результатов измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>getColumns</td>
+                            <td>
+                                Получает колонки таблицы результатов измерения
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>journalDataTable</td>
+                            <td>
+                                Таблица результатов измерений
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/assets/js/</th>
+                            <td>
+                                methods-form.js
+                            </td>
+                            <td>`click #add_uncertainty`</td>
+                            <td>
+                                Динамика полей "Rл", "r", "Кт" (Показатели и нормативы контроля точности)
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/assets/css/</th>
+                            <td>
+                                style.css
+                            </td>
+                            <td>
+                                .update-measuring<br><br>
+
+                                .update-measuring:hover<br><br>
+
+                                .measuring-date<br><br>
+
+                                table.dataTable thead .no-sort,
+                                table.dataTable thead .no-sort_asc,
+                                table.dataTable thead .no-sort_desc
+                            </td>
+                            <td>
+                                Стили таблицы результатов измерений
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h3>Описание таблиц</h3>
+
+                    <table class="table table-bordered text-center caption-top">
+                        <caption>Результаты измерений</caption>
+                        <thead>
+                        <tr class="table-secondary align-middle">
+                            <th scope="col">Наименование таблицы</th>
+                            <th scope="col">Поле</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">ulab_vlk_measuring</th>
+                            <td>
+                                id
+                            </td>
+                            <td>Идентификатор записи</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                umc_id
+                            </td>
+                            <td>ИД связи методик и метрологической характеристики из ulab_method_component</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                date
+                            </td>
+                            <td>Дата проведения измерения</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                result
+                            </td>
+                            <td>Результаты измерения</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                is_deleted
+                            </td>
+                            <td>Пометка мягкого удаления</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">ulab_vlk_measuring_history</th>
+                            <td>
+                                id
+                            </td>
+                            <td>Идентификатор записи</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                user_id
+                            </td>
+                            <td>ИД пользователя</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                vlk_measuring_id
+                            </td>
+                            <td>ИД результатов измерения ВЛК</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                date
+                            </td>
+                            <td>Дата изменений</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>
+                                action
+                            </td>
+                            <td>Действие</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">ulab_methods_uncertainty</th>
+                            <td>
+                                Rl
+                            </td>
+                            <td>Показатель контроля точности "Rл"</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>r</td>
+                            <td>Показатель контроля точности "r"</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>Kt</td>
+                            <td>Показатель контроля точности "Кт"</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="row text-center mt-3 mb-3">
+                <div class="col">
+                    <h2>Технический проект "Построение КК Шухарта" для ВЛК</h2>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <h3>Структура файлов проекта</h3>
+
+                    <table class="table table-bordered text-center caption-top">
+                        <caption>КК Шухарта</caption>
+                        <thead>
+                        <tr class="table-secondary align-middle">
+                            <th scope="col">Наименование каталога (путь к каталогу)</th>
+                            <th scope="col">Перечень файлов в каталоге</th>
+                            <th scope="col">Перечень функционала в файле</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">/ulab/application/controllers/</th>
+                            <td>
+                                ShewhartController.php
+                            </td>
+                            <td>
+                                processControlRMG762014
+                            </td>
+                            <td>
+                                Получить данные для построения КК Шухарта согласно РМГ 76-2014
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>
+                                processControlRMG762014Ajax
+                            </td>
+                            <td>
+                                Получить данные для построения КК Шухарта согласно РМГ 76-2014 Ajax запросом
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/models/</th>
+                            <td>
+                                RMG762014Control.php
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                Модель для получения, рассчёта и обработки данных необходимых для построения КК Шухарта согласно РМГ 76-2014
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/application/views/vlk/</th>
+                            <td>
+                                measuring.php
+                            </td>
+                            <td></td>
+                            <td>
+                                Блок "Контроль"
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">/ulab/assets/js/vlk/</th>
+                            <td>
+                                measuring.js
+                            </td>
+                            <td>`click .control`</td>
+                            <td>
+                                Обрабатывает событие клика при выборе алгоритма проведения контрольных процедур
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`change .control-date`</td>
+                            <td>
+                                Срабатывает при изменении значения временного диапазона
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .show-result-table`</td>
+                            <td>
+                                Обрабатывает событие отображения таблицы с результатами расчетов
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>`click .show-result-table`</td>
+                            <td>
+                                Обрабатывает событие создания КК Шухарта
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>resetValue</td>
+                            <td>
+                                Сбрасывает значения элементов на странице или формы к исходным значениям
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>getMessageErrorContent</td>
+                            <td>
+                                Получает и отображает сообщения об ошибках или содержимое ошибок на странице
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>checkEmptyFields</td>
+                            <td>
+                                Проверяет заполненность полей
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>updatePredictionStatus</td>
+                            <td>
+                                Получает и отображает статус предсказуемости
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>addCustomLine</td>
+                            <td>
+                                Добавляет прямую линию с пользовательским стилем
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>drawChart</td>
+                            <td>
+                                Рисует график (КК Шухарта)
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>fillTableData</td>
+                            <td>
+                                Отображает таблицу с результатами расчетов
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <h3>Алгоритм построения КК Шухарта</h3>
+
+                    <div class="text-center border p-3">
+                        <img src="./images/shewhart.png" alt="Алгоритм построения КК Шухарта" class="mw-100 w-100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <h3>Структура базы данных</h3>
+
+                <div class="text-center border p-3">
+                    <img src="./images/shewhart_db.png" alt="Структура базы данных" class="mw-100 w-100">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/ulab/assets/js/jquery-3.5.1.min.js" type="text/javascript"></script>
+<script src="/ulab/assets/js/bootstrap.min.js" type="text/javascript"></script>
+</body>
+</html>

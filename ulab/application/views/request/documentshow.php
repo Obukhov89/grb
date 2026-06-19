@@ -1,0 +1,1 @@
+<iframe src="<?php echo $this->data['google_viewer']; ?>" width="100%" height="600px" style="border: none;"></iframe>

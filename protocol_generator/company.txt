@@ -1,0 +1,10 @@
+2022.05.19 11:24:28
+Bitrix\Main\IO\File Object
+(
+    [filePointer:protected] => 
+    [path:protected] => /home/bitrix/www/Protocol_short_simple.docx
+    [originalPath:protected] => /home/bitrix/www/protocol_generator/../Protocol_short_simple.docx
+    [pathPhysical:protected] => /home/bitrix/www/Protocol_short_simple.docx
+    [siteId:protected] => 
+)
+

@@ -1,0 +1,87 @@
+# =============================================================
+#  General
+# =============================================================
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+*.swo
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+logs/
+*.log
+*.LOG*
+*.tmp
+*.cache
+*.bak
+
+# =============================================================
+#  PHP / Composer
+# =============================================================
+vendor/
+composer.lock
+composer.phar
+
+# =============================================================
+#  Node / Front‑end
+# =============================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+# Build artefacts
+/dist/
+/build/
+/public/build/
+
+# =============================================================
+#  Bitrix CMS
+# =============================================================
+# Кэш и временные файлы
+/bitrix/cache/
+/bitrix/managed_cache/
+/bitrix/stack_cache/
+/bitrix/html_pages/
+/bitrix/updates/
+/bitrix/tmp/
+/bitrix/backup/
+
+/bitrix/.settings.php
+/bitrix/.settings_extra.php
+/bitrix/.access.php
+/bitrix/modules/
+
+# =============================================================
+#  Uploads (пользовательские файлы, медиаконтент)
+/upload/
+/bitrix/upload/
+/upload_tmp/
+
+# =============================================================
+#  Конфигурация / секреты
+.env
+.env.*
+!.env.example
+dbconn.php
+dbconn_*.php
+settings.php
+.settings_local.php
+
+# =============================================================
+#  Проект‑специфика (архивы, офисные файлы, медиаконтент)
+# -------------------------------------------------------------
+# Архивные каталоги, встречающиеся в структуре проекта
+archive/
+archive*/
+archive_*/
+interim_archive*/
+interim_archive_*/
+*_archive*/
+*_archive_*/
