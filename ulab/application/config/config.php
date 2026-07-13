@@ -3,7 +3,8 @@
 /**
  * Получить переменную окружения с дефолтом
  */
-function env($key, $default = null) {
+function env($key, $default = null)
+{
     $value = getenv($key);
     if ($value === false) {
         return $default;
@@ -32,11 +33,11 @@ define("PROTOCOL_TYPE_STANDARD", (int)env('PROTOCOL_TYPE_STANDARD', 0)); // Ти
 
 define('USER_ADMIN', array_map('intval', explode(',', env('USER_ADMIN', '61,1,7'))));
 
-define("DEAL_START_NEW_AREA", (int)env('DEAL_START_NEW_AREA', 9357)); // id сделки старта начала новой области
-define("DEAL_START_STOP_TESTS", (int)env('DEAL_START_STOP_TESTS', 9763)); // id сделки старта начала использования кнопок "Начать" и "Завершить" испытание
-define("DEAL_NEW_RESULT", (int)env('DEAL_NEW_RESULT', 10752)); // id сделки старта обновлённой версии результатов
+define("DEAL_START_NEW_AREA", (int)env('DEAL_START_NEW_AREA', 0)); // id сделки старта начала новой области
+define("DEAL_START_STOP_TESTS", (int)env('DEAL_START_STOP_TESTS', 0)); // id сделки старта начала использования кнопок "Начать" и "Завершить" испытание
+define("DEAL_NEW_RESULT", (int)env('DEAL_NEW_RESULT', 0)); // id сделки старта обновлённой версии результатов
 
-define("DEAL_NEW_TZ", (int)env('DEAL_NEW_TZ', 9763)); // id сделки старта новой версии ТЗ
+define("DEAL_NEW_TZ", (int)env('DEAL_NEW_TZ', 0)); // id сделки старта новой версии ТЗ
 define("DEAL_NEW_NK", (int)env('DEAL_NEW_NK', 12947)); // id сделки старта новой версии НК
 define("DEAL_NEW_STATUS", (int)env('DEAL_NEW_STATUS', 0)); // id сделки старта новой версии статусов
 
@@ -48,5 +49,3 @@ define("GROUP_MANAGER_ID", (int)env('GROUP_MANAGER_ID', 23));
 define('HOLIDAYS', array_map('trim', explode(',', env('HOLIDAYS'))));
 
 define('EXCEPTION_PROTOCOLS', array_map('intval', explode(',', env('EXCEPTION_PROTOCOLS'))));
-
-

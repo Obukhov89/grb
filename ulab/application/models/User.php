@@ -6,15 +6,14 @@
  */
 class User extends Model
 {
-	/**
-	 * @param $id
-	 * @return mixed
-	 */
-	public function getUserById($id)
-	{
-		return CUser::GetByID($id)->Fetch();
-
-	}
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getUserById($id)
+    {
+        return CUser::GetByID($id)->Fetch();
+    }
     /**
      * Получить инфу текущего авторизированного юзера
      * @return array
@@ -23,7 +22,7 @@ class User extends Model
     {
         $user = CUser::GetByID($_SESSION['SESS_AUTH']['USER_ID']);
 
-        if ( !empty($user) ) {
+        if (!empty($user)) {
             global $USER;
             $userInfo = $user->Fetch();
             $userInfo['groups'] = $USER->GetUserGroupArray();
@@ -40,7 +39,7 @@ class User extends Model
     public function getUsers()
     {
         $order = ["NAME", "LAST_NAME"];
-        $by='ID';
+        $by = 'ID';
         $filter = ['ACTIVE' => 'Y'];
         $tmp = 'sort';
         $users = CUser::GetList($by, $order, $filter);
@@ -65,7 +64,7 @@ class User extends Model
     public function getUsersForProtocol()
     {
         $order = ["NAME", "LAST_NAME"];
-        $by='ID';
+        $by = 'ID';
         $filter = ['ACTIVE' => 'Y'];
         $tmp = 'sort';
         $users = CUser::GetList($by, $order, $filter);
@@ -75,9 +74,11 @@ class User extends Model
         while ($row = $users->Fetch()) {
             $userId = $row['ID'];
             $res = $this->DB->Query("SELECT `permission_id` FROM `ulab_user_permission` WHERE `user_id` = {$userId}")->Fetch();
-            if ($res['permission_id'] != '2' && $res['permission_id'] != '3' && $res['permission_id'] != '4'
-            && $res['permission_id'] != '6' && $res['permission_id'] != '9' && $res['permission_id'] != '10'
-            && $res['permission_id'] != '11' && $res['permission_id'] != '14') {
+            if (
+                $res['permission_id'] != '2' && $res['permission_id'] != '3' && $res['permission_id'] != '4'
+                && $res['permission_id'] != '6' && $res['permission_id'] != '9' && $res['permission_id'] != '10'
+                && $res['permission_id'] != '11' && $res['permission_id'] != '14'
+            ) {
                 continue;
             }
             $name = trim($row['NAME']);
@@ -111,14 +112,14 @@ class User extends Model
         $result = [];
 
         while ($row = $users->Fetch()) {
-            if ( !empty($customFilter) ) {
+            if (!empty($customFilter)) {
                 $userData = CUser::GetByID($row['ID'])->Fetch();
 
                 if (
                     (isset($customFilter['UF_DEPARTMENT'])
-                    && empty(array_intersect($customFilter['UF_DEPARTMENT'], $userData['UF_DEPARTMENT'])))
+                        && empty(array_intersect($customFilter['UF_DEPARTMENT'], $userData['UF_DEPARTMENT'])))
                     && (isset($customFilter['ID'])
-                    && !in_array($row['ID'], $customFilter['ID']))
+                        && !in_array($row['ID'], $customFilter['ID']))
                 ) {
                     continue;
                 }
@@ -151,7 +152,7 @@ class User extends Model
             $name = trim($row['NAME']);
             $lastName = trim($row['LAST_NAME']);
             $secondName = trim($row['SECOND_NAME']);
-            $shortName = StringHelper::getInitials($name).' '. StringHelper::getInitials($secondName).' '.$lastName;
+            $shortName = StringHelper::getInitials($name) . ' ' . StringHelper::getInitials($secondName) . ' ' . $lastName;
             $work_position =  trim($row['WORK_POSITION']);
 
             $result = [
@@ -162,18 +163,18 @@ class User extends Model
                 'short_name'    => $shortName,
                 'work_position' => $work_position
             ];
-//            if ( !empty($customFilter) ) {
-//                $userData = CUser::GetByID($row['ID'])->Fetch();
-//
-//                if (
-//                    (isset($customFilter['UF_DEPARTMENT'])
-//                    && empty(array_intersect($customFilter['UF_DEPARTMENT'], $userData['UF_DEPARTMENT'])))
-//                    && (isset($customFilter['ID'])
-//                    && !in_array($row['ID'], $customFilter['ID']))
-//                ) {
-//                    continue;
-//                }
-//            }
+            //            if ( !empty($customFilter) ) {
+            //                $userData = CUser::GetByID($row['ID'])->Fetch();
+            //
+            //                if (
+            //                    (isset($customFilter['UF_DEPARTMENT'])
+            //                    && empty(array_intersect($customFilter['UF_DEPARTMENT'], $userData['UF_DEPARTMENT'])))
+            //                    && (isset($customFilter['ID'])
+            //                    && !in_array($row['ID'], $customFilter['ID']))
+            //                ) {
+            //                    continue;
+            //                }
+            //            }
 
             $result[] = $row;
         }
@@ -197,19 +198,19 @@ class User extends Model
             ['LAST_NAME' => 'asc'],
             $filter,
             [],
-            [
-                // TODO: надо исправить этот костыль
-                'UF_DEPARTMENT' => [54, 55, 56, 57, 58, 67, 66], // ИД лабораторий
-                'ID' => [1, 9, 35, 53, 62, 56, 43, 83, 71, 53, 117, 216, 220, 224, 234] // ИД отдельных сотрудников
-            ]
+            // [
+            //     // TODO: надо исправить этот костыль
+            //     'UF_DEPARTMENT' => [54, 55, 56, 57, 58, 67, 66], // ИД лабораторий
+            //     'ID' => [1, 9, 35, 53, 62, 56, 43, 83, 71, 53, 117, 216, 220, 224, 234] // ИД отдельных сотрудников
+            // ]
         );
-//		$this->pre($users);
+        //		$this->pre($users);
         foreach ($users as $user) {
             $user['NAME'] = trim($user['NAME']);
             $user['LAST_NAME'] = trim($user['LAST_NAME']);
         }
 
-//        $this->pre($users, true);
+        //        $this->pre($users, true);
 
         return $users;
     }
@@ -221,10 +222,10 @@ class User extends Model
      */
     public function getAssignedUserListByLab($labIdList): array
     {
-        if ( empty($labIdList) ) {
+        if (empty($labIdList)) {
             return [];
         }
-        
+
         $labDepartment = [
             1 => '54', // ЛФХИ
             4 => '55', // ДСЛ
@@ -238,8 +239,10 @@ class User extends Model
         $departmentList = [];
 
         foreach ($labIdList as $lab) {
-            if ( !isset($labDepartment[$lab]) ) { continue; }
-            
+            if (!isset($labDepartment[$lab])) {
+                continue;
+            }
+
             $departmentList[] = $labDepartment[$lab];
         }
 
@@ -247,7 +250,7 @@ class User extends Model
 
         $result = [];
 
-        if ( !empty($str) ) {
+        if (!empty($str)) {
             $sql = $this->DB->Query(
                 "select u.ID, u.NAME, u.LAST_NAME from b_intranet_user2dep as d, b_user as u 
                 where u.ID = d.USER_ID and d.DEPARTMENT_ID in ({$str}) and u.ACTIVE = 'Y'
@@ -272,7 +275,7 @@ class User extends Model
     {
         $resultQuery = $this->DB->Query("DELETE FROM `assigned_to_request` WHERE deal_id = {$dealId}");
 
-        if ( $resultQuery === false ) {
+        if ($resultQuery === false) {
             return false;
         }
 
@@ -281,14 +284,14 @@ class User extends Model
             $data = [
                 'deal_id' => $dealId,
                 'user_id' => $item,
-                'is_main' => $isFirst? 1 : 0,
+                'is_main' => $isFirst ? 1 : 0,
                 'is_creator' => 1
             ];
             if ($isFirst) $isFirst = false;
 
             $resultInsert = $this->DB->Insert('assigned_to_request', $data);
 
-            if ( $resultInsert === false ) {
+            if ($resultInsert === false) {
                 return false;
             }
         }
@@ -332,7 +335,7 @@ class User extends Model
 
             $deal = CCrmDeal::GetByID($dealId);
 
-            if ( !empty($deal['ASSIGNED_BY_ID']) ) {
+            if (!empty($deal['ASSIGNED_BY_ID'])) {
                 $user = CUser::GetByID($deal['ASSIGNED_BY_ID'])->Fetch();
                 $name = trim($user['NAME']);
                 $lastName = trim($user['LAST_NAME']);
@@ -394,7 +397,7 @@ class User extends Model
 
         $user = CUser::GetByID($id)->Fetch();
 
-        if ( !empty($user) ) {
+        if (!empty($user)) {
             global $USER;
             $shortName = StringHelper::shortName($user['NAME']);
 
@@ -434,23 +437,23 @@ class User extends Model
         return (int)$_SESSION['SESS_AUTH']['USER_ID'];
     }
 
-	/**
-	 * @param $id
-	 * @return string
-	 */
-	public function getDepartmentName($id)
-	{
-		$department = [
-			'54' => 'ЛФХИ',
-			'55' => 'ДСЛ',
-			'56' => 'ЛФМИ',
-			'57' => 'ЛСМ',
-			'58' => 'ОСК',
-			'59' => 'Бухгалтерия',
-		];
+    /**
+     * @param $id
+     * @return string
+     */
+    public function getDepartmentName($id)
+    {
+        $department = [
+            '54' => 'ЛФХИ',
+            '55' => 'ДСЛ',
+            '56' => 'ЛФМИ',
+            '57' => 'ЛСМ',
+            '58' => 'ОСК',
+            '59' => 'Бухгалтерия',
+        ];
 
-		return $department[$id];
-	}
+        return $department[$id];
+    }
 
     /**
      * @param bool $isMain
@@ -490,65 +493,65 @@ class User extends Model
     }
 
     public function getUserByDepartment()
-	{
-		$tmp = [];
-		$order = ['LAST_NAME' => 'asc'];
-		$bitrixFilter = ['ACTIVE' => 'Y'];
-		$bitrixParams = [];
-		$users = CUser::GetList($order, $tmp, $bitrixFilter, $bitrixParams);
+    {
+        $tmp = [];
+        $order = ['LAST_NAME' => 'asc'];
+        $bitrixFilter = ['ACTIVE' => 'Y'];
+        $bitrixParams = [];
+        $users = CUser::GetList($order, $tmp, $bitrixFilter, $bitrixParams);
 
-		$userDep = [];
+        $userDep = [];
 
-		$department = [
-			'54' => 'ЛФХИ',
-			'55' => 'ДСЛ',
-			'56' => 'ЛФМИ',
-			'57' => 'ЛСМ',
-			'58' => 'ОСК',
-			'72' => 'ОК',
-		];
+        $department = [
+            '54' => 'ЛФХИ',
+            '55' => 'ДСЛ',
+            '56' => 'ЛФМИ',
+            '57' => 'ЛСМ',
+            '58' => 'ОСК',
+            '72' => 'ОК',
+        ];
 
-		while ($row = $users->Fetch()) {
-			$userData = CUser::GetByID($row['ID'])->Fetch();
+        while ($row = $users->Fetch()) {
+            $userData = CUser::GetByID($row['ID'])->Fetch();
 
-			$name = trim($userData['NAME']);
-			$lastName = trim($userData['LAST_NAME']);
-			$shortName = StringHelper::shortName($name);
+            $name = trim($userData['NAME']);
+            $lastName = trim($userData['LAST_NAME']);
+            $shortName = StringHelper::shortName($name);
 
-				if (!empty($userData['UF_DEPARTMENT'][0] && array_key_exists($userData['UF_DEPARTMENT'][0], $department))) {
-					$userDep[$userData['UF_DEPARTMENT'][0]][$row['ID']] = [
-						'user_id'       => $row['ID'],
-						'name'          => $name,
-						'last_name'     => $lastName,
-						'user_name'     => "{$lastName} {$name}",
-						'short_name'    => "{$shortName}. {$lastName}",
-						'is_main'       => 0,
-						'department'    => $userData['UF_DEPARTMENT'][0],
-						'department_name'    => $this->getDepartmentName($userData['UF_DEPARTMENT'][0]),
-					];
-				}
-		}
-		ksort($userDep);
-		return $userDep;
-	}
+            if (!empty($userData['UF_DEPARTMENT'][0] && array_key_exists($userData['UF_DEPARTMENT'][0], $department))) {
+                $userDep[$userData['UF_DEPARTMENT'][0]][$row['ID']] = [
+                    'user_id'       => $row['ID'],
+                    'name'          => $name,
+                    'last_name'     => $lastName,
+                    'user_name'     => "{$lastName} {$name}",
+                    'short_name'    => "{$shortName}. {$lastName}",
+                    'is_main'       => 0,
+                    'department'    => $userData['UF_DEPARTMENT'][0],
+                    'department_name'    => $this->getDepartmentName($userData['UF_DEPARTMENT'][0]),
+                ];
+            }
+        }
+        ksort($userDep);
+        return $userDep;
+    }
 
 
     /**
      * @param $id
      * @return mixed
      */
-	public function getDepartmentByUserId($id)
-	{
-//		$res = $this->DB->Query("SELECT `DEPARTMENT_ID` as depId FROM `b_intranet_user2dep` WHERE `USER_ID` = {$id}")->Fetch();
-		$res = $this->DB->Query("SELECT `UF_DEPARTMENT` as depId FROM `b_uts_user` WHERE `VALUE_ID` = {$id}")->Fetch();
+    public function getDepartmentByUserId($id)
+    {
+        //		$res = $this->DB->Query("SELECT `DEPARTMENT_ID` as depId FROM `b_intranet_user2dep` WHERE `USER_ID` = {$id}")->Fetch();
+        $res = $this->DB->Query("SELECT `UF_DEPARTMENT` as depId FROM `b_uts_user` WHERE `VALUE_ID` = {$id}")->Fetch();
 
-		$tmp = unserialize($res['depId']);
+        $tmp = unserialize($res['depId']);
 
-		return $tmp[0];
-	}
+        return $tmp[0];
+    }
 
 
-	public function getUsersByIdArr($idArr)
+    public function getUsersByIdArr($idArr)
     {
         $result = [];
 
@@ -579,10 +582,10 @@ class User extends Model
      */
     public function checkHeader($dep)
     {
-        if ( empty($dep) ) {
+        if (empty($dep)) {
             return [];
         }
-        
+
         $res = $this->DB->Query("SELECT *  FROM `b_uts_iblock_5_section` lab, `b_user` u 
 						WHERE lab.`VALUE_ID` = {$dep} AND 
 						lab.`UF_HEAD` = u.`ID`")->Fetch();
@@ -590,7 +593,7 @@ class User extends Model
         $name = trim($res['NAME']);
         $lastName = trim($res['LAST_NAME']);
         $secondName = trim($res['SECOND_NAME']);
-        $shortName = StringHelper::getInitials($name).' '. StringHelper::getInitials($secondName).' '.$lastName;
+        $shortName = StringHelper::getInitials($name) . ' ' . StringHelper::getInitials($secondName) . ' ' . $lastName;
         $work_position =  trim($res['WORK_POSITION']);
 
         return [
@@ -605,10 +608,10 @@ class User extends Model
 
     public function getUserShortById($id)
     {
-        if ( empty($id) ) {
+        if (empty($id)) {
             return [];
         }
-        
+
         $result = [];
 
         $res = $this->DB->Query("SELECT *  FROM `b_user` u 
@@ -617,7 +620,7 @@ class User extends Model
         $name = trim($res['NAME']);
         $lastName = trim($res['LAST_NAME']);
         $secondName = trim($res['SECOND_NAME']);
-        $shortName = StringHelper::getInitials($name).' '. StringHelper::getInitials($secondName).' '.$lastName;
+        $shortName = StringHelper::getInitials($name) . ' ' . StringHelper::getInitials($secondName) . ' ' . $lastName;
         $work_position =  trim($res['WORK_POSITION']);
 
         $result = [
@@ -635,48 +638,48 @@ class User extends Model
     }
 
     public function getAllActiveUserId()
-	{
-		$order = ["LAST_NAME"];
-		$by=['LAST_NAME'];
-		$filter = ['ACTIVE' => 'Y'];
-		$tmp = 'sort';
-		$users = CUser::GetList($by, $order, $filter);
+    {
+        $order = ["LAST_NAME"];
+        $by = ['LAST_NAME'];
+        $filter = ['ACTIVE' => 'Y'];
+        $tmp = 'sort';
+        $users = CUser::GetList($by, $order, $filter);
 
-		$result = [];
+        $result = [];
 
-		while ($row = $users->Fetch()) {
-			$user = CUser::GetByID($row['ID'])->Fetch();
-			if (!in_array($user['UF_DEPARTMENT'][0], [54, 55, 56, 57, 58, 67, 66, 73])) {
-				continue;
-			}
-			$result[] = $row['ID'];
-		}
+        while ($row = $users->Fetch()) {
+            $user = CUser::GetByID($row['ID'])->Fetch();
+            if (!in_array($user['UF_DEPARTMENT'][0], [54, 55, 56, 57, 58, 67, 66, 73])) {
+                continue;
+            }
+            $result[] = $row['ID'];
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
     public function getDepartmentsList()
     {
         $result = [];
 
-//        $res = $this->DB->Query("
-//            SELECT
-//                dc.id_bitrix_dept AS ID,
-//                bl.id AS ID_ULAB,
-//                bl.NAME AS NAME,
-//                IFNULL(
-//                    GROUP_CONCAT(CONCAT(SUBSTRING(bu.NAME, 1, 1), '. ', bu.LAST_NAME) ORDER BY bu.NAME ASC SEPARATOR ', '),
-//                    NULL
-//                ) AS FULL_NAME,
-//                IFNULL(bu.ID, NULL) AS ID_HEAD_USER
-//            FROM
-//                department_connection dc
-//            INNER JOIN ba_laba bl ON dc.id_ulab_dept = bl.ID
-//            LEFT JOIN b_user bu ON bl.HEAD_ID = bu.ID
-//            GROUP BY
-//                dc.id_bitrix_dept,
-//                bl.id,
-//                bl.NAME;");
+        //        $res = $this->DB->Query("
+        //            SELECT
+        //                dc.id_bitrix_dept AS ID,
+        //                bl.id AS ID_ULAB,
+        //                bl.NAME AS NAME,
+        //                IFNULL(
+        //                    GROUP_CONCAT(CONCAT(SUBSTRING(bu.NAME, 1, 1), '. ', bu.LAST_NAME) ORDER BY bu.NAME ASC SEPARATOR ', '),
+        //                    NULL
+        //                ) AS FULL_NAME,
+        //                IFNULL(bu.ID, NULL) AS ID_HEAD_USER
+        //            FROM
+        //                department_connection dc
+        //            INNER JOIN ba_laba bl ON dc.id_ulab_dept = bl.ID
+        //            LEFT JOIN b_user bu ON bl.HEAD_ID = bu.ID
+        //            GROUP BY
+        //                dc.id_bitrix_dept,
+        //                bl.id,
+        //                bl.NAME;");
 
         $res = $this->DB->Query("
             SELECT
@@ -729,7 +732,7 @@ class User extends Model
     public function updateUser($id, $data)
     {
         $user = new CUser;
-//        $groupId = ($id == 1) ? [1, 12] : [12];
+        //        $groupId = ($id == 1) ? [1, 12] : [12];
 
         $fields = [
             "NAME"              => $data['NAME'],
@@ -809,7 +812,8 @@ class User extends Model
 
     public function getAllUsersList()
     {
-        $data = $this->DB->Query("
+        $data = $this->DB->Query(
+            "
                 SELECT 
                     u.ID as ID, CONCAT(u.LAST_NAME, ' ', u.NAME, ' ', u.SECOND_NAME) AS FULL_NAME,
                     CASE
@@ -843,21 +847,21 @@ class User extends Model
             'dir' => 'DESC'
         ];
 
-        if ( !empty($filter['search']) ) {
+        if (!empty($filter['search'])) {
             // ФИО
             if (isset($filter['search']['FULL_NAME'])) {
                 $where .= "CONCAT(u.LAST_NAME, ' ', u.NAME, ' ', u.SECOND_NAME) LIKE '%{$filter['search']['FULL_NAME']}%' AND ";
             }
             // СТАТУС
             if (isset($filter['search']['USER_STATUS'])) {
-                if($filter['search']['USER_STATUS'] != -1)
+                if ($filter['search']['USER_STATUS'] != -1)
                     $where .= "COALESCE(uus.user_status, 'default') LIKE '%{$filter['search']['USER_STATUS']}%' AND ";
             }
             // ЗАМЕНА
             if (isset($filter['search']['REPLACEMENT_USER_ID'])) {
-                if($filter['search']['REPLACEMENT_USER_ID'] == 1)
+                if ($filter['search']['REPLACEMENT_USER_ID'] == 1)
                     $where .= "uus.replacement_user_id IS NOT NULL AND ";
-                else if($filter['search']['REPLACEMENT_USER_ID'] == 2)
+                else if ($filter['search']['REPLACEMENT_USER_ID'] == 2)
                     $where .= "uus.replacement_user_id IS NULL AND ";
             }
             // ДОЛЖНОСТЬ
@@ -922,7 +926,8 @@ class User extends Model
                 {$order['by']} {$order['dir']} {$limit};
         ");
 
-        $dataTotal = (int)$this->DB->Query("
+        $dataTotal = (int)$this->DB->Query(
+            "
                 SELECT
                     count(*) as val
                 FROM
@@ -931,7 +936,8 @@ class User extends Model
                     u.ACTIVE = 'Y'"
         )->Fetch()['val'];
 
-        $dataFiltered = (int)$this->DB->Query("
+        $dataFiltered = (int)$this->DB->Query(
+            "
             SELECT COUNT(*) AS val
                 FROM (
                     SELECT
@@ -1031,7 +1037,6 @@ class User extends Model
     public function deleteUser($id)
     {
         $this->DB->Query("UPDATE b_user SET ACTIVE = 'N' WHERE ID = '{$id}'");
-//        return CUser::Delete($id);
+        //        return CUser::Delete($id);
     }
-
 }

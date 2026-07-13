@@ -7,10 +7,10 @@
 class RequestController extends Controller
 {
     //ID ТЗ с которого начинается рефакторинг ТЗ (TODO: Для новых лабораторий удалить, так же убрать из карточки card.php)
-    const TZ_REFACTORING_START_ID = 7433;
+    const TZ_REFACTORING_START_ID = 1;
 
 
-    private function secretCode( $id )
+    private function secretCode($id)
     {
         return md5("This deal is {$id}");
     }
@@ -35,7 +35,7 @@ class RequestController extends Controller
 
         $this->data['is_edit'] = false;
 
-        if ( isset($_SESSION['request_post']) ) {
+        if (isset($_SESSION['request_post'])) {
             $this->data['request'] = $_SESSION['request_post'];
 
             unset($_SESSION['request_post']);
@@ -55,7 +55,7 @@ class RequestController extends Controller
         $this->data['clients'] = $user->getAssignedUserList();
         $this->data['clients_main'] = $user->getAssignedUserList(true);
 
-//        $user->pre($this->data['clients'], true);
+        //        $user->pre($this->data['clients'], true);
 
         $this->data['materials'] = $material->getList(true);
 
@@ -75,9 +75,9 @@ class RequestController extends Controller
      * страница редактирования заявки
      * @param $dealId - ид сделки (из битрикса)
      */
-    public function edit( $dealId )
+    public function edit($dealId)
     {
-        if ( empty($dealId) || $dealId < 0 ) {
+        if (empty($dealId) || $dealId < 0) {
             $this->redirect('/request/new/');
         }
 
@@ -98,7 +98,7 @@ class RequestController extends Controller
 
         $requestData = $request->getTzByDealId($dealId);
 
-        if ( empty($deal) ) {
+        if (empty($deal)) {
             $this->showErrorMessage("Заявки с ИД {$dealId} не существует");
             $this->redirect('/request/list/');
         }
@@ -108,7 +108,7 @@ class RequestController extends Controller
         $this->data['stage'] = $request->getStage($requestData);
         $this->data['is_edit'] = true;
 
-        if ( isset($_SESSION['request_post']) ) {
+        if (isset($_SESSION['request_post'])) {
             $this->data['request'] = $_SESSION['request_post'];
 
             unset($_SESSION['request_post']);
@@ -195,8 +195,8 @@ class RequestController extends Controller
         /** @var Status $statusModel */
         $statusModel = $this->model('Status');
 
-        $location   = empty($_POST['id'])? '/request/new/' : "/request/edit/{$_POST['id']}";
-        $successMsg = empty($_POST['id'])? 'Заявка успешно создана' : "Заявка успешно изменена";
+        $location   = empty($_POST['id']) ? '/request/new/' : "/request/edit/{$_POST['id']}";
+        $successMsg = empty($_POST['id']) ? 'Заявка успешно создана' : "Заявка успешно изменена";
 
         // сохраним пост в сессию, что бы при ошибке не заполнять поля заново
         $_SESSION['request_post'] = $_POST;
@@ -212,68 +212,68 @@ class RequestController extends Controller
 
         // Клиент *
         $valid = $this->validateField($_POST['company'], "Клиент");
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Полное наименование компании
         $valid = $this->validateField($_POST['CompanyFullName'], "Полное наименование компании", false, 1000);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // ИНН
-        if ( strlen($_POST['INN']) !== 0 && strlen($_POST['INN']) !== 9 && strlen($_POST['INN']) !== 10 && strlen($_POST['INN']) !== 12 ) {
+        if (strlen($_POST['INN']) !== 0 && strlen($_POST['INN']) !== 9 && strlen($_POST['INN']) !== 10 && strlen($_POST['INN']) !== 12) {
             $l = strlen($_POST['INN']);
             $this->showErrorMessage("В поле ИНН введено {$l} символов. Должно быть 9, 10 или 12");
             $this->redirect($location);
         }
         $valid = $this->validateNumber($_POST['INN'], "ИНН", false, 12);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // ОГРН
         $valid = $this->validateNumber($_POST['OGRN'], "ОГРН", false, 13);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Адрес
-        $valid = $this->validateField($_POST['ADDR'], "Адрес",false);
-        if ( !$valid['success'] ) {
+        $valid = $this->validateField($_POST['ADDR'], "Адрес", false);
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Фактический адрес
         $valid = $this->validateField($_POST['ACTUAL_ADDRESS'], "Фактический адрес", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Почтовый адрес
         $valid = $this->validateField($_POST['mailingAddress'], "Почтовый адрес", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // E-mail для договора
         $valid = $this->validateEmail($_POST['EMAIL'], false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // E-mail *
         $valid = $this->validateEmail($_POST['POST_MAIL']);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
@@ -281,7 +281,7 @@ class RequestController extends Controller
         // Дополнительный E-mail
         foreach ($_POST['addEmail'] as $item) {
             $valid = $this->validateEmail($item, false);
-            if ( !$valid['success'] ) {
+            if (!$valid['success']) {
                 $this->showErrorMessage($valid['error']);
                 $this->redirect($location);
             }
@@ -289,77 +289,77 @@ class RequestController extends Controller
 
         // Телефон *
         $valid = $this->validateField($_POST['PHONE'], "Телефон");
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Контактное лицо
         $valid = $this->validateNumber($_POST['company_id'], "Контактное лицо", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // КПП
         $valid = $this->validateNumber($_POST['KPP'], "КПП", false, 9);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Должность руководителя
         $valid = $this->validateField($_POST['Position2'], "Должность руководителя", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Должность руководителя в родительном падеже
         $valid = $this->validateField($_POST['PositionGenitive'], "Должность руководителя в родительном падеже", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // ФИО руководителя
         $valid = $this->validateField($_POST['DirectorFIO'], "ФИО руководителя", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Расчетный счет
         $valid = $this->validateField($_POST['RaschSchet'], "Расчетный счет", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Кор. счёт
         $valid = $this->validateField($_POST['KSchet'], "Кор. счёт", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Лицевой счёт
         $valid = $this->validateField($_POST['l_schet'], "Лицевой счёт", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // БИК
         $valid = $this->validateField($_POST['BIK'], "БИК", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
 
         // Наименование банка
         $valid = $this->validateField($_POST['BankName'], "Наименование банка", false);
-        if ( !$valid['success'] ) {
+        if (!$valid['success']) {
             $this->showErrorMessage($valid['error']);
             $this->redirect($location);
         }
@@ -367,11 +367,11 @@ class RequestController extends Controller
         // Материал для исследования *
         foreach ($_POST['material'] as $item) {
             $valid = $this->validateField($item['name'], "Материал для исследования");
-            if ( !$valid['success'] ) {
+            if (!$valid['success']) {
                 $this->showErrorMessage($valid['error']);
                 $this->redirect($location);
             }
-            if ( (int) $item['count'] <= 0 ) {
+            if ((int) $item['count'] <= 0) {
                 $this->showErrorMessage("Количество материала должно быть больше нуля");
                 $this->redirect($location);
             }
@@ -380,7 +380,7 @@ class RequestController extends Controller
         // Главный Ответственный *
         foreach ($_POST['id_assign'] as $item) {
             $valid = $this->validateNumber($item, "Ответственный");
-            if ( !$valid['success'] ) {
+            if (!$valid['success']) {
                 $this->showErrorMessage("Не выбран ответственный");
                 $this->redirect($location);
             }
@@ -389,10 +389,10 @@ class RequestController extends Controller
         //// конец блок проверок
 
         $resetId = 1;
-        if ( empty($_POST['company_id']) ) {
+        if (empty($_POST['company_id'])) {
             $companyId = $company->add($_POST['company']);
 
-            if ( $companyId === false ) {
+            if ($companyId === false) {
                 $this->showErrorMessage("Не удалось создать нового Клиента");
                 $this->redirect($location);
             }
@@ -433,7 +433,7 @@ class RequestController extends Controller
         }
 
         $arrAssigned['VALUE'] = [];
-        for ( $i = 1; $i < count($_POST['id_assign']); $i++ ) {
+        for ($i = 1; $i < count($_POST['id_assign']); $i++) {
             $arrAssigned['VALUE'][] = $_POST['id_assign'][$i];
         }
 
@@ -482,7 +482,7 @@ class RequestController extends Controller
         $saveMail = serialize($_POST['addEmail']);
         $orderName = '';
 
-        if ( !empty($_POST['NUM_DOGOVOR']) ) {
+        if (!empty($_POST['NUM_DOGOVOR'])) {
             $contract = $order->getContractById($_POST['NUM_DOGOVOR']);
             if (!empty($contract)) {
                 $orderName = $contract['cont'];
@@ -493,7 +493,7 @@ class RequestController extends Controller
             'COMPANY_TITLE' => '"' . htmlspecialchars($_POST['company']) . '"', //TODO: надо убрать из таблицы это поле
             'COMPANY_ID' => $companyId,
             'TYPE_ID' => "'{$_POST['REQ_TYPE']}'",
-            'CHECK_IP' => isset($_POST['check_ip'])? '1' : '0',
+            'CHECK_IP' => isset($_POST['check_ip']) ? '1' : '0',
             'SAVE_MAIL' => "'{$saveMail}'",
             'DOGOVOR_NUM' => "'{$_POST['NUM_DOGOVOR']}'",
             'DOGOVOR_TABLE' => "'{$orderName}'",
@@ -503,17 +503,17 @@ class RequestController extends Controller
 
 
         $requisiteResult = $company->setRequisiteByCompanyId($companyId, $dataBank);
-        if ( !$requisiteResult['success'] ) {
+        if (!$requisiteResult['success']) {
             $this->showErrorMessage($requisiteResult['error']);
             $this->redirect($location);
         }
 
-        if ( !empty($_POST['id']) ) { // редактирование
+        if (!empty($_POST['id'])) { // редактирование
 
-//            if ( empty($_POST['save']) || $_POST['save'] !== $this->secretCode($_POST['id']) ) {
-//                $this->showErrorMessage("Ошибка");
-//                $this->redirect($location);
-//            }
+            //            if ( empty($_POST['save']) || $_POST['save'] !== $this->secretCode($_POST['id']) ) {
+            //                $this->showErrorMessage("Ошибка");
+            //                $this->redirect($location);
+            //            }
 
             $dealId = $dataRequest['ID'] = $_POST['id'];
 
@@ -522,9 +522,9 @@ class RequestController extends Controller
             $currTitle = "{$type} {$arrTitle[1]}";
             $dataRequest['title'] = $currTitle;
 
-            $result = $request->update( $dataRequest );
+            $result = $request->update($dataRequest);
 
-            if ( !$result ) {
+            if (!$result) {
                 $this->showErrorMessage("Не удалось обновить заявку в битриксе");
                 $this->redirect($location);
             }
@@ -532,7 +532,7 @@ class RequestController extends Controller
             $dataTz['REQUEST_TITLE'] = "'{$currTitle}'";
             $resultUpdateTz = $request->updateTz($dealId, $dataTz);
 
-            if ( empty($resultUpdateTz) ) {
+            if (empty($resultUpdateTz)) {
                 $this->showErrorMessage("Не удалось обновить заявку");
                 $this->redirect($location);
             }
@@ -543,10 +543,10 @@ class RequestController extends Controller
             $materialDataList = [];
             foreach ($_POST['material'] as $item) {
                 $arrMaterialName[] = $item['name'];
-                if ( empty($item['id']) ) {
+                if (empty($item['id'])) {
                     $resultAddMaterial = $material->add($item['name']);
 
-                    if ( empty($resultAddMaterial) ) {
+                    if (empty($resultAddMaterial)) {
                         $this->showErrorMessage("Не удалось создать материал '{$item['name']}'");
                         $this->redirect($location);
                     } else {
@@ -558,9 +558,9 @@ class RequestController extends Controller
 
             $dataRequest['is_nds'] = 1;
 
-            $dealId = $request->create( $dataRequest );
+            $dealId = $request->create($dataRequest);
 
-            if ( $dealId === false ) {
+            if ($dealId === false) {
                 $this->showErrorMessage("Не удалось создать заявку в битриксе");
                 $this->redirect($location);
             }
@@ -579,7 +579,7 @@ class RequestController extends Controller
             $dataTz['STAGE_ID'] = "'NEW'";
             $resultAddTz = $request->addTz($dealId, $dataTz);
 
-            if ( empty($resultAddTz) ) {
+            if (empty($resultAddTz)) {
                 $this->showErrorMessage("Не удалось обновить заявку");
                 $this->redirect($location);
             }
@@ -588,13 +588,13 @@ class RequestController extends Controller
         }
 
         $order->deleteContractFromRequest($dealId);
-        if ( !empty($_POST['NUM_DOGOVOR']) ) {
+        if (!empty($_POST['NUM_DOGOVOR'])) {
             $order->setContractToRequest($dealId, $_POST['NUM_DOGOVOR']);
         }
 
         $resultSet = $user->setAssignedUserList($dealId, $_POST['id_assign']);
 
-        if ( !$resultSet ) {
+        if (!$resultSet) {
             $this->showErrorMessage("Не удалось обновить ответственных");
             $this->redirect($location);
         }
@@ -644,7 +644,7 @@ class RequestController extends Controller
         // получаем заявку, которую копируем
         $currDeal = $request->getDealById($dealId);
 
-        if ( empty($currDeal) ) {
+        if (empty($currDeal)) {
             $this->showErrorMessage('Не удалось получить данные по заявке');
             $this->redirect('/request/list/');
         }
@@ -661,8 +661,8 @@ class RequestController extends Controller
 
         // получаем материалы из копируемой заявки
         $materialList = $material->getMaterialsToRequest($dealId);
-//        $materialList1 = $material->getMaterialsToRequestNew($dealId);
-//		$material->pre($materialList1);
+        //        $materialList1 = $material->getMaterialsToRequestNew($dealId);
+        //		$material->pre($materialList1);
 
         $oldMtrIdList = [];
 
@@ -684,16 +684,16 @@ class RequestController extends Controller
         // создаём новую заявку
         $newDeal = $request->create($dataRequest);
 
-        if ( $newDeal === false ) {
+        if ($newDeal === false) {
             $this->showErrorMessage('Не удалось создать копию заявки');
             $this->redirect("/request/card/{$dealId}");
         }
 
-//        $originOrder = $order->getContractDealByDealId($dealId);
-//
-//        if ( !empty($originOrder) ) {
-//            $order->setContractToRequest($newDeal, $originOrder['ID_CONTRACT']);
-//        }
+        //        $originOrder = $order->getContractDealByDealId($dealId);
+        //
+        //        if ( !empty($originOrder) ) {
+        //            $order->setContractToRequest($newDeal, $originOrder['ID_CONTRACT']);
+        //        }
 
         $user->setAssignedUserList($newDeal, $arrAssigned['VALUE']);
         $newMtrIdList = $material->setMaterialToRequest($newDeal, $materialList);
@@ -712,7 +712,7 @@ class RequestController extends Controller
      * карточка заявки
      * @param $dealId - ид сделки (из битрикса)
      */
-    public function card( $dealId )
+    public function card($dealId)
     {
         if (empty($dealId)) {
             $this->redirect('/request/list/');
@@ -770,14 +770,14 @@ class RequestController extends Controller
 
         $this->data['user_files'] = [];
         foreach ($userFiles as $file) {
-            $imgLinc = URI.'/assets/images/unknown.png';
+            $imgLinc = URI . '/assets/images/unknown.png';
             $patternImg = "/\.(png|jpg|jpeg)$/i";
-            if ( preg_match($patternImg, $file) ) {
-                $imgLinc = URI."/upload/request/{$dealId}/{$file}";
+            if (preg_match($patternImg, $file)) {
+                $imgLinc = URI . "/upload/request/{$dealId}/{$file}";
             }
             $patternPdf = "/\.(pdf)$/i";
-            if ( preg_match($patternPdf, $file) ) {
-                $imgLinc = URI."/assets/images/pdf.png";
+            if (preg_match($patternPdf, $file)) {
+                $imgLinc = URI . "/assets/images/pdf.png";
             }
 
             $this->data['user_files'][] = [
@@ -788,14 +788,14 @@ class RequestController extends Controller
 
         $this->data['tech_files'] = [];
         foreach ($techFiles as $file) {
-            $imgLinc = URI.'/assets/images/unknown.png';
+            $imgLinc = URI . '/assets/images/unknown.png';
             $patternImg = "/\.(png|jpg|jpeg)$/i";
-            if ( preg_match($patternImg, $file) ) {
-                $imgLinc = URI."/upload/request_tech/{$dealId}/{$file}";
+            if (preg_match($patternImg, $file)) {
+                $imgLinc = URI . "/upload/request_tech/{$dealId}/{$file}";
             }
             $patternPdf = "/\.(pdf)$/i";
-            if ( preg_match($patternPdf, $file) ) {
-                $imgLinc = URI."/assets/images/pdf.png";
+            if (preg_match($patternPdf, $file)) {
+                $imgLinc = URI . "/assets/images/pdf.png";
             }
 
             $this->data['tech_files'][] = [
@@ -806,7 +806,7 @@ class RequestController extends Controller
 
         $isLoseRequest = $statusModel->checkLooseRequest($dealId);
 
-        if($isLoseRequest) {
+        if ($isLoseRequest) {
             $this->data['lose_comment'] = $statusModel->getLooseComment($dealId);
         }
 
@@ -842,7 +842,7 @@ class RequestController extends Controller
         $this->data['is_complete'] = !($deal['STAGE_ID'] != '2' && $deal['STAGE_ID'] != '3' && $deal['STAGE_ID'] != '4' && $deal['STAGE_ID'] != 'WON');
         $this->data['is_may_change'] = in_array($_SESSION['SESS_AUTH']['USER_ID'], [1, 10, 35, 62, 9, 11, 58, 34, 43, 61, 13, 32, 7, 15, 87]);
         $this->data['is_end_test'] = $requestData['STAGE_ID'] == 2 || $requestData['STAGE_ID'] == 4 || $requestData['STAGE_ID'] == 'WON';
-//        $this->data['is_end_test'] = true;
+        //        $this->data['is_end_test'] = true;
 
         $this->data['user']['name'] = $_SESSION['SESS_AUTH']['NAME'];
         $this->data['user']['id'] = $_SESSION['SESS_AUTH']['USER_ID'];
@@ -872,8 +872,8 @@ class RequestController extends Controller
 
         $this->data['act_vr']['NUMBRE'] =
 
-        $this->data['tz_doc'] = $tzDoc;
-        $this->data['first_protocol'] = $protocolData[0]?? [];
+            $this->data['tz_doc'] = $tzDoc;
+        $this->data['first_protocol'] = $protocolData[0] ?? [];
 
         $this->data['date_tz_create'] = date('d.m.Y', strtotime($deal['DATE_CREATE']));
 
@@ -894,10 +894,10 @@ class RequestController extends Controller
         $this->data['comment_history'] = $request->getCommentsHistoryByDealId($dealId);
 
         // ТЗ
-        $this->data['tz']['tz_link'] = $dealId >= DEAL_START_NEW_AREA? URI."/requirement/card/{$requestData['ID']}" : URI."/requirement/card_old/{$requestData['ID']}";
+        $this->data['tz']['tz_link'] = URI . "/requirement/card_new/{$requestData['ID']}";
         $this->data['tz']['check'] = !empty($requestData['ID']) && (!empty($requestData['TZ']) || $isExistTz);
         $this->data['tz']['number'] = $requestData['ID'] ?? '';
-        $this->data['tz']['date'] = !empty($requestData['DATE_SOZD'])? StringHelper::dateRu($requestData['DATE_SOZD']) : '--';
+        $this->data['tz']['date'] = !empty($requestData['DATE_SOZD']) ? StringHelper::dateRu($requestData['DATE_SOZD']) : '--';
         $this->data['tz']['date_send'] = $userFields['UF_CRM_1579541506559']['VALUE'] ? StringHelper::dateRu($userFields['UF_CRM_1579541506559']['VALUE']) : "Не отправлено";
 
         // Получаем значение поля sent_out_lims
@@ -905,11 +905,11 @@ class RequestController extends Controller
 
 
         // Коммерческое предложение
-        $this->data['proposal']['link'] = $dealId >= DEAL_START_NEW_AREA? "/ulab/generator/CommercialOffer/{$dealId}" : "/protocol_generator/kp.php?ID={$dealId}&TZ_ID={$requestData['ID']}";
+        $this->data['proposal']['link'] = $dealId >= DEAL_START_NEW_AREA ? "/ulab/generator/CommercialOffer/{$dealId}" : "/protocol_generator/kp.php?ID={$dealId}&TZ_ID={$requestData['ID']}";
         $this->data['proposal']['check'] = !empty($proposalData['ID']);
         $this->data['proposal']['number'] = $proposalData['ID'] ?? 'Не сформировано';
-        $this->data['proposal']['date'] = !empty($proposalData['DATE'])? StringHelper::dateRu($proposalData['DATE']) : '--';
-        $this->data['proposal']['date_send'] = !empty($proposalData['SEND_DATE'])? StringHelper::dateRu($proposalData['SEND_DATE']) : 'Не отправлено';
+        $this->data['proposal']['date'] = !empty($proposalData['DATE']) ? StringHelper::dateRu($proposalData['DATE']) : '--';
+        $this->data['proposal']['date_send'] = !empty($proposalData['SEND_DATE']) ? StringHelper::dateRu($proposalData['SEND_DATE']) : 'Не отправлено';
         $this->data['proposal']['is_disable_form'] =
             !$isExistTz || !empty($actVr) || !empty($requestData['dateEnd'])
             || !empty($requestData['TAKEN_ID_DEAL']);
@@ -922,7 +922,7 @@ class RequestController extends Controller
 
         $this->data['status_list'] = $statusModel->getStatusesForDeal($dealId);
 
-//        $requirement->pre($requirement->checkSendedDogovor($dogovorData['ID']), true);
+        //        $requirement->pre($requirement->checkSendedDogovor($dogovorData['ID']), true);
 
         $newSendedDovor = $requirement->checkSendedDogovor($dogovorData['ID']);
 
@@ -935,11 +935,11 @@ class RequestController extends Controller
             $this->data['order']['check'] = 'table-yellow';
         }
 
-        if ( !empty($dogovorData) ) {
+        if (!empty($dogovorData)) {
             $this->data['order']['is_generated'] = true;
-            if($dogovorData['custom_number']) {
+            if ($dogovorData['custom_number']) {
                 $this->data['order']['number'] = $dogovorData['number_client'];
-            }else {
+            } else {
                 $this->data['order']['number'] = $dogovorData['NUMBER'];
             }
             $this->data['order']['id'] = $dogovorData['ID'];
@@ -947,10 +947,10 @@ class RequestController extends Controller
             $this->data['order']['is_generated'] = false;
         }
 
-        $this->data['order']['date'] = !empty($dogovorData['DATE'])? StringHelper::dateRu($dogovorData['DATE']) : '--';
-//		$request->pre($dogovorData);
+        $this->data['order']['date'] = !empty($dogovorData['DATE']) ? StringHelper::dateRu($dogovorData['DATE']) : '--';
+        //		$request->pre($dogovorData);
         $this->data['order']['attach'] = $dogovorData['ACTUAL_VER'];
-        $this->data['order']['date_send'] = !empty($dogovorData['SEND_DATE'])? StringHelper::dateRu($dogovorData['SEND_DATE']) : 'Не отправлялся из ЛИМС';
+        $this->data['order']['date_send'] = !empty($dogovorData['SEND_DATE']) ? StringHelper::dateRu($dogovorData['SEND_DATE']) : 'Не отправлялся из ЛИМС';
         $this->data['order']['is_disable_form'] =
             !empty($actVr) || !empty($requestData['dateEnd']) || !empty($requestData['DOGOVOR_NUM']);
         $this->data['order']['is_disable_mail'] = empty($dogovorData) || 0;
@@ -959,9 +959,9 @@ class RequestController extends Controller
         // Приложение к договору
         if (!empty($tzDoc) && $dogovorData['IS_ACTION'] == 0) {
             $this->data['attach']['check'] = 'table-red';
-        } 	elseif (!empty($tzDoc) && empty($tzDoc['pdf'])) {
+        } elseif (!empty($tzDoc) && empty($tzDoc['pdf'])) {
             $this->data['attach']['check'] = 'table-yellow';
-        }	elseif (!empty($tzDoc['pdf'])) {
+        } elseif (!empty($tzDoc['pdf'])) {
             $this->data['attach']['check'] = 'table-green';
         }
 
@@ -970,22 +970,22 @@ class RequestController extends Controller
         preg_match($regx, $newDeal['TITLE'], $match);
         $this->data['request-number'] = $match[1] ?? $dealId;
 
-        $this->data['attach']['link'] = $dealId >= DEAL_START_NEW_AREA? "/ulab/generator/TechnicalSpecification/{$dealId}" : "/protocol_generator/tz_doc.php?ID={$dealId}&TZ_ID={$requestData['ID']}";
-//        $this->data['attach']['check'] = !empty($tzDoc);
+        $this->data['attach']['link'] = $dealId >= DEAL_START_NEW_AREA ? "/ulab/generator/TechnicalSpecification/{$dealId}" : "/protocol_generator/tz_doc.php?ID={$dealId}&TZ_ID={$requestData['ID']}";
+        //        $this->data['attach']['check'] = !empty($tzDoc);
         $this->data['attach']['number'] = isset($tzDoc['TZ_ID'])
             ? ($tzDoc['number'] == 0
                 ? ($this->data['request-number'] ?? '') . "/" . $tzDoc['year']
                 : $tzDoc['number'] . "/" . $tzDoc['year'])
             : 'Не сформировано';
         //$this->data['attach']['number'] = $tzDoc['TZ_ID'] ? $tzDoc['number'] . "/" . $tzDoc['year'] : 'Не сформировано';
-        $this->data['attach']['date'] = !empty($tzDoc['DATE'])? StringHelper::dateRu($tzDoc['DATE']) : '--';
-        $this->data['attach']['date_send'] = !empty($tzDoc['SEND_DATE'])? StringHelper::dateRu($tzDoc['SEND_DATE']) : 'Не отправлен';
+        $this->data['attach']['date'] = !empty($tzDoc['DATE']) ? StringHelper::dateRu($tzDoc['DATE']) : '--';
+        $this->data['attach']['date_send'] = !empty($tzDoc['SEND_DATE']) ? StringHelper::dateRu($tzDoc['SEND_DATE']) : 'Не отправлен';
         $this->data['attach']['actual_ver'] = $tzDoc['ACTUAL_VER'];
         $this->data['attach']['is_disable_form'] = !$this->data['is_deal_osk'] && (
-                !$isExistTz || !empty($requestData['dateEnd']) || !$isConfirm || !empty($actVr));
+            !$isExistTz || !empty($requestData['dateEnd']) || !$isConfirm || !empty($actVr));
         $this->data['attach']['is_disable_form_for_rostovskaya'] = $isConfirm && in_array($_SESSION['SESS_AUTH']['USER_ID'], [220]);
         $this->data['attach']['is_disable_form_test'] = !$this->data['is_deal_osk'];
-//            empty($requestData['TZ']) || !empty($requestData['dateEnd']) /*|| !$isConfirm*/ || !empty($actVr);
+        //            empty($requestData['TZ']) || !empty($requestData['dateEnd']) /*|| !$isConfirm*/ || !empty($actVr);
         $this->data['attach']['is_disable_mail'] = empty($tzDoc) || 0;
 
 
@@ -993,27 +993,27 @@ class RequestController extends Controller
         $this->data['invoice']['link'] = "/ulab/generator/invoiceDoc/{$dealId}";
         $this->data['invoice']['check'] = !empty($invoiceData);
         $this->data['invoice']['number'] = !empty($invoiceData['ID']) ? $requestData['ACCOUNT'] : 'Не сформирован';
-        $this->data['invoice']['date'] = !empty($invoiceData['DATE'])? StringHelper::dateRu($invoiceData['DATE']) : '--';
-        $this->data['invoice']['date_send'] = !empty($invoiceData['SEND_DATE'])? StringHelper::dateRu($invoiceData['SEND_DATE']) : 'Не отправлен';
+        $this->data['invoice']['date'] = !empty($invoiceData['DATE']) ? StringHelper::dateRu($invoiceData['DATE']) : '--';
+        $this->data['invoice']['date_send'] = !empty($invoiceData['SEND_DATE']) ? StringHelper::dateRu($invoiceData['SEND_DATE']) : 'Не отправлен';
         $this->data['invoice']['is_disable_form'] = !$this->data['is_deal_osk'] && (
-                !$isExistTz ||  empty($requestData['DOGOVOR_NUM']) || !empty($requestData['dateEnd']) || !empty($requestData['TAKEN_ID_DEAL']) || !$isConfirm);
+            !$isExistTz ||  empty($requestData['DOGOVOR_NUM']) || !empty($requestData['dateEnd']) || !empty($requestData['TAKEN_ID_DEAL']) || !$isConfirm);
         $this->data['invoice']['is_disable_form_for_rostovskaya'] = $isConfirm && in_array($_SESSION['SESS_AUTH']['USER_ID'], [220]);
 
-//        echo '1 - ' . !$this->data['is_deal_osk'];
-//        echo "<br>";
-//        echo '2 - ' . !$isExistTz;
-//        echo "<br>";
-//        echo '3 - ' . empty($requestData['DOGOVOR_NUM']);
-//        echo "<br>";
-//        echo '4 - ' . !empty($requestData['dateEnd']);
-//        echo "<br>";
-//        echo '5 - ' . !empty($requestData['TAKEN_ID_DEAL']);
-//        echo "<br>";
-//        echo '6 - ' . !$isConfirm;
-//        echo "<br>";
-//        die();
+        //        echo '1 - ' . !$this->data['is_deal_osk'];
+        //        echo "<br>";
+        //        echo '2 - ' . !$isExistTz;
+        //        echo "<br>";
+        //        echo '3 - ' . empty($requestData['DOGOVOR_NUM']);
+        //        echo "<br>";
+        //        echo '4 - ' . !empty($requestData['dateEnd']);
+        //        echo "<br>";
+        //        echo '5 - ' . !empty($requestData['TAKEN_ID_DEAL']);
+        //        echo "<br>";
+        //        echo '6 - ' . !$isConfirm;
+        //        echo "<br>";
+        //        die();
 
-//            empty($requestData) || empty($requestData['DOGOVOR_NUM']) || !empty($requestData['dateEnd']) || !empty($requestData['TAKEN_ID_DEAL']) /*|| !$isConfirm*/;
+        //            empty($requestData) || empty($requestData['DOGOVOR_NUM']) || !empty($requestData['dateEnd']) || !empty($requestData['TAKEN_ID_DEAL']) /*|| !$isConfirm*/;
         $this->data['invoice']['is_disable_mail'] = empty($invoiceData) || 0;
         $this->data['invoice']['attach'] = $invoiceData['ACTUAL_VER'];
 
@@ -1049,21 +1049,21 @@ class RequestController extends Controller
         $this->data['payment']['pay']   = $requestData['OPLATA'];
         $this->data['payment']['datePayment'] =
             !empty($requestData['DATE_OPLATA']) && $requestData['DATE_OPLATA'] !== '01.01.1970' ?
-                StringHelper::dateRu($requestData['DATE_OPLATA']) : '--';
+            StringHelper::dateRu($requestData['DATE_OPLATA']) : '--';
 
 
-        if ( (float) $requestData['OPLATA'] > (float) $this->data['payment']['price'] ) {
+        if ((float) $requestData['OPLATA'] > (float) $this->data['payment']['price']) {
             $this->data['payment']['status'] = 'Переплата';
-        } elseif ( !empty($this->data['payment']['price']) && $this->data['payment']['surcharge'] == 0 ) {
+        } elseif (!empty($this->data['payment']['price']) && $this->data['payment']['surcharge'] == 0) {
             $this->data['payment']['status'] = 'Оплачено полностью';
-        } elseif ( !empty($requestData['OPLATA']) && !empty($this->data['payment']['price']) ) {
+        } elseif (!empty($requestData['OPLATA']) && !empty($this->data['payment']['price'])) {
             $this->data['payment']['status'] = 'Оплачено частично';
         } else {
             $this->data['payment']['status'] = 'Не оплачено';
         }
 
         // Акт приемки проб
-        if($dealId != 15554 && $dealId != 16166 && $dealId != 17409) {
+        if ($dealId != 15554 && $dealId != 16166 && $dealId != 17409) {
             $this->data['sample']['link'] = $dealId >= DEAL_START_NEW_AREA || $dealId == 9735 ? "/ulab/generator/actSampleDocument/{$dealId}" : "/protocol_generator/probe_all.php?ID={$dealId}";
             $this->data['sample']['check'] = !empty($requestData['ACT_NUM']);
             $this->data['sample']['number'] = $requestData['ACT_NUM'] . "/" . date("Y", strtotime($requestData['DATE_ACT']));
@@ -1080,20 +1080,19 @@ class RequestController extends Controller
             $this->data['sample']['act_type'] = $actBase['act_type'] ?? '';
             $this->data['sample']['description'] = $requestData['DESCRIPTION'] ?? '';
             $this->data['sample']['quarry_id'] = $requestData['QUARRY_ID'] ?? '';
-
-        }else {
+        } else {
             $this->data['sample_array'] = $request->getActArray($dealId);
         }
 
         // Протокол
-//		$request->pre($protocolData);
+        //		$request->pre($protocolData);
         $this->data['protocol'] = [];
-//
+        //
         foreach ($protocolData as $protocol) {
             $title = 'Не сформирован';
-            if ( !empty($protocol['NUMBER']) ) {
+            if (!empty($protocol['NUMBER'])) {
                 $date = strtotime($protocol['DATE']);
-                $year = (int)date("Y", $date)%10 ? substr(date("Y", $date), -2) : date("Y", $date);
+                $year = (int)date("Y", $date) % 10 ? substr(date("Y", $date), -2) : date("Y", $date);
                 $title = "{$protocol['NUMBER']}/{$year}";
             }
 
@@ -1102,19 +1101,19 @@ class RequestController extends Controller
             $link = $dealId >= DEAL_START_NEW_AREA ? "/ulab/generator/ProtocolDocument/{$protocol['ID']}" : "/protocol_generator/protocol_multiple_protocols.php?ID={$dealId}&TZ_ID={$requestData['ID']}&PROTOCOL_ID={$protocol['ID']}";
 
             $whyDisableMail = '';
-            if ( empty($protocol['NUMBER']) ) {
+            if (empty($protocol['NUMBER'])) {
                 $whyDisableMail .= "Не присвоен номер\n";
             }
-            if ( empty($protocol['ACTUAL_VERSION']) ) {
+            if (empty($protocol['ACTUAL_VERSION'])) {
                 $whyDisableMail .= "Не сформирована актуальная версия\n";
             }
-            if ( ($companyData[COMPANY_GOOD] == 0 && empty($requestData['OPLATA']))
+            if (($companyData[COMPANY_GOOD] == 0 && empty($requestData['OPLATA']))
                 && empty($requestData['TAKEN_ID_DEAL'])
             ) {
                 $whyDisableMail .= "Заявка не оплачена";
             }
 
-            if ( $protocol['PROTOCOL_OUTSIDE_LIS'] == 1 ) {
+            if ($protocol['PROTOCOL_OUTSIDE_LIS'] == 1) {
                 $dir = $_SERVER['DOCUMENT_ROOT'] . "/pdf/{$protocol['ID']}";
             }
 
@@ -1126,38 +1125,38 @@ class RequestController extends Controller
                 'title'     => $title,
                 'sig'       => $protocolModel->getSigFile($dir),
                 'pdf'       => !empty($protocol['PDF']) ? "/pdf/{$protocol['ID']}/{$protocol['PDF']}" : $protocolModel->getPdfFile($dir),
-                'date'      => !empty($protocol['DATE'])? StringHelper::dateRu($protocol['DATE']) : '--',
-                'date_send' => !empty($protocol['PROTOCOL_SEND_DATETIME'])? StringHelper::dateRu($protocol['PROTOCOL_SEND_DATETIME']) : 'Не отправлен',
+                'date'      => !empty($protocol['DATE']) ? StringHelper::dateRu($protocol['DATE']) : '--',
+                'date_send' => !empty($protocol['PROTOCOL_SEND_DATETIME']) ? StringHelper::dateRu($protocol['PROTOCOL_SEND_DATETIME']) : 'Не отправлен',
                 'link'      => $link,
                 'outLis'    => !empty($protocol['PDF']) ? 1 : 0,
-                'actual_version'  => !empty($protocol['PDF']) ? $protocol['PDF'] : ($protocol['ACTUAL_VERSION']? unserialize($protocol['ACTUAL_VERSION']) : ''),
+                'actual_version'  => !empty($protocol['PDF']) ? $protocol['PDF'] : ($protocol['ACTUAL_VERSION'] ? unserialize($protocol['ACTUAL_VERSION']) : ''),
                 'is_disable_form' => /*$requestData['STAGE_ID'] == '4' ||*/ $requestData['STAGE_ID'] == 'WON' || empty($protocol['NUMBER']) /*|| !empty($actVr)*/,
                 'is_disable_mail' =>
-                    empty($protocol['NUMBER'])
+                empty($protocol['NUMBER'])
                     || empty($protocol['ACTUAL_VERSION'])
                     || (
                         ($companyData[COMPANY_GOOD] == 0 && empty($requestData['OPLATA']))
                         && empty($requestData['TAKEN_ID_DEAL'])
-                        && !in_array($_SESSION['SESS_AUTH']['USER_ID'], [9,33])
+                        && !in_array($_SESSION['SESS_AUTH']['USER_ID'], [9, 33])
                     ),
                 'why_disable_mail' => $whyDisableMail,
                 'is_enable_ecp'  =>
-                    !empty($protocol['ID'])
+                !empty($protocol['ID'])
                     && !empty($protocol['NUMBER'])
                     && !empty($protocol['PROTOCOL_TYPE'])  || $protocol['PROTOCOL_TYPE'] == '0'
                     && in_array($protocol['PROTOCOL_TYPE'], [1, 33, 34])
                     && empty($protocol['PROTOCOL_OUTSIDE_LIS']),
-//                'is_enable_ecp'  => false,
+                //                'is_enable_ecp'  => false,
             ];
         }
 
-//        $protocolModel->pre($this->data['protocol'], true);
+        //        $protocolModel->pre($this->data['protocol'], true);
 
         $this->data['protocol_center'] = floor(count($this->data['protocol']) / 2);
 
-//            $request->pre($this->data['protocol'], true);
+        //            $request->pre($this->data['protocol'], true);
 
-//
+        //
         // Результаты испытаний
         //$this->data['results']['check'] = $dealId >= DEAL_START_NEW_AREA ? !empty($countResults['count_utr']) : !empty($requestData['RESULTS']);
         $this->data['results']['check'] = $dealId >= DEAL_START_NEW_AREA ?
@@ -1166,7 +1165,7 @@ class RequestController extends Controller
             (empty($requestData) || empty($requestData['ACT_NUM']) || empty($invoiceData)) /*|| !$isConfirm
             || (!$this->data['payment']['check'] && !$this->data['is_good_company'])*/;
 
-        if ( !empty($requestData['DATE_RESULTS']) ) {
+        if (!empty($requestData['DATE_RESULTS'])) {
             $this->data['results']['date'] = StringHelper::dateRu($requestData['DATE_RESULTS']);
         } elseif (!empty($requestData['DATE_P'])) {
             $this->data['results']['date'] = StringHelper::dateRu($requestData['DATE_P']);
@@ -1199,7 +1198,7 @@ class RequestController extends Controller
         $this->data['complete']['may_return'] = in_array($permissionInfo['id'],  [2, 3, 4]) && !$hasEndChecks && $_SESSION['SESS_AUTH']['USER_ID'] != 88;
         $this->data['complete']['may_complete'] = in_array($permissionInfo['id'],  [2, 3, 4]) &&
             ($deal['STAGE_ID'] == 'PREPARATION' || $deal['STAGE_ID'] == 'PREPAYMENT_INVOICE' ||
-                $deal['STAGE_ID'] == 'EXECUTING'|| $deal['STAGE_ID'] == 'FINAL_INVOICE' || $deal['STAGE_ID'] == 1 || $deal['STAGE_ID'] == 'WON-NO-ACT' || $hasNotNew && !$hasEndChecks);
+                $deal['STAGE_ID'] == 'EXECUTING' || $deal['STAGE_ID'] == 'FINAL_INVOICE' || $deal['STAGE_ID'] == 1 || $deal['STAGE_ID'] == 'WON-NO-ACT' || $hasNotNew && !$hasEndChecks);
         if (!empty($this->data['is_deal_pr'])) {
             $this->data['complete']['may_complete'] = 1;
         }
@@ -1211,13 +1210,13 @@ class RequestController extends Controller
         $this->data['act_complete']['check'] = !empty($actVr);
         $this->data['act_complete']['email'] = !empty($requestData['acc_email']) ? $requestData['acc_email'] : $companyDataRequisite['RQ_EMAIL'];
         $this->data['act_complete']['number'] = $actVr['NUMBER'];
-        $this->data['act_complete']['attach'] = $actVr['ACTUAL_VER']?? '';
+        $this->data['act_complete']['attach'] = $actVr['ACTUAL_VER'] ?? '';
         $this->data['UPD']['date_request'] = $dateRequestUPD ?? '';
-        $this->data['act_complete']['date'] = !empty($actVr['DATE'])? StringHelper::dateRu($actVr['DATE']) : '--';
-        $this->data['act_complete']['date_send'] = !empty($actVr['SEND_DATE'])? StringHelper::dateRu($actVr['SEND_DATE']) : 'Не отправлен';
+        $this->data['act_complete']['date'] = !empty($actVr['DATE']) ? StringHelper::dateRu($actVr['DATE']) : '--';
+        $this->data['act_complete']['date_send'] = !empty($actVr['SEND_DATE']) ? StringHelper::dateRu($actVr['SEND_DATE']) : 'Не отправлен';
         // Заполнить данные акта возможно только на стадии - Испытания завершины(Работы в лаборатории завершены), т.к могут завершить заявку и не завершить испытание
         $this->data['act_complete']['is_disable_form'] = !in_array($_SESSION['SESS_AUTH']['USER_ID'], [61, 88, 25, 278, 292]) || 0;
-//		$this->data['act_complete']['is_disable_form'] = !($deal['STAGE_ID'] == 2) || ;
+        //		$this->data['act_complete']['is_disable_form'] = !($deal['STAGE_ID'] == 2) || ;
         $this->data['act_complete']['is_disable_mail'] = empty($actVr) || 0;
 
 
@@ -1225,18 +1224,18 @@ class RequestController extends Controller
         //// Список версий
         // Протокол
         $this->data['file']['protocol'] = [];
-        if ( !empty($protocolData) ) {
+        if (!empty($protocolData)) {
             foreach ($protocolData as $key => $protocol) {
-//                if ( empty($protocol['NUMBER']) ) { continue; }
+                //                if ( empty($protocol['NUMBER']) ) { continue; }
 
-                if ( empty($protocol['PROTOCOL_OUTSIDE_LIS']) && empty($protocol['PDF'])) {
+                if (empty($protocol['PROTOCOL_OUTSIDE_LIS']) && empty($protocol['PDF'])) {
                     $year = date("Y", strtotime($protocol['DATE']));
                     $dir  = PROTOCOL_PATH . "archive/{$requestData['ID']}{$year}/{$protocol['ID']}/";
                     $path = "/protocol_generator/archive/{$requestData['ID']}{$year}/{$protocol['ID']}/";
                     $files = $request->getFilesFromDir($dir, ['signed.docx', 'forsign.docx', 'qrNEW.png']);
                 } else {
-//                    $dir  = "/home/bitrix/www/ulab/upload/result/pdf/{$protocol['ID']}/";
-//                    $path = "/ulab/upload/result/pdf/{$protocol['ID']}/";
+                    //                    $dir  = "/home/bitrix/www/ulab/upload/result/pdf/{$protocol['ID']}/";
+                    //                    $path = "/ulab/upload/result/pdf/{$protocol['ID']}/";
 
                     $dir  = "/home/bitrix/www/pdf/{$protocol['ID']}/";
                     $path = "/pdf/{$protocol['ID']}/";
@@ -1264,7 +1263,7 @@ class RequestController extends Controller
 
         // КП
         $this->data['file']['kp']['files'] = [];
-        if ( !empty($proposalData) ) {
+        if (!empty($proposalData)) {
             $dir  = PROTOCOL_PATH . "archive_kp/{$dealId}/";
             $path = "/protocol_generator/archive_kp/{$dealId}/";
             $files = $request->getFilesFromDir($dir);
@@ -1308,7 +1307,7 @@ class RequestController extends Controller
 
         // Счет-оферта
         $this->data['file']['offer']['files'] = [];
-        if ( !empty($dogovorData) ) {
+        if (!empty($dogovorData)) {
             $dir  = PROTOCOL_PATH . "archive_dog/{$tzId}/";
             $path = "/protocol_generator/archive_dog/{$tzId}/";
             $files = $request->getFilesFromDir($dir);
@@ -1321,7 +1320,7 @@ class RequestController extends Controller
 
         // Прил. к договору (тз)
         $this->data['file']['tz']['files'] = [];
-//        if ( !empty($proposalData) ) {
+        //        if ( !empty($proposalData) ) {
         $dir  = PROTOCOL_PATH . "archive_tz/{$requestData['ID']}/";
         $path = "/protocol_generator/archive_tz/{$requestData['ID']}/";
         $files = $request->getFilesFromDir($dir);
@@ -1330,11 +1329,11 @@ class RequestController extends Controller
         foreach ($files as $file) {
             $this->data['file']['tz']['files'][] = $file;
         }
-//        }
+        //        }
 
         // Счет
         $this->data['file']['invoice']['files'] = [];
-        if ( !empty($invoiceData) ) {
+        if (!empty($invoiceData)) {
             $dir  = PROTOCOL_PATH . "archive_acc/{$dealId}/";
             $path = "/protocol_generator/archive_acc/{$dealId}/";
             $files = $request->getFilesFromDir($dir);
@@ -1347,7 +1346,7 @@ class RequestController extends Controller
 
         // Акт ВР
         $this->data['file']['act']['files'] = [];
-        if ( !empty($actVr) ) {
+        if (!empty($actVr)) {
             $dir  = PROTOCOL_PATH . "archive_aktvr/{$dealId}/";
             $path = "/protocol_generator/archive_aktvr/{$dealId}/";
             $files = $request->getFilesFromDir($dir);
@@ -1358,15 +1357,15 @@ class RequestController extends Controller
             }
         }
 
-//        if ($dealId == 15554) {
-//            echo "<pre>";
-//            print_r($deal['STAGE_ID'] == '2' || $deal['STAGE_ID'] == '4' || $deal['STAGE_ID'] == 'WON');
-//            echo "</pre>";
-//            echo "<pre>";
-//            print_r($deal);
-//            echo "</pre>";
-//            die();
-//        }
+        //        if ($dealId == 15554) {
+        //            echo "<pre>";
+        //            print_r($deal['STAGE_ID'] == '2' || $deal['STAGE_ID'] == '4' || $deal['STAGE_ID'] == 'WON');
+        //            echo "</pre>";
+        //            echo "<pre>";
+        //            print_r($deal);
+        //            echo "</pre>";
+        //            die();
+        //        }
 
         // Фото
         $this->data['file']['photo']['files'] = [];
@@ -1378,7 +1377,7 @@ class RequestController extends Controller
         foreach ($files as $file) {
             $this->data['file']['photo']['files'][] = $file;
         }
-//		$resultModel->pre($this->data['protocol']);
+        //		$resultModel->pre($this->data['protocol']);
 
         $this->addCSS("/assets/plugins/magnific-popup/magnific-popup.css");
 
@@ -1403,7 +1402,7 @@ class RequestController extends Controller
         $this->addJs("/assets/plugins/summernote/summernote-lite.min.js");
         $this->addJs("/assets/plugins/summernote/lang/summernote-ru-RU.min.js");
         $this->addJs("/assets/js/request-card.js?v={$r}");
-//		$statusModel->pre($requestData['order_type']);
+        //		$statusModel->pre($requestData['order_type']);
 
         if (!empty($requestData['TAKEN_ID_DEAL'])) {
             $this->data['status_list'] = $statusModel->getStatusesForDeal($dealId, true);
@@ -1485,10 +1484,10 @@ class RequestController extends Controller
         /** @var Request $request */
         $request = $this->model('Request');
 
-        if ( isset($_GET['stage']) ) {
-            if ( $_GET['stage'] == 0 ) {
+        if (isset($_GET['stage'])) {
+            if ($_GET['stage'] == 0) {
                 $request->updateStageDeal($dealId, 'PREPARATION');
-            } elseif ( $_GET['stage'] == 1 ) {
+            } elseif ($_GET['stage'] == 1) {
                 /** @var Requirement $requirement */
                 $requirement = $this->model('Requirement');
 
@@ -1537,29 +1536,29 @@ class RequestController extends Controller
 
         $this->data['statuses'] = $status->getStatusList();
 
-        if ( in_array($_SESSION['SESS_AUTH']['USER_ID'], [11, 13, 32, 15, 87, 87]) ) {
+        if (in_array($_SESSION['SESS_AUTH']['USER_ID'], [296, 297, 299, 298, 300])) {
             $this->data['tz_under_consideration'] = $request->tzUnderConsideration($_SESSION['SESS_AUTH']['USER_ID']);
             $this->data['probe_in_lab'] = $request->probeInLab($_SESSION['SESS_AUTH']['USER_ID']);
             $this->data['probe_in_lab_payed'] = $request->probeInLabPayed($_SESSION['SESS_AUTH']['USER_ID']);
             $this->data['request_list_not_assigned'] = $request->getRequestListNoSetAssigned($_SESSION['SESS_AUTH']['USER_ID']);
         }
-        if ( in_array($_SESSION['SESS_AUTH']['USER_ID'], [10, 156]) ) {
+        if (in_array($_SESSION['SESS_AUTH']['USER_ID'], [10, 156])) {
             $this->data['tz_under_consideration'] = $request->tzUnderConsideration($_SESSION['SESS_AUTH']['USER_ID']);
         }
 
-        if ( in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234]) ) {
+        if (in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234])) {
             $this->data['confirm_not_account'] = $request->getConfirmNotAccountTz();
         }
 
-        if ( in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234]) ) {
+        if (in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234])) {
             $this->data['returned_tz'] = $request->getReturnedTz($_SESSION['SESS_AUTH']['USER_ID']);
         }
 
-        if ( in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234]) ) {
+        if (in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234])) {
             $this->data['not_sended_tz'] = $request->getNotSendedTz();
         }
 
-        if ( in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234]) ) {
+        if (in_array($_SESSION['SESS_AUTH']['USER_ID'], [216, 83, 17, 220, 212, 234, 296])) {
             $this->data['confirmed_tz'] = $request->getConfirmedTz();
         }
 
@@ -1616,7 +1615,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        if ( empty($idDeal) || empty($_GET['file'])) {
+        if (empty($idDeal) || empty($_GET['file'])) {
             $this->redirect("/request/card/{$idDeal}");
         }
 
@@ -1644,7 +1643,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        if ( empty($idDeal) || empty($_GET['file'])) {
+        if (empty($idDeal) || empty($_GET['file'])) {
             $this->redirect("/request/card/{$idDeal}");
         }
 
@@ -1700,12 +1699,12 @@ class RequestController extends Controller
 
         $idDeal = $_POST['deal_id'];
 
-        if ( empty($idDeal) ) {
+        if (empty($idDeal)) {
             $this->showErrorMessage('Не указан, или указан неверно ИД заявки');
             $this->redirect("/request/list/");
         }
 
-        if ( !in_array($_SESSION['SESS_AUTH']['USER_ID'], [25, 88, 61]) && ($_POST['pay'] <= 0) ) {
+        if (!in_array($_SESSION['SESS_AUTH']['USER_ID'], [25, 88, 61]) && ($_POST['pay'] <= 0)) {
             $this->showErrorMessage('Оплата не может быть меньше или равна нулю');
             $this->redirect("/request/card/{$idDeal}");
         }
@@ -1773,33 +1772,33 @@ class RequestController extends Controller
         ];
 
         foreach ($_POST['columns'] as $column) {
-            if ( isset($column['search']['value']) && $column['search']['value'] != '' ) {
+            if (isset($column['search']['value']) && $column['search']['value'] != '') {
                 $filter['search'][$column['data']] = $column['search']['value'];
             }
         }
 
-        if ( isset($_POST['order']) && !empty($_POST['columns']) ) {
+        if (isset($_POST['order']) && !empty($_POST['columns'])) {
             $filter['order']['by']  = $_POST['columns'][$_POST['order'][0]['column']]['data'];
             $filter['order']['dir'] = $_POST['order'][0]['dir'];
         }
 
-        if ( !empty($_POST['dateStart']) ) {
+        if (!empty($_POST['dateStart'])) {
             $filter['search']['dateStart'] = date('Y-m-d', strtotime($_POST['dateStart'])) . ' 00:00:00';
             $filter['search']['dateEnd'] = date('Y-m-d', strtotime($_POST['dateEnd'])) . ' 23:59:59';
         }
-        if ( !empty($_POST['stage']) ) {
+        if (!empty($_POST['stage'])) {
             $filter['search']['stage'] = $_POST['stage'];
         }
-        if ( !empty($_POST['lab']) ) {
+        if (!empty($_POST['lab'])) {
             $filter['search']['lab'] = $_POST['lab'];
         }
-        if ( !empty($_POST['everywhere']) ) {
+        if (!empty($_POST['everywhere'])) {
             $filter['search']['everywhere'] = $_POST['everywhere'];
         }
-        if ( !empty($_POST['stageGroup']) ) {
+        if (!empty($_POST['stageGroup'])) {
             $filter['search']['stageGroup'] = $_POST['stageGroup'];
         }
-        if ( !empty($_POST['certification']) ) {
+        if (!empty($_POST['certification'])) {
             $filter['search']['certification'] = $_POST['certification'];
         }
 
@@ -1863,7 +1862,7 @@ class RequestController extends Controller
 
         $response = [];
 
-        if ( isset($_POST['company_id']) && !empty($_POST['company_id']) ) {
+        if (isset($_POST['company_id']) && !empty($_POST['company_id'])) {
             /** @var Company $company */
             $company = $this->model('Company');
             $response = $company->getRequisiteByCompanyId($_POST['company_id']);
@@ -1886,7 +1885,7 @@ class RequestController extends Controller
 
         $response = [];
 
-        if ( isset($_POST['company_id']) ) {
+        if (isset($_POST['company_id'])) {
             /** @var Request $request */
             $request = $this->model('Request');
             $response = $request->getContractsByCompanyId($_POST['company_id']);
@@ -1907,7 +1906,7 @@ class RequestController extends Controller
 
         $response = [];
 
-        if ( isset($_POST['company_id']) ) {
+        if (isset($_POST['company_id'])) {
             /** @var Request $request */
             $request = $this->model('Request');
             $response = $request->getContractsOfferByCompanyId($_POST['company_id']);
@@ -1929,7 +1928,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        if ( !isset($_POST['src']) ) {
+        if (!isset($_POST['src'])) {
             $response = [
                 'success' => false,
                 'error' => "Не пришел POST"
@@ -1938,7 +1937,7 @@ class RequestController extends Controller
             return;
         }
 
-        if ( empty($dealId) ) {
+        if (empty($dealId)) {
             $response = [
                 'success' => false,
                 'error' => "Не пришел ид сделки"
@@ -1968,7 +1967,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        if ( !isset($_POST['src']) || !isset($_POST['actId'])) {
+        if (!isset($_POST['src']) || !isset($_POST['actId'])) {
             $response = [
                 'success' => false,
                 'error' => "Не пришел POST"
@@ -1977,7 +1976,7 @@ class RequestController extends Controller
             return;
         }
 
-        if ( empty($dealId) ) {
+        if (empty($dealId)) {
             $response = [
                 'success' => false,
                 'error' => "Не пришел ид сделки"
@@ -2004,7 +2003,7 @@ class RequestController extends Controller
         /** @var  Request $request*/
         $request = $this->model('Request');
 
-        if ( isset($_FILES['file']) ) {
+        if (isset($_FILES['file'])) {
             $response = $request->saveAnyFile("request/{$dealId}", $_FILES['file']);
 
             echo json_encode($response, JSON_UNESCAPED_UNICODE);
@@ -2021,7 +2020,7 @@ class RequestController extends Controller
         /** @var  Request $request*/
         $request = $this->model('Request');
 
-        if ( isset($_FILES['file']) ) {
+        if (isset($_FILES['file'])) {
             $response = $request->saveAnyFile("request_tech/{$dealId}", $_FILES['file']);
 
             echo json_encode($response, JSON_UNESCAPED_UNICODE);
@@ -2071,7 +2070,7 @@ class RequestController extends Controller
         /** @var Company $company */
         $company = $this->model('Company');
 
-        if ( empty($_POST['INN']) ) {
+        if (empty($_POST['INN'])) {
             echo json_encode(false);
             return;
         }
@@ -2088,7 +2087,7 @@ class RequestController extends Controller
         /** @var Company $company */
         $company = $this->model('Company');
 
-        if ( empty($_POST['INN']) ) {
+        if (empty($_POST['INN'])) {
             echo json_encode(false);
             return;
         }
@@ -2105,7 +2104,7 @@ class RequestController extends Controller
         /** @var Company $company */
         $company = $this->model('Company');
 
-        if ( empty($_POST['INN']) ) {
+        if (empty($_POST['INN'])) {
             echo json_encode(false);
             return;
         }
@@ -2197,93 +2196,147 @@ class RequestController extends Controller
 
     public function docShow($dealId)
     {
-//        global $APPLICATION;
-//
-//        $APPLICATION->RestartBuffer();
-//
-//        $file = $_POST['file'];
-//
-//        $filePath = UPLOAD_DIR . "/request/{$dealId}/{$file}";
-//        $bitrixRestUrl = 'https://ulab.niistrom.pro/rest/61/xg2s53ej268lr63r/disk.folder.uploadfile';
-//
-//        $fileContent = file_get_contents($filePath);
-//        $fileBase64 = base64_encode($fileContent);
-//
-//        $originalFileName = basename($file);
-//        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
-//        $fileNameWithoutExt = pathinfo($originalFileName, PATHINFO_FILENAME);
-//
-//        $transliteratedName = $this->transliterate($fileNameWithoutExt);
-//        $cleanName = preg_replace('/[^a-z0-9_-]/i', '', $transliteratedName);
-//
-//        $uniqueFileName = "deal{$dealId}_{$cleanName}.{$fileExtension}";
-//
-//        $responseCheck = $this->checkFileExists(114, $uniqueFileName);
-//
-//        if (!$responseCheck['exists']) {
-//            $postData = [
-//                'id' => 114,
-//                'fileContent' => $fileBase64,
-//                'data' => [
-//                    "NAME" => $uniqueFileName
-//                ]
-//            ];
-//
-//            $ch = curl_init();
-//            curl_setopt($ch, CURLOPT_URL, $bitrixRestUrl);
-//            curl_setopt($ch, CURLOPT_POST, true);
-//            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
-//            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-//                'Content-Type: application/x-www-form-urlencoded'
-//            ]);
-//
-//            $response = curl_exec($ch);
-//            curl_close($ch);
-//
-//            $data = json_decode($response, true);
-//
-//            if (isset($data['result'])) {
-//                $fileId = $data['result']['ID'];
-//
-//                $googleViewerUrl = "https://docs.google.com/viewer?url=".urlencode($data['result']['DOWNLOAD_URL'])."&embedded=true";
-//
-//                echo json_encode(['response' => $googleViewerUrl], JSON_UNESCAPED_UNICODE);
-//            } else {
-//                echo json_encode(['response' => "Ошибка: " . print_r($data, true)], JSON_UNESCAPED_UNICODE);
-//            }
-//        } else {
-//            $fileId = $responseCheck['fileId'];
-//
-//            $googleViewerUrl = "https://docs.google.com/viewer?url=".urlencode($responseCheck['downloadUrl'])."&embedded=true";
-//
-//            echo json_encode(['response' => $googleViewerUrl], JSON_UNESCAPED_UNICODE);
-//        }
+        //        global $APPLICATION;
+        //
+        //        $APPLICATION->RestartBuffer();
+        //
+        //        $file = $_POST['file'];
+        //
+        //        $filePath = UPLOAD_DIR . "/request/{$dealId}/{$file}";
+        //        $bitrixRestUrl = 'https://ulab.niistrom.pro/rest/61/xg2s53ej268lr63r/disk.folder.uploadfile';
+        //
+        //        $fileContent = file_get_contents($filePath);
+        //        $fileBase64 = base64_encode($fileContent);
+        //
+        //        $originalFileName = basename($file);
+        //        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+        //        $fileNameWithoutExt = pathinfo($originalFileName, PATHINFO_FILENAME);
+        //
+        //        $transliteratedName = $this->transliterate($fileNameWithoutExt);
+        //        $cleanName = preg_replace('/[^a-z0-9_-]/i', '', $transliteratedName);
+        //
+        //        $uniqueFileName = "deal{$dealId}_{$cleanName}.{$fileExtension}";
+        //
+        //        $responseCheck = $this->checkFileExists(114, $uniqueFileName);
+        //
+        //        if (!$responseCheck['exists']) {
+        //            $postData = [
+        //                'id' => 114,
+        //                'fileContent' => $fileBase64,
+        //                'data' => [
+        //                    "NAME" => $uniqueFileName
+        //                ]
+        //            ];
+        //
+        //            $ch = curl_init();
+        //            curl_setopt($ch, CURLOPT_URL, $bitrixRestUrl);
+        //            curl_setopt($ch, CURLOPT_POST, true);
+        //            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+        //            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        //                'Content-Type: application/x-www-form-urlencoded'
+        //            ]);
+        //
+        //            $response = curl_exec($ch);
+        //            curl_close($ch);
+        //
+        //            $data = json_decode($response, true);
+        //
+        //            if (isset($data['result'])) {
+        //                $fileId = $data['result']['ID'];
+        //
+        //                $googleViewerUrl = "https://docs.google.com/viewer?url=".urlencode($data['result']['DOWNLOAD_URL'])."&embedded=true";
+        //
+        //                echo json_encode(['response' => $googleViewerUrl], JSON_UNESCAPED_UNICODE);
+        //            } else {
+        //                echo json_encode(['response' => "Ошибка: " . print_r($data, true)], JSON_UNESCAPED_UNICODE);
+        //            }
+        //        } else {
+        //            $fileId = $responseCheck['fileId'];
+        //
+        //            $googleViewerUrl = "https://docs.google.com/viewer?url=".urlencode($responseCheck['downloadUrl'])."&embedded=true";
+        //
+        //            echo json_encode(['response' => $googleViewerUrl], JSON_UNESCAPED_UNICODE);
+        //        }
     }
 
-    function transliterate($string) {
+    function transliterate($string)
+    {
         $converter = array(
-            'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd',
-            'е' => 'e', 'ё' => 'e', 'ж' => 'zh', 'з' => 'z', 'и' => 'i',
-            'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n',
-            'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't',
-            'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c', 'ч' => 'ch',
-            'ш' => 'sh', 'щ' => 'sch', 'ь' => '', 'ы' => 'y', 'ъ' => '',
-            'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
+            'а' => 'a',
+            'б' => 'b',
+            'в' => 'v',
+            'г' => 'g',
+            'д' => 'd',
+            'е' => 'e',
+            'ё' => 'e',
+            'ж' => 'zh',
+            'з' => 'z',
+            'и' => 'i',
+            'й' => 'y',
+            'к' => 'k',
+            'л' => 'l',
+            'м' => 'm',
+            'н' => 'n',
+            'о' => 'o',
+            'п' => 'p',
+            'р' => 'r',
+            'с' => 's',
+            'т' => 't',
+            'у' => 'u',
+            'ф' => 'f',
+            'х' => 'h',
+            'ц' => 'c',
+            'ч' => 'ch',
+            'ш' => 'sh',
+            'щ' => 'sch',
+            'ь' => '',
+            'ы' => 'y',
+            'ъ' => '',
+            'э' => 'e',
+            'ю' => 'yu',
+            'я' => 'ya',
 
-            'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D',
-            'Е' => 'E', 'Ё' => 'E', 'Ж' => 'Zh', 'З' => 'Z', 'И' => 'I',
-            'Й' => 'Y', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N',
-            'О' => 'O', 'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T',
-            'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C', 'Ч' => 'Ch',
-            'Ш' => 'Sh', 'Щ' => 'Sch', 'Ь' => '', 'Ы' => 'Y', 'Ъ' => '',
-            'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
+            'А' => 'A',
+            'Б' => 'B',
+            'В' => 'V',
+            'Г' => 'G',
+            'Д' => 'D',
+            'Е' => 'E',
+            'Ё' => 'E',
+            'Ж' => 'Zh',
+            'З' => 'Z',
+            'И' => 'I',
+            'Й' => 'Y',
+            'К' => 'K',
+            'Л' => 'L',
+            'М' => 'M',
+            'Н' => 'N',
+            'О' => 'O',
+            'П' => 'P',
+            'Р' => 'R',
+            'С' => 'S',
+            'Т' => 'T',
+            'У' => 'U',
+            'Ф' => 'F',
+            'Х' => 'H',
+            'Ц' => 'C',
+            'Ч' => 'Ch',
+            'Ш' => 'Sh',
+            'Щ' => 'Sch',
+            'Ь' => '',
+            'Ы' => 'Y',
+            'Ъ' => '',
+            'Э' => 'E',
+            'Ю' => 'Yu',
+            'Я' => 'Ya',
         );
 
         return strtr($string, $converter);
     }
 
-    function checkFileExists($folderId, $fileName) {
+    function checkFileExists($folderId, $fileName)
+    {
         $webhookUrl = 'https://ulab.niistrom.pro/rest/61/xg2s53ej268lr63r/disk.folder.getchildren';
 
         $queryData = [

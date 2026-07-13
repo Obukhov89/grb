@@ -10,7 +10,7 @@ class Request extends Model
 {
     const DATE_START = '2021-01-01';
     //ID Сделки с которого начинается рефакторинг Результатов испытания (TODO: Для новых лабораторий удалить или добавить если производится рефакторинг результатов испытаний, так же убрать из карточки card.php, tz_show.php, probe.php)
-    const RESULT_REFACTORING_START_ID = 8846;
+    const RESULT_REFACTORING_START_ID = 1;
 
 
     /**
@@ -30,7 +30,7 @@ class Request extends Model
 
         $requestList = [];
 
-        while ( $row = $cdbResult->Fetch() ) {
+        while ($row = $cdbResult->Fetch()) {
             $requestList[] = $row;
         }
 
@@ -61,9 +61,9 @@ class Request extends Model
 
     public function saveSign($dealId, $base64, $actId = 0)
     {
-        if($dealId == 15554 || $dealId == 16166 || $dealId == 17409) {
+        if ($dealId == 15554 || $dealId == 16166 || $dealId == 17409) {
             $path = "/home/bitrix/www/protocol_generator/archive_client/{$dealId}/{$actId}";
-        }else {
+        } else {
             $path = "/home/bitrix/www/protocol_generator/archive_client/{$dealId}";
         }
 
@@ -71,14 +71,14 @@ class Request extends Model
             $data = substr($base64, strpos($base64, ',') + 1);
             $type = strtolower($type[1]); // jpg, png, gif
 
-            if (!in_array($type, [ 'jpg', 'jpeg', 'gif', 'png' ])) {
+            if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
                 return [
                     'success' => false,
                     'error' => "Не корректный тип изображения"
                 ];
             }
 
-            $data = str_replace( ' ', '+', $data );
+            $data = str_replace(' ', '+', $data);
             $data = base64_decode($data);
 
             if ($data === false) {
@@ -94,10 +94,10 @@ class Request extends Model
             ];
         }
 
-        if ( !is_dir($path) ) {
+        if (!is_dir($path)) {
             $mkdirResult = mkdir($path);
 
-            if ( $mkdirResult === false ) {
+            if ($mkdirResult === false) {
                 return [
                     'success' => false,
                     'error' => "Не удалось создать папку"
@@ -107,7 +107,7 @@ class Request extends Model
 
         $saveResult = file_put_contents("{$path}/sign.{$type}", $data);
 
-        if ( $saveResult === false ) {
+        if ($saveResult === false) {
             return [
                 'success' => false,
                 'error' => "Не удалось сохранить файл"
@@ -128,13 +128,12 @@ class Request extends Model
     {
         $result = [];
 
-        if ( empty($companyId) ) {
+        if (empty($companyId)) {
             return $result;
         }
 
-        $ba_contr = $this->DB->Query
-        (
-            "
+        $ba_contr = $this->DB->Query(
+                "
                 SELECT DISTINCT d.*
                 FROM `DOGOVOR` d
                 LEFT JOIN ba_tz bt1 ON bt1.ID_Z = d.DEAL_ID AND bt1.COMPANY_ID = {$companyId}
@@ -142,20 +141,20 @@ class Request extends Model
                 WHERE d.IS_ACTION > 0 
                   AND (d.CLIENT_ID = {$companyId} OR bt1.ID_Z IS NOT NULL OR bt2.ID IS NOT NULL)
             "
-        );
+            );
 
         while ($row = $ba_contr->Fetch()) {
             $row['DATE'] = date("d.m.Y", strtotime($row['DATE']));
 
             $row['endless_text'] = '';
 
-            if($row['date_end']) {
+            if ($row['date_end']) {
                 $currenRuDate = date('d.m.Y', strtotime($row['date_end']));
 
                 $row['endless_text'] = " (срок действия договора до {$currenRuDate})";
             }
 
-            if($row['custom_number']) {
+            if ($row['custom_number']) {
                 $row['NUMBER'] = $row['number_client'];
             }
 
@@ -174,7 +173,7 @@ class Request extends Model
     {
         $result = [];
 
-        if ( empty($companyId) ) {
+        if (empty($companyId)) {
             return $result;
         }
 
@@ -184,7 +183,8 @@ class Request extends Model
                 FROM InvoiceOffer io
                 INNER JOIN DOGOVOR d ON d.ID = io.dogovor_id
                 WHERE io.client_id = {$companyId} and d.IS_ACTION > 0
-            ");
+            "
+        );
 
         while ($row = $ba_contr->Fetch()) {
             $row['DATE'] = date("d.m.Y", strtotime($row['DATE']));
@@ -208,14 +208,15 @@ class Request extends Model
        				FROM `ba_tz` tz 
                     left join ulab_tz_lab_duration as utld on tz.ID_Z = utld.deal_id   
                     LEFT JOIN CHECK_TZ c ON tz.ID = c.tz_id 
-                    WHERE tz.`ID_Z` = {$dealId} ");
+                    WHERE tz.`ID_Z` = {$dealId} "
+        );
 
         while ($row = $ba_tz->Fetch()) {
             //TODO: deserialize
             $addMailList = unserialize($row['SAVE_MAIL']);
             $row['addMail'] = [];
             foreach ($addMailList as $mail) {
-                if ( !empty($mail) ) {
+                if (!empty($mail)) {
                     $row['addMail'][] = $mail;
                 }
             }
@@ -229,29 +230,29 @@ class Request extends Model
             $regx = "/(\d+)$/";
             preg_match($regx, $row['DOGOVOR_NUM'], $match);
             $row['DOGOVOR_NUM'] = $match[1] ?? '';
-			$row['PRICE_FL'] = $row['PRICE'];
-			$price = 0;
-			if ( !empty($row['PRICE']) ) {
-				$price = (float)$row['PRICE'];
+            $row['PRICE_FL'] = $row['PRICE'];
+            $price = 0;
+            if (!empty($row['PRICE'])) {
+                $price = (float)$row['PRICE'];
 
-				if ( $row['discount_type'] == 'percent' ) {
-					$price -= $price * $row['DISCOUNT'] / 100;
-				} elseif ( $row['discount_type'] == 'rub' ) {
-					$price -= $row['DISCOUNT'];
-				}
+                if ($row['discount_type'] == 'percent') {
+                    $price -= $price * $row['DISCOUNT'] / 100;
+                } elseif ($row['discount_type'] == 'rub') {
+                    $price -= $row['DISCOUNT'];
+                }
 
 
-				$row['PRICE'] = StringHelper::priceFormatRus($row['PRICE']);
-			} else {
-				$row['PRICE'] = '--';
-			}
+                $row['PRICE'] = StringHelper::priceFormatRus($row['PRICE']);
+            } else {
+                $row['PRICE'] = '--';
+            }
 
-			if ( $price < 0 ) {
-				$price = 0;
-			}
+            if ($price < 0) {
+                $price = 0;
+            }
 
-			$row['price_discount'] = $price;
-			$row['price_ru'] = StringHelper::priceFormatRus($price);
+            $row['price_discount'] = $price;
+            $row['price_ru'] = StringHelper::priceFormatRus($price);
 
             $result = $row;
         }
@@ -263,20 +264,20 @@ class Request extends Model
      * @param $tzId
      * @return bool
      */
-	public function isConfirmTz(int $tzId)
-	{
-		$result = $this->DB->Query("SELECT * FROM `CHECK_TZ` WHERE `tz_id`={$tzId}");
+    public function isConfirmTz(int $tzId)
+    {
+        $result = $this->DB->Query("SELECT * FROM `CHECK_TZ` WHERE `tz_id`={$tzId}");
 
-		if ($result->SelectedRowsCount() > 0) {
-			while ($row = $result->Fetch()) {
-				if ($row['confirm'] == 0 || empty($row['confirm'])) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
+        if ($result->SelectedRowsCount() > 0) {
+            while ($row = $result->Fetch()) {
+                if ($row['confirm'] == 0 || empty($row['confirm'])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
     /**
      * @param $tzId
@@ -300,7 +301,8 @@ class Request extends Model
      * @param $tzId
      * @return array
      */
-    public function getProtocols($tzId) {
+    public function getProtocols($tzId)
+    {
         $protocols = $this->DB->Query("SELECT * FROM `PROTOCOLS` WHERE `ID_TZ`={$tzId}");
 
         $result = [];
@@ -341,7 +343,8 @@ class Request extends Model
                     COMPANY_ID, COMPANY_TITLE, TYPE_ID, ASSIGNED, 
                     DESCRIPTION, OBJECT, PRICE, LABA_ID 
                 FROM `ba_tz` 
-                WHERE `ID_Z` = {$sourceDealId}")->Fetch();
+                WHERE `ID_Z` = {$sourceDealId}"
+        )->Fetch();
 
         $priceResult = $this->DB->Query(
             "SELECT um.price FROM ulab_gost_to_probe ugtp
@@ -352,7 +355,8 @@ class Request extends Model
             ulab_methods um
             ON ugtp.method_id = um.id
         WHERE 
-            umtr.deal_id = {$sourceDealId}");
+            umtr.deal_id = {$sourceDealId}"
+        );
 
         $totalPrice = 0;
         while ($row = $priceResult->Fetch()) {
@@ -368,7 +372,7 @@ class Request extends Model
             'STAGE_ID' =>       $this->quoteStr('NEW'),
             'TZ' =>             $this->quoteStr($ba_tz['TZ']),
             'OBJECT' =>         $this->quoteStr($ba_tz['OBJECT']),
-//            'PROBE' =>          $this->quoteStr($ba_tz['PROBE']),
+            //            'PROBE' =>          $this->quoteStr($ba_tz['PROBE']),
             'SAVE_MAIL' =>      $this->quoteStr($ba_tz['SAVE_MAIL']),
             'MATERIAL' =>       $this->quoteStr($ba_tz['MATERIAL']),
             'COMPANY_ID' =>     $this->quoteStr($ba_tz['COMPANY_ID']),
@@ -392,33 +396,33 @@ class Request extends Model
         $this->DB->Query("UPDATE `ba_tz` SET `OPLATA` = `OPLATA` + {$amount}, `DATE_OPLATA` = {$date} WHERE ID_Z = {$dealId}");
     }
 
-	/**
-	 * @param $dealId
-	 * @param $amount
-	 * @param $date
-	 */
+    /**
+     * @param $dealId
+     * @param $amount
+     * @param $date
+     */
     public function addMessage($dealId, $amount)
     {
-		$res = $this->DB->Query("SELECT `REQUEST_TITLE`, `COMPANY_TITLE` FROM `ba_tz` WHERE `ID_Z` = {$dealId}")->Fetch();
-		CModule::IncludeModule('im');
-		$ar = Array(
-			"TO_CHAT_ID" => 855, // ID чата
-			"FROM_USER_ID" => 278, // ID пользователя состоящего в чате
-			"MESSAGE"     => "По заявке [URL=/ulab/request/card/{$dealId}]{$res['REQUEST_TITLE']} {$res['COMPANY_TITLE']}[/URL] внесена оплата в размере {$amount} рублей", // Произвольный текст
-		);
-		CIMChat::AddMessage($ar);
+        $res = $this->DB->Query("SELECT `REQUEST_TITLE`, `COMPANY_TITLE` FROM `ba_tz` WHERE `ID_Z` = {$dealId}")->Fetch();
+        CModule::IncludeModule('im');
+        $ar = array(
+            "TO_CHAT_ID" => 855, // ID чата
+            "FROM_USER_ID" => 278, // ID пользователя состоящего в чате
+            "MESSAGE"     => "По заявке [URL=/ulab/request/card/{$dealId}]{$res['REQUEST_TITLE']} {$res['COMPANY_TITLE']}[/URL] внесена оплата в размере {$amount} рублей", // Произвольный текст
+        );
+        CIMChat::AddMessage($ar);
 
-		$array = [83];
-		foreach ($array as $a) {
-			$notify = [
-				"NOTIFY_TITLE" => 'что-то там',
-				"TO_USER_ID" => $a,
-				"FROM_USER_ID" => 278,
-				"NOTIFY_TYPE" => IM_NOTIFY_FROM,
-				"NOTIFY_MESSAGE" => "По заявке <a href='/ulab/request/card/{$dealId}'>{$res['REQUEST_TITLE']} {$res['COMPANY_TITLE']}</a> внесена оплата в размере {$amount} рублей",
-			];
-			CIMNotify::Add($notify);
-		}
+        $array = [83];
+        foreach ($array as $a) {
+            $notify = [
+                "NOTIFY_TITLE" => 'что-то там',
+                "TO_USER_ID" => $a,
+                "FROM_USER_ID" => 278,
+                "NOTIFY_TYPE" => IM_NOTIFY_FROM,
+                "NOTIFY_MESSAGE" => "По заявке <a href='/ulab/request/card/{$dealId}'>{$res['REQUEST_TITLE']} {$res['COMPANY_TITLE']}</a> внесена оплата в размере {$amount} рублей",
+            ];
+            CIMNotify::Add($notify);
+        }
     }
 
     /**
@@ -434,42 +438,42 @@ class Request extends Model
 
     public function getCountDeal($type = '')
     {
-//        $typeFilter = [];
-//
-//        if ( !empty($type) ) {
-//            $typeFilter = [
-//                'TYPE_ID' => "'{$type}'"
-//            ];
-//        }
-//
-//        $curYear = date("Y");
-//        $deals = CCrmDeal::GetList(['DATE_CREATE' => 'DESC'], ['>DATE_CREATE' => "01.01.{$curYear} 00:00:00", '!TYPE_ID' => "1"]); // TODO: разобраться
-//
-//        // TODO: разобраться
-//        $count = $deals->SelectedRowsCount();
-//
-//        return $count;
+        //        $typeFilter = [];
+        //
+        //        if ( !empty($type) ) {
+        //            $typeFilter = [
+        //                'TYPE_ID' => "'{$type}'"
+        //            ];
+        //        }
+        //
+        //        $curYear = date("Y");
+        //        $deals = CCrmDeal::GetList(['DATE_CREATE' => 'DESC'], ['>DATE_CREATE' => "01.01.{$curYear} 00:00:00", '!TYPE_ID' => "1"]); // TODO: разобраться
+        //
+        //        // TODO: разобраться
+        //        $count = $deals->SelectedRowsCount();
+        //
+        //        return $count;
 
         $curYear = date("Y");
         $nameType = $type['type'];
 
         $sql = $this->DB->Query("select max(request_number) as `count` from ba_tz where year(DATE_CREATE_TIMESTAMP) = {$curYear} AND TYPE_ID = '{$nameType}'")->Fetch();
 
-        return $sql['count']?? 0;
+        return $sql['count'] ?? 0;
     }
 
     public function getCurrentY()
     {
-        return (int)date("Y")%10 ? substr(date("Y"), -2) : date("Y");
+        return (int)date("Y") % 10 ? substr(date("Y"), -2) : date("Y");
     }
 
     /**
      * @param $data
      * @return false|int
      */
-    public function create( $data )
+    public function create($data)
     {
-        $year = (int)date("Y")%10 ? substr(date("Y"), -2) : date("Y");
+        $year = (int)date("Y") % 10 ? substr(date("Y"), -2) : date("Y");
         $countDeal = $this->getCountDeal() + 1;
 
         $newDeal = new CCrmDeal;
@@ -480,7 +484,7 @@ class Request extends Model
 
             $tmp = $this->DB->Query("SELECT ID FROM `b_crm_deal` WHERE `TITLE` = '{$title}'")->Fetch();
 
-            if ( empty($tmp) ) {
+            if (empty($tmp)) {
                 break;
             } else {
                 $countDeal++;
@@ -502,8 +506,9 @@ class Request extends Model
             'UF_CRM_1571643970' => $data['arrAssigned'],
         ];
 
-        if ( $result ) {
-            $newDeal->Update($newDeal,
+        if ($result) {
+            $newDeal->Update(
+                $newDeal,
                 $arDealUpdate,
                 true,
                 true,
@@ -520,7 +525,7 @@ class Request extends Model
      * @param $data
      * @return bool
      */
-    public function update( $data ): bool
+    public function update($data): bool
     {
         $deal = new CCrmDeal;
 
@@ -532,7 +537,8 @@ class Request extends Model
             'STAGE_ID' => 'PREPARATION',
         ];
 
-        return $deal->Update($data['ID'],
+        return $deal->Update(
+            $data['ID'],
             $arDealUpdate,
             true,
             true,
@@ -548,7 +554,8 @@ class Request extends Model
     {
         $deal = new CCrmDeal;
         $arDealUpdate = ['STAGE_ID' => $stage];
-        $deal->Update($dealId,
+        $deal->Update(
+            $dealId,
             $arDealUpdate,
             true,
             true
@@ -561,9 +568,9 @@ class Request extends Model
         $this->updateTz($dealId, $data);
 
         if ($stage == 2) {
-        	$idTz = $this->getTzIdByDealId($dealId);
-			$this->DB->Query("DELETE FROM CHECK_TZ WHERE tz_id = {$idTz['ID']}");
-		}
+            $idTz = $this->getTzIdByDealId($dealId);
+            $this->DB->Query("DELETE FROM CHECK_TZ WHERE tz_id = {$idTz['ID']}");
+        }
     }
 
     public function getTzIdByDealId(int $dealId)
@@ -594,7 +601,7 @@ class Request extends Model
 
     public function fillAssigned()
     {
-        if ( !isset($_COOKIE['test']) ) {
+        if (!isset($_COOKIE['test'])) {
             return;
         }
 
@@ -602,12 +609,12 @@ class Request extends Model
 
         $baTz = $this->DB->Query("SELECT ID_Z FROM `ba_tz` WHERE 1");
 
-        while($row = $baTz->Fetch()) {
+        while ($row = $baTz->Fetch()) {
             $userFields = $USER_FIELD_MANAGER->GetUserFields('CRM_DEAL', $row['ID_Z']);
 
-            if ( !empty($row['ID_Z']) ) {
+            if (!empty($row['ID_Z'])) {
                 $deal = CCrmDeal::GetByID($row['ID_Z']);
-                if ( !empty($deal['ASSIGNED_BY_ID']) ) {
+                if (!empty($deal['ASSIGNED_BY_ID'])) {
                     $data = [
                         'deal_id' => $row['ID_Z'],
                         'user_id' => (int)$deal['ASSIGNED_BY_ID'],
@@ -690,7 +697,7 @@ class Request extends Model
 
             $deal = CCrmDeal::GetByID($dealId);
 
-            if ( !empty($deal['ASSIGNED_BY_ID']) ) {
+            if (!empty($deal['ASSIGNED_BY_ID'])) {
                 $user = CUser::GetByID($deal['ASSIGNED_BY_ID'])->Fetch();
                 $name = trim($user['NAME']);
                 $lastName = trim($user['LAST_NAME']);
@@ -740,7 +747,7 @@ class Request extends Model
      */
     public function tzUnderConsideration($userId)
     {
-        $year = (int) date("Y", time())%10 ? substr(date("Y", time()), -2) : date("Y", time());
+        $year = (int) date("Y", time()) % 10 ? substr(date("Y", time()), -2) : date("Y", time());
         $yearLast = $year - 1;
 
         //TODO: почему account not null?
@@ -756,8 +763,8 @@ class Request extends Model
                     ORDER BY ch.`date_submission` DESC"
         );*/
 
-		$stmp = $this->DB->Query(
-			"SELECT DISTINCT 
+        $stmp = $this->DB->Query(
+            "SELECT DISTINCT 
                         ba.`REQUEST_TITLE`, ba.`COMPANY_TITLE`, ba.`ID_Z`, ba.`NUM_P`, 
                         ba.`ACCOUNT`, ch.`tz_id`, ch.`date_reply`, ch.`date_return`, ch.`confirm`, ba.`STAGE_ID`
                     FROM 
@@ -766,7 +773,7 @@ class Request extends Model
                         ba.`ACCOUNT` is NULL AND ch.`leader` = {$userId} AND ch.confirm = 0 AND ch.date_return IS NULL 
                         AND ch.`tz_id` = ba.`ID` AND (ba.REQUEST_TITLE LIKE '%/{$year}' or ba.REQUEST_TITLE LIKE '%/{$yearLast}')
                     ORDER BY ch.`date_submission` DESC"
-		);
+        );
 
         $result = [];
 
@@ -787,14 +794,14 @@ class Request extends Model
      */
     public function probeInLab($userId)
     {
-//        $stmp = $this->DB->Query(
-//            "SELECT DISTINCT
-//                    ba.`REQUEST_TITLE`, ba.`COMPANY_TITLE`, ba.`ID_Z`
-//                FROM
-//                    `ba_tz` as ba, assigned_to_request as atr
-//                WHERE
-//                    ba.`ID_Z` = atr.deal_id AND atr.user_id = {$userId} AND ba.`PROBE_IN_LAB` = '1'
-//                    AND (ba.RESULTS IS NULL OR ba.RESULTS = '') AND ba.ACT_NUM IS NOT NULL AND ba.ACT_NUM <> ''");
+        //        $stmp = $this->DB->Query(
+        //            "SELECT DISTINCT
+        //                    ba.`REQUEST_TITLE`, ba.`COMPANY_TITLE`, ba.`ID_Z`
+        //                FROM
+        //                    `ba_tz` as ba, assigned_to_request as atr
+        //                WHERE
+        //                    ba.`ID_Z` = atr.deal_id AND atr.user_id = {$userId} AND ba.`PROBE_IN_LAB` = '1'
+        //                    AND (ba.RESULTS IS NULL OR ba.RESULTS = '') AND ba.ACT_NUM IS NOT NULL AND ba.ACT_NUM <> ''");
         $stmp = $this->DB->Query(
             "SELECT ptl.*, ba.`REQUEST_TITLE`, ba.`COMPANY_TITLE`, ba.`ID_Z`, umtr.cipher, DATE_FORMAT(sp.date_send, '%d.%m.%Y %H:%i') as date_send
                 FROM probe_to_lab ptl
@@ -803,14 +810,15 @@ class Request extends Model
                 inner join CHECK_TZ ct ON ct.tz_id = ba.ID AND ct.leader = '{$userId}'
                 left join ba_laba bl ON bl.HEAD_ID = '{$userId}'
                 left join sended_probes sp ON sp.probe_id = umtr.id AND sp.lab_id = bl.ID
-                WHERE ptl.user_id = {$userId} AND ptl.accept_probe = 0 and ba.OPLATA <= 0 and umtr.cipher != '' AND ba.STAGE_ID <> 'LOSE'");
+                WHERE ptl.user_id = {$userId} AND ptl.accept_probe = 0 and ba.OPLATA <= 0 and umtr.cipher != '' AND ba.STAGE_ID <> 'LOSE'"
+        );
 
         $result = [];
 
         while ($row = $stmp->Fetch()) {
             $result[$row['ID_Z']]['data'][] = $row;
 
-            if($row['date_send']) {
+            if ($row['date_send']) {
                 $result[$row['ID_Z']]['sended_count'] = !empty($result[$row['ID_Z']]['sended_count']) ? $result[$row['ID_Z']]['sended_count'] + 1 : 1;
             }
         }
@@ -834,23 +842,24 @@ class Request extends Model
                 left join CHECK_TZ ctz ON ctz.tz_id = ba.ID
                 left join ba_laba bl ON bl.HEAD_ID = '{$userId}'
                 left join sended_probes sp ON sp.probe_id = umtr.id AND sp.lab_id = bl.ID
-                WHERE ptl.user_id = {$userId} and ctz.leader = {$userId} AND ptl.accept_probe = 0 and ba.OPLATA > 0 and umtr.cipher != '' ");
+                WHERE ptl.user_id = {$userId} and ctz.leader = {$userId} AND ptl.accept_probe = 0 and ba.OPLATA > 0 and umtr.cipher != '' "
+        );
 
-//        $stmp = $this->DB->Query(
-//            "SELECT DISTINCT
-//                    ba.`REQUEST_TITLE`, ba.`COMPANY_TITLE`, ba.`ID_Z`
-//                FROM
-//                    `ba_tz` as ba, assigned_to_request as atr
-//                WHERE
-//                    ba.`ID_Z` = atr.deal_id AND atr.user_id = {$userId} AND ba.`PROBE_IN_LAB` = '1'
-//                    AND (ba.RESULTS IS NULL OR ba.RESULTS = '') AND ba.ACT_NUM IS NOT NULL AND ba.ACT_NUM <> '' and ba.OPLATA > 0");
+        //        $stmp = $this->DB->Query(
+        //            "SELECT DISTINCT
+        //                    ba.`REQUEST_TITLE`, ba.`COMPANY_TITLE`, ba.`ID_Z`
+        //                FROM
+        //                    `ba_tz` as ba, assigned_to_request as atr
+        //                WHERE
+        //                    ba.`ID_Z` = atr.deal_id AND atr.user_id = {$userId} AND ba.`PROBE_IN_LAB` = '1'
+        //                    AND (ba.RESULTS IS NULL OR ba.RESULTS = '') AND ba.ACT_NUM IS NOT NULL AND ba.ACT_NUM <> '' and ba.OPLATA > 0");
 
         $result = [];
 
         while ($row = $stmp->Fetch()) {
             $result[$row['ID_Z']]['data'][] = $row;
 
-            if($row['date_send']) {
+            if ($row['date_send']) {
                 $result[$row['ID_Z']]['sended_count'] = !empty($result[$row['ID_Z']]['sended_count']) ? $result[$row['ID_Z']]['sended_count'] + 1 : 1;
             }
         }
@@ -910,89 +919,88 @@ class Request extends Model
         $statusLeft = "";
         $groupId = 0;
 
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
+            if (!empty($filter['search'])) {
                 // Заявка
-                if ( isset($filter['search']['requestTitle']) ) {
+                if (isset($filter['search']['requestTitle'])) {
                     $where .= "b.REQUEST_TITLE LIKE '%{$filter['search']['requestTitle']}%' AND ";
                 }
                 // ID заявки
-                if ( isset($filter['search']['deal_id']) ) {
+                if (isset($filter['search']['deal_id'])) {
                     $where .= "b.ID_Z = {$filter['search']['deal_id']} AND ";
                 }
                 // Дата
-                if ( isset($filter['search']['DATE_CREATE_TIMESTAMP']) ) {
+                if (isset($filter['search']['DATE_CREATE_TIMESTAMP'])) {
                     $where .= "LOCATE('{$filter['search']['DATE_CREATE_TIMESTAMP']}', DATE_FORMAT(b.DATE_CREATE_TIMESTAMP, '%d.%m.%Y')) > 0 AND ";
                 }
-                if ( isset($filter['search']['dateStart']) ) {
+                if (isset($filter['search']['dateStart'])) {
                     $where .= "(b.DATE_CREATE_TIMESTAMP >= '{$filter['search']['dateStart']}' AND b.DATE_CREATE_TIMESTAMP <= '{$filter['search']['dateEnd']}') AND ";
                 }
                 // Клиент
-                if ( isset($filter['search']['COMPANY_TITLE']) ) {
+                if (isset($filter['search']['COMPANY_TITLE'])) {
                     $where .= "b.COMPANY_TITLE LIKE '%{$filter['search']['COMPANY_TITLE']}%' AND ";
                 }
                 // Крайний срок
-                if ( isset($filter['search']['DEADLINE_TABLE']) ) {
+                if (isset($filter['search']['DEADLINE_TABLE'])) {
                     $where .= "b.DEADLINE_TABLE LIKE '%{$filter['search']['DEADLINE_TABLE']}%' AND ";
                 }
                 // Счет
-                if ( isset($filter['search']['ACCOUNT']) ) {
+                if (isset($filter['search']['ACCOUNT'])) {
                     $where .= "b.ACCOUNT LIKE '%{$filter['search']['ACCOUNT']}%' AND ";
                 }
                 // Объект испытаний
-                if ( isset($filter['search']['MATERIAL']) ) {
+                if (isset($filter['search']['MATERIAL'])) {
                     $where .= "b.MATERIAL LIKE '%{$filter['search']['MATERIAL']}%' AND ";
                 }
                 // Ответственный
-                if ( isset($filter['search']['ASSIGNED']) ) {
+                if (isset($filter['search']['ASSIGNED'])) {
                     $where .= "usr.LAST_NAME LIKE '%{$filter['search']['ASSIGNED']}%' AND ";
                 }
                 // Акт ПП
-                if ( isset($filter['search']['NUM_ACT_TABLE']) ) {
+                if (isset($filter['search']['NUM_ACT_TABLE'])) {
                     $where .= "b.NUM_ACT_TABLE LIKE '%{$filter['search']['NUM_ACT_TABLE']}%' AND ";
                 }
                 // ТЗ
-                if ( isset($filter['search']['tz']) ) {
-//                    $where .= "b.ID LIKE '%{$filter['search']['tz']}%' AND ";
-                    if ( $filter['search']['tz'] == 'n' ) {
+                if (isset($filter['search']['tz'])) {
+                    //                    $where .= "b.ID LIKE '%{$filter['search']['tz']}%' AND ";
+                    if ($filter['search']['tz'] == 'n') {
                         $where .= "tzdoc.pdf is null AND ";
-                    } else if ( $filter['search']['tz'] == 'y' ) {
+                    } else if ($filter['search']['tz'] == 'y') {
                         $where .= "tzdoc.pdf is not null AND ";
                     }
-
                 }
                 // Договор
-                if ( isset($filter['search']['DOGOVOR_TABLE']) ) {
+                if (isset($filter['search']['DOGOVOR_TABLE'])) {
                     $where .= "d.NUMBER LIKE '%{$filter['search']['DOGOVOR_TABLE']}%' AND ";
                 }
                 // Стоимость
-                if ( isset($filter['search']['price_discount']) ) {
+                if (isset($filter['search']['price_discount'])) {
                     $where .= "b.price_discount = '{$filter['search']['price_discount']}' AND ";
                 }
                 // Дата оплаты
-                if ( isset($filter['search']['DATE_OPLATA']) ) {
+                if (isset($filter['search']['DATE_OPLATA'])) {
                     $where .= "b.DATE_OPLATA LIKE '%{$filter['search']['DATE_OPLATA']}%' AND ";
                 }
                 // Производитель
-                if ( isset($filter['search']['MANUFACTURER_TITLE']) ) {
+                if (isset($filter['search']['MANUFACTURER_TITLE'])) {
                     $where .= "b.MANUFACTURER_TITLE LIKE '%{$filter['search']['MANUFACTURER_TITLE']}%' AND ";
                 }
                 // Последнее изменение (пользователь)
-                if ( isset($filter['search']['USER_HISTORY']) ) {
+                if (isset($filter['search']['USER_HISTORY'])) {
                     $where .= "b.USER_HISTORY LIKE '%{$filter['search']['USER_HISTORY']}%' AND ";
                 }
                 // Лаборатории
-                if ( isset($filter['search']['lab']) ) {
+                if (isset($filter['search']['lab'])) {
                     $where .= "b.LABA_ID LIKE '%{$filter['search']['lab']}%' AND ";
                 }
                 // Протокол
-                if ( isset($filter['search']['PROTOCOLS']) && !empty($filter['search']['PROTOCOLS']) ) {
+                if (isset($filter['search']['PROTOCOLS']) && !empty($filter['search']['PROTOCOLS'])) {
                     $where .= "p.NUMBER_AND_YEAR LIKE '%{$filter['search']['PROTOCOLS']}%' AND ";
                 }
 
@@ -1062,7 +1070,7 @@ class Request extends Model
                     }
                 }
             }
-            if ( isset($filter['search']['certification']) ) {
+            if (isset($filter['search']['certification'])) {
                 $certificationFilter = $filter['search']['certification'] ?? 'all';
                 if ($certificationFilter === 'certification') {
                     // Фильтр для сертификационных заявок (с буквой "С")
@@ -1074,8 +1082,8 @@ class Request extends Model
             }
 
             // работа с сортировкой
-            if ( !empty($filter['order']) ) {
-                if ( $filter['order']['dir'] === 'asc' ) {
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
                     $order['dir'] = 'ASC';
                 }
 
@@ -1101,9 +1109,9 @@ class Request extends Model
                     case 'NUM_ACT_TABLE':
                         $order['by'] = 'YEAR(ACT_DATE) DESC, a.ACT_NUM';
                         break;
-//                    case 'NUM_ACT_TABLE':
-//                        $order['by'] = 'b.NUM_ACT_TABLE';
-//                        break;
+                    //                    case 'NUM_ACT_TABLE':
+                    //                        $order['by'] = 'b.NUM_ACT_TABLE';
+                    //                        break;
                     case 'DOGOVOR_TABLE':
                         $order['by'] = 'd.NUMBER';
                         break;
@@ -1123,13 +1131,13 @@ class Request extends Model
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -1208,7 +1216,7 @@ class Request extends Model
             $statusInfo = $statusModel->getStatusesForDeal($row['ID_Z']);
             $stage = $this->getStage($row);
 
-            if($row['custom_number']) {
+            if ($row['custom_number']) {
                 $row['DOGOVOR_TABLE'] = "{$row['cnt']} {$row['nmb']} от {$row['dt']}";
             }
 
@@ -1220,14 +1228,14 @@ class Request extends Model
                 $row['bgStage'] = $statusInfo['color'];
             }
 
-//            $materials = $requirementModel->getMaterialFromTz($row['ID_Z']);
-//            $materialsName = array_column($materials, 'name');
-//            $row['MATERIAL'] = implode(', ', $materialsName);
+            //            $materials = $requirementModel->getMaterialFromTz($row['ID_Z']);
+            //            $materialsName = array_column($materials, 'name');
+            //            $row['MATERIAL'] = implode(', ', $materialsName);
 
             $row['start_new_area'] = DEAL_START_NEW_AREA;
             $isExistTz = $requirementModel->isExistTz($row['ID_Z']);
 
-//            $protocols = $this->getProtocolsByTzId($row['b_id']);
+            //            $protocols = $this->getProtocolsByTzId($row['b_id']);
 
             $crmDeal = $this->getDealById($row['ID_Z']);
 
@@ -1238,7 +1246,7 @@ class Request extends Model
                 $arrAss[] = $item['short_name'];
             }
 
-            if ( !empty($arrAss) ) {
+            if (!empty($arrAss)) {
                 $row['ASSIGNED'] = implode(', ', $arrAss);
             }
 
@@ -1280,7 +1288,7 @@ class Request extends Model
 
             $row['b_tz_id'] = $isExistTz ? $row['b_id'] : '';
 
-            if ( empty($row['price_discount']) ) {
+            if (empty($row['price_discount'])) {
                 $row['price_discount'] = $row['PRICE'];
             }
 
@@ -1313,32 +1321,32 @@ class Request extends Model
 
             $row['linkName'] = $row['b_id'] && $row['ACT_NUM'] ? 'Открыть' : '';
 
-//            if (count($protocols) > 0) {
-//                $firstProtocol = current($protocols);
-//                foreach ($protocols as $key => $value) {
-//                    $numberAndYear = !empty($value['NUMBER_AND_YEAR']) ? $value['NUMBER_AND_YEAR'] : '';
-//                    $protocolsData[$key] = [
-//                        'ID' => $value['ID'],
-//                        'NUMBER_AND_YEAR' => $numberAndYear,
-//                        'ACTUAL_VERSION' => unserialize($value['ACTUAL_VERSION']),
-//                        'PDF' => $value['PDF'],
-//                        'PROTOCOL_OUTSIDE_LIS' => $value['PROTOCOL_OUTSIDE_LIS'],
-//                        'YEAR' => !empty($value['DATE']) ? date('Y', strtotime($value['DATE'])) : ''
-//                    ];
-//
-//                    if (empty($value['PDF'])) {
-//                        $files = scandir($_SERVER['DOCUMENT_ROOT'] . '/protocol_generator/archive/' . $row['b_id'] . $protocolsData[$key]['YEAR'] . '/' . $protocolsData[$key]['ID'] . '/');
-//
-//                        $protocolsData[$key]['FILES'] = !empty($files) ? $files : [];
-//                    } else {
-//                        $protocolsData[$key]['FILES'] = [];
-//                    }
-//                }
-//            }
+            //            if (count($protocols) > 0) {
+            //                $firstProtocol = current($protocols);
+            //                foreach ($protocols as $key => $value) {
+            //                    $numberAndYear = !empty($value['NUMBER_AND_YEAR']) ? $value['NUMBER_AND_YEAR'] : '';
+            //                    $protocolsData[$key] = [
+            //                        'ID' => $value['ID'],
+            //                        'NUMBER_AND_YEAR' => $numberAndYear,
+            //                        'ACTUAL_VERSION' => unserialize($value['ACTUAL_VERSION']),
+            //                        'PDF' => $value['PDF'],
+            //                        'PROTOCOL_OUTSIDE_LIS' => $value['PROTOCOL_OUTSIDE_LIS'],
+            //                        'YEAR' => !empty($value['DATE']) ? date('Y', strtotime($value['DATE'])) : ''
+            //                    ];
+            //
+            //                    if (empty($value['PDF'])) {
+            //                        $files = scandir($_SERVER['DOCUMENT_ROOT'] . '/protocol_generator/archive/' . $row['b_id'] . $protocolsData[$key]['YEAR'] . '/' . $protocolsData[$key]['ID'] . '/');
+            //
+            //                        $protocolsData[$key]['FILES'] = !empty($files) ? $files : [];
+            //                    } else {
+            //                        $protocolsData[$key]['FILES'] = [];
+            //                    }
+            //                }
+            //            }
 
             $row['firstProtocolId'] = $firstProtocol['ID'] ?? null;
 
-//            $row['PROTOCOLS'] = $protocolsData;
+            //            $row['PROTOCOLS'] = $protocolsData;
 
             $row['NUM_P_TABLE'] = !empty($row['NUM_P_TABLE']) ? $row['NUM_P_TABLE'] : '';
 
@@ -1353,13 +1361,15 @@ class Request extends Model
             $row['YEAR_ACT'] = !empty($row['DEADLINE']) ? date('Y',  strtotime($row['DATE_ACT'])) : '';
 
             $row['DEADLINE_TABLE'] = !empty($row['DEADLINE_TABLE']) ? date('d.m.Y',  strtotime($row['DEADLINE_TABLE'])) : '';
-            $row['deadlineISO'] = !empty($row['DEADLINE_TABLE']) ? date('Y-m-d',  strtotime($row['DEADLINE_TABLE'])) : '';//TODO: Проверить почему не всегда записывается поле DEADLINE и заменить
+            $row['deadlineISO'] = !empty($row['DEADLINE_TABLE']) ? date('Y-m-d',  strtotime($row['DEADLINE_TABLE'])) : ''; //TODO: Проверить почему не всегда записывается поле DEADLINE и заменить
 
             $row['dateOplataISO'] = !empty($row['DATE_OPLATA']) ? date('Y-m-d',  strtotime($row['DATE_OPLATA'])) : '';
 
             $textColor = '';
-            if (date('Y-m-d') > $row['deadlineISO']
-                && !in_array($row['STAGE_ID'], ['2', '4', 'WON', 'LOSE', '5', '6', '7', '8', '9'])) {
+            if (
+                date('Y-m-d') > $row['deadlineISO']
+                && !in_array($row['STAGE_ID'], ['2', '4', 'WON', 'LOSE', '5', '6', '7', '8', '9'])
+            ) {
                 $textColor = 'text-red';
             }
 
@@ -1384,29 +1394,29 @@ class Request extends Model
 
     public function getNonCorrectDeals()
     {
-//        $result = [];
-//
-//        $response = $this->DB->Query("SELECT bt.ID_Z, umtr.id, p.NUMBER
-//                                      FROM ba_tz bt
-//                                      LEFT JOIN ulab_material_to_request umtr ON umtr.deal_id = bt.ID_Z
-//                                      LEFT JOIN ulab_gost_to_probe ugtp ON ugtp.material_to_request_id = umtr.id
-//                                      LEFT JOIN ulab_start_trials ust ON ust.ugtp_id = ugtp.id
-//                                      LEFT JOIN PROTOCOLS p ON p.ID = umtr.protocol_id
-//                                      WHERE p.NUMBER IS NULL OR umtr.protocol_id IS NULL
-//                                      ORDER BY bt.ID_Z DESC
-//                                     ");
-//
-//        while($row = $response->Fetch()) {
-//            $trials = $this->getTrials($row['ID_Z']);
-//
-//            if(in_array(18, $trials)) {
-//                $result []= $row['ID_Z'];
-//            }
-//        }
-//
-//        $result = array_unique($result);
-//
-//        return implode(',', $result);
+        //        $result = [];
+        //
+        //        $response = $this->DB->Query("SELECT bt.ID_Z, umtr.id, p.NUMBER
+        //                                      FROM ba_tz bt
+        //                                      LEFT JOIN ulab_material_to_request umtr ON umtr.deal_id = bt.ID_Z
+        //                                      LEFT JOIN ulab_gost_to_probe ugtp ON ugtp.material_to_request_id = umtr.id
+        //                                      LEFT JOIN ulab_start_trials ust ON ust.ugtp_id = ugtp.id
+        //                                      LEFT JOIN PROTOCOLS p ON p.ID = umtr.protocol_id
+        //                                      WHERE p.NUMBER IS NULL OR umtr.protocol_id IS NULL
+        //                                      ORDER BY bt.ID_Z DESC
+        //                                     ");
+        //
+        //        while($row = $response->Fetch()) {
+        //            $trials = $this->getTrials($row['ID_Z']);
+        //
+        //            if(in_array(18, $trials)) {
+        //                $result []= $row['ID_Z'];
+        //            }
+        //        }
+        //
+        //        $result = array_unique($result);
+        //
+        //        return implode(',', $result);
     }
 
     /**
@@ -1495,11 +1505,11 @@ class Request extends Model
             $row['ACT_NUM']
             && in_array($row['STAGE_ID'], ['NEW', 'PREPARATION', 'PREPAYMENT_INVOICE', 'EXECUTING'])
         ) {
-            $bgColor='bg-yellow';
+            $bgColor = 'bg-yellow';
             $title = 'Пробы получены. Проводятся испытания';
         }
 
-        if ( !empty($row['price_discount']) ) {
+        if (!empty($row['price_discount'])) {
             $row['PRICE'] = $row['price_discount'];
         }
 
@@ -1616,24 +1626,25 @@ class Request extends Model
      * @param $dealId
      * @return array
      */
-    public function savePhoto($file, $dealId) {
-		// проверка что файл формата .png или .jpg //
-		$pattern = "/\.(png|jpg|jpeg)$/i";
-		if ( !preg_match($pattern, $file['name']) ) {
-			$result = [
-				'success' => false,
-				'error' => [
-					'message' => 'Ошибка! Файл должен быть png, jpg, jpeg',
-				]
-			];
+    public function savePhoto($file, $dealId)
+    {
+        // проверка что файл формата .png или .jpg //
+        $pattern = "/\.(png|jpg|jpeg)$/i";
+        if (!preg_match($pattern, $file['name'])) {
+            $result = [
+                'success' => false,
+                'error' => [
+                    'message' => 'Ошибка! Файл должен быть png, jpg, jpeg',
+                ]
+            ];
 
-			return $result;
-		}
+            return $result;
+        }
 
-		$uploaddir = '/home/bitrix/www/photo/' . $dealId;
+        $uploaddir = '/home/bitrix/www/photo/' . $dealId;
 
-		return $this->saveFile($uploaddir, $file['name'], $file['tmp_name']);
-	}
+        return $this->saveFile($uploaddir, $file['name'], $file['tmp_name']);
+    }
 
 
     /**
@@ -1641,7 +1652,7 @@ class Request extends Model
      * @param $dealId
      * @return array
      */
-	public function saveAnyFile($path, $file)
+    public function saveAnyFile($path, $file)
     {
         $uploaddir = UPLOAD_DIR . "/{$path}";
 
@@ -1678,52 +1689,52 @@ class Request extends Model
         $permissionModel = new Permission();
         $perm = $permissionModel->getUserPermission($_SESSION['SESS_AUTH']['USER_ID']);
 
-        if ( $perm['view_name'] == 'lab' ) {
-//            $where .= "ass.user_id = '{$_SESSION['SESS_AUTH']['USER_ID']}' AND ";
+        if ($perm['view_name'] == 'lab') {
+            //            $where .= "ass.user_id = '{$_SESSION['SESS_AUTH']['USER_ID']}' AND ";
         }
 
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
+            if (!empty($filter['search'])) {
                 // Заявка
-                if ( isset($filter['search']['REQUEST_TITLE']) ) {
+                if (isset($filter['search']['REQUEST_TITLE'])) {
                     $where .= "b.REQUEST_TITLE LIKE '%{$filter['search']['REQUEST_TITLE']}%' AND ";
                 }
                 // Дата
-                if ( isset($filter['search']['DATE_ACT']) ) {
+                if (isset($filter['search']['DATE_ACT'])) {
                     $where .= "LOCATE('{$filter['search']['DATE_ACT']}', DATE_FORMAT(a.ACT_DATE, '%d.%m.%Y')) > 0 AND ";
                 }
-                if ( isset($filter['search']['dateStart']) ) {
+                if (isset($filter['search']['dateStart'])) {
                     $where .= "(a.ACT_DATE >= '{$filter['search']['dateStart']}' AND a.ACT_DATE <= '{$filter['search']['dateEnd']}') AND ";
                 }
                 // Клиент
-                if ( isset($filter['search']['COMPANY_TITLE']) ) {
+                if (isset($filter['search']['COMPANY_TITLE'])) {
                     $where .= "b.COMPANY_TITLE LIKE '%{$filter['search']['COMPANY_TITLE']}%' AND ";
                 }
                 // Объект испытаний
-                if ( isset($filter['search']['MATERIAL']) ) {
+                if (isset($filter['search']['MATERIAL'])) {
                     $where .= "b.MATERIAL LIKE '%{$filter['search']['MATERIAL']}%' AND ";
                 }
                 // Ответственный
-                if ( isset($filter['search']['ASSIGNED']) ) {
-//                    $where .= "b.ASSIGNED LIKE '%{$filter['search']['ASSIGNED']}%' AND ";
+                if (isset($filter['search']['ASSIGNED'])) {
+                    //                    $where .= "b.ASSIGNED LIKE '%{$filter['search']['ASSIGNED']}%' AND ";
                     $where .= "(u.NAME LIKE '%{$filter['search']['ASSIGNED']}%' OR u.LAST_NAME LIKE '%{$filter['search']['ASSIGNED']}%') AND ";
                 }
                 // Акт ПП
-                if ( isset($filter['search']['NUM_ACT_TABLE']) ) {
+                if (isset($filter['search']['NUM_ACT_TABLE'])) {
                     $where .= "b.NUM_ACT_TABLE LIKE '%{$filter['search']['NUM_ACT_TABLE']}%' AND ";
                 }
                 // Договор
-                if ( isset($filter['search']['DOGOVOR_TABLE']) ) {
+                if (isset($filter['search']['DOGOVOR_TABLE'])) {
                     $where .= "b.DOGOVOR_TABLE LIKE '%{$filter['search']['DOGOVOR_TABLE']}%' AND ";
                 }
                 // Лаборатории
-                if ( isset($filter['search']['lab']) ) {
+                if (isset($filter['search']['lab'])) {
                     $where .= "b.LABA_ID LIKE '%{$filter['search']['lab']}%' AND ";
                 }
                 if (isset($filter['search']['selectIrrevocable'])) {
@@ -1734,7 +1745,7 @@ class Request extends Model
                     $where .= "ptl.accept_probe = {$filter['search']['selectAcceptProbe']} AND ";
                 }
                 // везде
-                if ( isset($filter['search']['everywhere']) ) {
+                if (isset($filter['search']['everywhere'])) {
                     $where .=
                         "(
                         b.NUM_ACT_TABLE LIKE '%{$filter['search']['everywhere']}%' 
@@ -1749,8 +1760,8 @@ class Request extends Model
             }
 
             // работа с сортировкой
-            if ( !empty($filter['order']) ) {
-                if ( $filter['order']['dir'] === 'asc' ) {
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
                     $order['dir'] = 'ASC';
                 }
 
@@ -1782,13 +1793,13 @@ class Request extends Model
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -1846,22 +1857,22 @@ class Request extends Model
                 $arrAss[] = $item['short_name'];
             }
 
-            if ( !empty($arrAss) ) {
+            if (!empty($arrAss)) {
                 $row['ASSIGNED'] = implode(', ', $arrAss);
             }
 
             $cipher = $this->getCipherByDealId($row['ID_Z']);
             $arrCipher = [];
 
-			foreach ($cipher as $item) {
-				$arrCipher[] = $item['cipher'];
-			}
+            foreach ($cipher as $item) {
+                $arrCipher[] = $item['cipher'];
+            }
 
-			if (!empty($arrCipher)) {
-				$row['CIPHER'] = implode(', ', $arrCipher);
-			} else {
-				$row['CIPHER'] = '';
-			}
+            if (!empty($arrCipher)) {
+                $row['CIPHER'] = implode(', ', $arrCipher);
+            } else {
+                $row['CIPHER'] = '';
+            }
             if (is_null($row['accept_probe']) || $row['accept_probe'] == '0') {
                 $row['accept_probe'] = '';
             } else {
@@ -1869,7 +1880,7 @@ class Request extends Model
             }
             if (is_null($row['irrevocable']) || $row['irrevocable'] == '0') {
                 $row['irrevocable'] = '';
-            } elseif(isset($row['date_last_update_actual_value'])) {
+            } elseif (isset($row['date_last_update_actual_value'])) {
                 $givenDateTime = new DateTime($row['date_last_update_actual_value']);
                 $currentDateTime = new DateTime();
 
@@ -1883,7 +1894,7 @@ class Request extends Model
                 }
             }
 
-			$protocols = $this->getProtocolsByTzId($row['b_id']);
+            $protocols = $this->getProtocolsByTzId($row['b_id']);
             $protocolsData = [];
             $protocolsTest = [];
 
@@ -1897,7 +1908,7 @@ class Request extends Model
 
             $labs = $labModel->getLabByCheckTz($row['tz_id']);
 
-			$row['LAB'] = implode(', <br>', array_column($labs, 'short_name'));
+            $row['LAB'] = implode(', <br>', array_column($labs, 'short_name'));
 
             $result[] = $row;
         }
@@ -1923,67 +1934,67 @@ class Request extends Model
             'dir' => 'DESC'
         ];
 
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
+            if (!empty($filter['search'])) {
                 // Заявка
-                if ( isset($filter['search']['REQUEST_TITLE']) ) {
+                if (isset($filter['search']['REQUEST_TITLE'])) {
                     $where .= "b.REQUEST_TITLE LIKE '%{$filter['search']['REQUEST_TITLE']}%' AND ";
                 }
                 // №
-                if ( isset($filter['search']['ACCOUNT']) ) {
+                if (isset($filter['search']['ACCOUNT'])) {
                     $where .= "b.ACCOUNT LIKE '%{$filter['search']['ACCOUNT']}%' AND ";
                 }
                 // Дата
-                if ( isset($filter['search']['DATE']) ) {
+                if (isset($filter['search']['DATE'])) {
                     $where .= "LOCATE('{$filter['search']['DATE']}', DATE_FORMAT(i.DATE, '%d.%m.%Y')) > 0 AND ";
                 }
                 // Дата
-                if ( isset($filter['search']['DATE_ACT_VR']) ) {
+                if (isset($filter['search']['DATE_ACT_VR'])) {
                     $where .= "LOCATE('{$filter['search']['DATE_ACT_VR']}', DATE_FORMAT(a.DATE, '%d.%m.%Y')) > 0 AND ";
                 }
                 // Сумма
-                if ( isset($filter['search']['PRICE']) ) {
+                if (isset($filter['search']['PRICE'])) {
                     $where .= "b.PRICE LIKE '%{$filter['search']['PRICE']}%' AND ";
                 }
                 // Act VR
-                if ( isset($filter['search']['ACT_VR']) ) {
+                if (isset($filter['search']['ACT_VR'])) {
                     $where .= "a.NUMBER LIKE '%{$filter['search']['ACT_VR']}%' AND ";
                 }
-                if ( isset($filter['search']['dateStart']) ) {
+                if (isset($filter['search']['dateStart'])) {
                     $where .= "(i.DATE >= '{$filter['search']['dateStart']}' AND i.DATE <= '{$filter['search']['dateEnd']}') AND ";
                 }
                 // Клиент
-                if ( isset($filter['search']['COMPANY_TITLE']) ) {
+                if (isset($filter['search']['COMPANY_TITLE'])) {
                     $where .= "b.COMPANY_TITLE LIKE '%{$filter['search']['COMPANY_TITLE']}%' AND ";
                 }
                 // Объект испытаний
-                if ( isset($filter['search']['MATERIAL']) ) {
+                if (isset($filter['search']['MATERIAL'])) {
                     $where .= "b.MATERIAL LIKE '%{$filter['search']['MATERIAL']}%' AND ";
                 }
                 // Ответственный
-                if ( isset($filter['search']['ASSIGNED']) ) {
+                if (isset($filter['search']['ASSIGNED'])) {
                     $where .= "b.ASSIGNED LIKE '%{$filter['search']['ASSIGNED']}%' AND ";
                 }
                 // Акт ПП
-                if ( isset($filter['search']['NUM_ACT_TABLE']) ) {
+                if (isset($filter['search']['NUM_ACT_TABLE'])) {
                     $where .= "b.NUM_ACT_TABLE LIKE '%{$filter['search']['NUM_ACT_TABLE']}%' AND ";
                 }
                 // Договор
-                if ( isset($filter['search']['DOGOVOR_TABLE']) ) {
+                if (isset($filter['search']['DOGOVOR_TABLE'])) {
                     $where .= "b.DOGOVOR_TABLE LIKE '%{$filter['search']['DOGOVOR_TABLE']}%' AND ";
                 }
                 // Лаборатории
-                if ( isset($filter['search']['lab']) ) {
+                if (isset($filter['search']['lab'])) {
                     $where .= "b.LABA_ID LIKE '%{$filter['search']['lab']}%' AND ";
                 }
                 // Стадия
-                if ( isset($filter['search']['stage']) ) {
+                if (isset($filter['search']['stage'])) {
                     switch ($filter['search']['stage']) { // PRICE OPLATA
                         case '0': // Счет не оплачен
                             $where .= "b.PRICE > 0 and (b.OPLATA = 0 or b.OPLATA is NULL) AND ";
@@ -2002,8 +2013,8 @@ class Request extends Model
             }
 
             // работа с сортировкой
-            if ( !empty($filter['order']) ) {
-                if ( $filter['order']['dir'] === 'asc' ) {
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
                     $order['dir'] = 'ASC';
                 }
 
@@ -2047,13 +2058,13 @@ class Request extends Model
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -2102,14 +2113,14 @@ class Request extends Model
             $row['DATE'] = !empty($row['DATE']) ? date('d.m.Y',  strtotime($row['DATE'])) : '';
             $row['DATE_ACT_VR'] = !empty($row['DATE_ACT_VR']) ? date('d.m.Y',  strtotime($row['DATE_ACT_VR'])) : '';
             $row['SEND_DATE_ACT_VR'] = !empty($row['SEND_DATE_ACT_VR']) ? date('d.m.Y',  strtotime($row['SEND_DATE_ACT_VR'])) : '';
-            
+
             $assigned = $this->getAssignedByDealId($row['ID_Z']);
             $arrAss = [];
             foreach ($assigned as $item) {
                 $arrAss[] = $item['short_name'];
             }
 
-            if ( !empty($arrAss) ) {
+            if (!empty($arrAss)) {
                 $row['ASSIGNED'] = implode(', ', $arrAss);
             }
 
@@ -2158,14 +2169,15 @@ class Request extends Model
      */
     public function getConfirmNotAccountTz()
     {
-        $year = date("Y", time())%10 ? substr(date("Y", time()), -2) : date("Y", time());
+        $year = date("Y", time()) % 10 ? substr(date("Y", time()), -2) : date("Y", time());
 
         $lastYear = (int)$year - 1;
 
         $smtp = $this->DB->Query(
             "SELECT b.ID_Z, b.ID, b.REQUEST_TITLE, b.COMPANY_TITLE 
                     FROM ba_tz b, `CHECK_TZ` ch 
-                    WHERE b.ACCOUNT IS NULL AND ch.tz_id = b.ID AND ch.confirm = 1 AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') GROUP BY b.ID ORDER BY b.ID DESC");
+                    WHERE b.ACCOUNT IS NULL AND ch.tz_id = b.ID AND ch.confirm = 1 AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') GROUP BY b.ID ORDER BY b.ID DESC"
+        );
 
         $result = [];
 
@@ -2182,35 +2194,36 @@ class Request extends Model
      */
     public function getConfirmedTz()
     {
-        $year = date("Y", time())%10 ? substr(date("Y", time()), -2) : date("Y", time());
+        $year = date("Y", time()) % 10 ? substr(date("Y", time()), -2) : date("Y", time());
 
         $lastYear = (int)$year - 1;
 
         $smtp = $this->DB->Query(
             "SELECT b.ID_Z, b.ID, b.REQUEST_TITLE, b.COMPANY_TITLE, ch.confirm, b.not_need_send
                     FROM ba_tz b, `CHECK_TZ` ch 
-                    WHERE ch.tz_id = b.ID AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') ORDER BY b.ID DESC");
+                    WHERE ch.tz_id = b.ID AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') ORDER BY b.ID DESC"
+        );
 
         $result = [];
         while ($row = $smtp->Fetch()) {
-            if($row['not_need_send']) {
+            if ($row['not_need_send']) {
                 continue;
             }
 
-            if(empty($result[$row['ID_Z']])) {
+            if (empty($result[$row['ID_Z']])) {
                 $result[$row['ID_Z']] = $row;
             }
 
             $result[$row['ID_Z']]['check'][] = $row['confirm'];
         }
 
-//        echo "<pre>";
-//        print_r($result);
-//        echo "</pre>";
-//        die();
+        //        echo "<pre>";
+        //        print_r($result);
+        //        echo "</pre>";
+        //        die();
 
         foreach ($result as $key => $value) {
-            if(in_array(0, $value['check'])) {
+            if (in_array(0, $value['check'])) {
                 unset($result[$key]);
             }
         }
@@ -2223,7 +2236,7 @@ class Request extends Model
      */
     public function getReturnedTz($userId)
     {
-        $year = date("Y", time())%10 ? substr(date("Y", time()), -2) : date("Y", time());
+        $year = date("Y", time()) % 10 ? substr(date("Y", time()), -2) : date("Y", time());
 
         $lastYear = (int)$year - 1;
 
@@ -2241,10 +2254,10 @@ class Request extends Model
             "
         );
 
-//        $smtp = $this->DB->Query(
-//            "SELECT b.ID_Z, b.ID, b.REQUEST_TITLE, b.COMPANY_TITLE
-//                    FROM ba_tz b, `CHECK_TZ` ch
-//                    WHERE b.ACCOUNT IS NULL AND ch.tz_id = b.ID AND ch.confirm = 1 AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') GROUP BY b.ID ORDER BY b.ID DESC");
+        //        $smtp = $this->DB->Query(
+        //            "SELECT b.ID_Z, b.ID, b.REQUEST_TITLE, b.COMPANY_TITLE
+        //                    FROM ba_tz b, `CHECK_TZ` ch
+        //                    WHERE b.ACCOUNT IS NULL AND ch.tz_id = b.ID AND ch.confirm = 1 AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') GROUP BY b.ID ORDER BY b.ID DESC");
 
         $result = [];
 
@@ -2274,7 +2287,7 @@ class Request extends Model
             "
         );
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $currentUser = $userModel->getUserData($row['user_return']);
 
             $result[] = [
@@ -2291,7 +2304,7 @@ class Request extends Model
      */
     public function getNotSendedTz()
     {
-        $year = date("Y", time())%10 ? substr(date("Y", time()), -2) : date("Y", time());
+        $year = date("Y", time()) % 10 ? substr(date("Y", time()), -2) : date("Y", time());
 
         $lastYear = (int)$year - 1;
 
@@ -2309,15 +2322,15 @@ class Request extends Model
             "
         );
 
-//        $smtp = $this->DB->Query(
-//            "SELECT b.ID_Z, b.ID, b.REQUEST_TITLE, b.COMPANY_TITLE
-//                    FROM ba_tz b, `CHECK_TZ` ch
-//                    WHERE b.ACCOUNT IS NULL AND ch.tz_id = b.ID AND ch.confirm = 1 AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') GROUP BY b.ID ORDER BY b.ID DESC");
+        //        $smtp = $this->DB->Query(
+        //            "SELECT b.ID_Z, b.ID, b.REQUEST_TITLE, b.COMPANY_TITLE
+        //                    FROM ba_tz b, `CHECK_TZ` ch
+        //                    WHERE b.ACCOUNT IS NULL AND ch.tz_id = b.ID AND ch.confirm = 1 AND (b.REQUEST_TITLE LIKE '%/{$year}' or b.REQUEST_TITLE LIKE '%/{$lastYear}') GROUP BY b.ID ORDER BY b.ID DESC");
 
         $result = [];
 
         while ($row = $smtp->Fetch()) {
-            if($row['not_need_send']) {
+            if ($row['not_need_send']) {
                 continue;
             }
 
@@ -2327,36 +2340,37 @@ class Request extends Model
         return $result;
     }
 
-	/**
-	 * @param $dealId
-	 */
+    /**
+     * @param $dealId
+     */
     public function getCipherByDealId($dealId)
-	{
-		if ($dealId < 9763) {
-			$cipherArr = $this->DB->Query(
-				"SELECT * FROM MATERIALS_TO_REQUESTS mtr, probe_to_materials ptm WHERE ptm.material_request_id = mtr.ID AND mtr.ID_DEAL = {$dealId}");
-		} else {
-			$cipherArr = $this->DB->Query(
-				"SELECT * FROM ulab_material_to_request mtr WHERE mtr.deal_id = {$dealId}");
-		}
-		$result = [];
+    {
+        if ($dealId < 9763) {
+            $cipherArr = $this->DB->Query(
+                "SELECT * FROM MATERIALS_TO_REQUESTS mtr, probe_to_materials ptm WHERE ptm.material_request_id = mtr.ID AND mtr.ID_DEAL = {$dealId}"
+            );
+        } else {
+            $cipherArr = $this->DB->Query(
+                "SELECT * FROM ulab_material_to_request mtr WHERE mtr.deal_id = {$dealId}"
+            );
+        }
+        $result = [];
 
-		while ($cipher = $cipherArr->Fetch()) {
-			$result[] = [
-				'cipher' => $cipher['cipher']
-			];
-		}
+        while ($cipher = $cipherArr->Fetch()) {
+            $result[] = [
+                'cipher' => $cipher['cipher']
+            ];
+        }
 
-		return $result;
-
-	}
+        return $result;
+    }
 
     /**
      * добавляет к ответственным в заявке новых ответственных
      * @param int $dealId - ид сделки
      * @param array $arrayUserId - список ид новых ответственных
      */
-	public function addAssignedToRequest(int $dealId, array $arrayUserId)
+    public function addAssignedToRequest(int $dealId, array $arrayUserId)
     {
         $userModel = new User();
 
@@ -2376,18 +2390,18 @@ class Request extends Model
     }
 
     public function getStageRequestById($dealId)
-	{
-		$request =  CCrmDeal::GetByID($dealId);
+    {
+        $request =  CCrmDeal::GetByID($dealId);
 
-		return $request['STAGE_ID'];
-	}
+        return $request['STAGE_ID'];
+    }
 
-	public function getTakenDealByDealId($dealId)
-	{
-		$takenDeal = $this->DB->Query("SELECT TAKEN_ID_DEAL FROM ba_tz WHERE ID_Z = {$dealId}")->Fetch();
+    public function getTakenDealByDealId($dealId)
+    {
+        $takenDeal = $this->DB->Query("SELECT TAKEN_ID_DEAL FROM ba_tz WHERE ID_Z = {$dealId}")->Fetch();
 
-		return $takenDeal['TAKEN_ID_DEAL'];
-	}
+        return $takenDeal['TAKEN_ID_DEAL'];
+    }
 
 
     /**
@@ -2421,7 +2435,7 @@ class Request extends Model
          SELECT ID_Z, STAGE_ID FROM ba_tz
         ");
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             switch ($row['STAGE_ID']) {
                 case '1':
                     $this->DB->Query("INSERT INTO tz_status_history(deal_id, user_id, status_id, date) 
@@ -2556,7 +2570,7 @@ class Request extends Model
     {
         $response = $this->DB->Query("SELECT TZ_ID FROM AKT_VR");
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $dealId = $this->DB->Query("SELECT ID_Z FROM ba_tz WHERE ID = '{$row['TZ_ID']}'")->Fetch()['ID_Z'];
 
             $this->DB->Query("DELETE FROM tz_status_history WHERE deal_id = '{$dealId}' AND status_id = 21");
@@ -2569,8 +2583,8 @@ class Request extends Model
     {
         $response = $this->DB->Query("SELECT ID_Z as deal_id, STAGE_ID stage FROM ba_tz WHERE STAGE_ID = '4' OR STAGE_ID = 'WON'");
 
-        while($row = $response->Fetch()) {
-            if($row['stage'] === 'WON') {
+        while ($row = $response->Fetch()) {
+            if ($row['stage'] === 'WON') {
                 $this->DB->Query("DELETE FROM tz_status_history WHERE status_id IN (2, 4, 9, 10, 12, 13, 16, 18, 21, 22) AND deal_id = '{$row['deal_id']}'");
 
                 $this->DB->Query("INSERT INTO tz_status_history(deal_id, user_id, status_id, date) 
@@ -2585,7 +2599,7 @@ class Request extends Model
                                           ('{$row['deal_id']}', 61, 21, '2024-06-10 12:00:00'),
                                           ('{$row['deal_id']}', 61, 22, '2024-06-10 12:00:00')
                                           ");
-            }else {
+            } else {
                 $this->DB->Query("DELETE FROM tz_status_history WHERE status_id IN (2, 4, 9, 10, 12, 13, 16, 18, 21) AND deal_id = '{$row['deal_id']}'");
 
                 $this->DB->Query("INSERT INTO tz_status_history(deal_id, user_id, status_id, date) 
@@ -2600,8 +2614,6 @@ class Request extends Model
                                           ('{$row['deal_id']}', 61, 21, '2024-06-10 12:00:00')
                                           ");
             }
-
-
         }
     }
 
@@ -2638,73 +2650,72 @@ class Request extends Model
 
             $protocolResponse = $this->DB->Query("SELECT NUMBER FROM PROTOCOLS WHERE ID_TZ = {$row['ba_id']}");
 
-            while($protocolRow = $protocolResponse->Fetch()) {
+            while ($protocolRow = $protocolResponse->Fetch()) {
                 $protocols[] = $protocolRow['NUMBER'];
             }
 
-            if(!in_array('', $protocols) && count($protocols) > 0) {
+            if (!in_array('', $protocols) && count($protocols) > 0) {
                 $result[$row['ID_Z']][] = 20;
             }
 
             $assignedIds = $requirementModel->getAssignedGostToProbe($row['ID_Z']);
 
-            if(!in_array(0, $assignedIds) && !in_array('', $assignedIds)) {
+            if (!in_array(0, $assignedIds) && !in_array('', $assignedIds)) {
                 $result[$row['ID_Z']][] = 15;
             }
 
-            if($row['is_take_probe']) $result[$row['ID_Z']][] = 10;
-            if($row['is_create_tz']) $result[$row['ID_Z']][] = 2;
-            if($row['is_send_kp']) $result[$row['ID_Z']][] = 3;
-            if($row['is_send_dogovor']) $result[$row['ID_Z']][] = 7;
-            if($row['is_send_tz']) $result[$row['ID_Z']][] = 8;
-            if($row['is_take_tz']) $result[$row['ID_Z']][] = 9;
-            if($row['is_send_check']) $result[$row['ID_Z']][] = 4;
+            if ($row['is_take_probe']) $result[$row['ID_Z']][] = 10;
+            if ($row['is_create_tz']) $result[$row['ID_Z']][] = 2;
+            if ($row['is_send_kp']) $result[$row['ID_Z']][] = 3;
+            if ($row['is_send_dogovor']) $result[$row['ID_Z']][] = 7;
+            if ($row['is_send_tz']) $result[$row['ID_Z']][] = 8;
+            if ($row['is_take_tz']) $result[$row['ID_Z']][] = 9;
+            if ($row['is_send_check']) $result[$row['ID_Z']][] = 4;
 
-            if($row['oplata'] && $row['price']) {
-                if(floatval($row['oplata']) < floatval($row['price'])) $result[$row['ID_Z']][] = 13;
+            if ($row['oplata'] && $row['price']) {
+                if (floatval($row['oplata']) < floatval($row['price'])) $result[$row['ID_Z']][] = 13;
                 else {
                     $result[$row['ID_Z']][] = 13;
                     $result[$row['ID_Z']][] = 14;
                 }
 
-                if($row['is_take_probe']) {
+                if ($row['is_take_probe']) {
                     $result[$row['ID_Z']][] = 16;
                     $result[$row['ID_Z']][] = 12;
-
                 }
             }
 
             $startTrials = $this->getTrials($row['ID_Z']);
 
-            if($startTrials[0] != 0) {
-                foreach($startTrials as $trial) {
+            if ($startTrials[0] != 0) {
+                foreach ($startTrials as $trial) {
                     $result[$row['ID_Z']][] = $trial;
                 }
             }
 
-            if($row['stage_id'] == '4') {
+            if ($row['stage_id'] == '4') {
                 $result[$row['ID_Z']][] = 21;
             }
 
-            if($row['stage_id'] == 'WON') {
+            if ($row['stage_id'] == 'WON') {
                 $result[$row['ID_Z']][] = 22;
             }
 
-            if($row['stage_id'] == 'LOSE') {
+            if ($row['stage_id'] == 'LOSE') {
                 $result[$row['ID_Z']][] = 23;
             }
 
             $checkTz = $this->getCheck($row['ba_id']);
 
-            if(count($checkTz) <= 0) {
+            if (count($checkTz) <= 0) {
                 $result[$row['ID_Z']][] = 4;
                 $result[$row['ID_Z']][] = 6;
             }
 
-            if($row['is_send_check']) {
+            if ($row['is_send_check']) {
                 if (in_array(1, $checkTz) && !in_array(0, $checkTz)) {
                     $result[$row['ID_Z']][] = 6;
-                } else if(!in_array(1, $checkTz) && in_array(0, $checkTz)) {
+                } else if (!in_array(1, $checkTz) && in_array(0, $checkTz)) {
                     $result[$row['ID_Z']][] = 5;
                 }
             }
@@ -2722,8 +2733,7 @@ class Request extends Model
     {
         $result = [];
 
-        $response = $this->DB->Query
-        ("
+        $response = $this->DB->Query("
             SELECT umtr.id as umtr_id, ugtp.id as ugtp_id, ust.state as ust_stage
             FROM ulab_material_to_request umtr
             LEFT JOIN ulab_gost_to_probe ugtp ON ugtp.material_to_request_id = umtr.id
@@ -2731,15 +2741,15 @@ class Request extends Model
             WHERE umtr.deal_id = '{$deal_id}'
         ");
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $result[$row['ugtp_id']] = $row['ust_stage'];
         }
 
-        if(!in_array('start', $result) && !in_array('pause', $result) && !in_array('', $result)) {
+        if (!in_array('start', $result) && !in_array('pause', $result) && !in_array('', $result)) {
             return [12, 16, 17, 18, 19];
-        }else if(in_array('start', $result)) {
+        } else if (in_array('start', $result)) {
             return [12, 16, 17];
-        }else {
+        } else {
             return [0];
         }
     }
@@ -2754,7 +2764,7 @@ class Request extends Model
             "
         );
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $result[] = $row['confirm'];
         }
 
@@ -2771,15 +2781,15 @@ class Request extends Model
 
         $ugtpArr = [];
 
-        while($row = $response->Fetch()) {
-            $ugtpArr []= $row;
+        while ($row = $response->Fetch()) {
+            $ugtpArr[] = $row;
         }
 
         $materialData = $this->DB->Query("SELECT * FROM ulab_material_to_request WHERE id = '{$materialToRequestId}'")->Fetch();
 
         $startNumber = $this->DB->Query("SELECT max(probe_number) as probe_number FROM ulab_material_to_request WHERE deal_id = '{$materialData['deal_id']}'")->Fetch()['probe_number'];
 
-        for($i = 1; $i <= $count; $i++) {
+        for ($i = 1; $i <= $count; $i++) {
             $number = $startNumber + $i;
 
             $this->DB->Query(
@@ -2813,7 +2823,7 @@ class Request extends Model
                 "
             )->Fetch()['id'];
 
-            foreach($ugtpArr as $row) {
+            foreach ($ugtpArr as $row) {
                 $json = json_encode(json_decode($row['measuring_sheet'], JSON_UNESCAPED_UNICODE), JSON_UNESCAPED_UNICODE);
 
                 $this->DB->Query(
@@ -2843,17 +2853,17 @@ class Request extends Model
     }
 
     public function getNextInvoiceNumber()
-	{
-		$year = date("Y");
-		$curNumber = 1;
-		$maxInvoice = $this->DB->Query("SELECT MAX(NUMBER) + 1 as max FROM `INVOICE` WHERE type = 1 and YEAR(DATE) = {$year}")->Fetch();
-		if (!$maxInvoice) {
-			$curNumber = 1;
-		}
-		$curNumber = $maxInvoice['max'];
+    {
+        $year = date("Y");
+        $curNumber = 1;
+        $maxInvoice = $this->DB->Query("SELECT MAX(NUMBER) + 1 as max FROM `INVOICE` WHERE type = 1 and YEAR(DATE) = {$year}")->Fetch();
+        if (!$maxInvoice) {
+            $curNumber = 1;
+        }
+        $curNumber = $maxInvoice['max'];
 
-		return $curNumber;
-	}
+        return $curNumber;
+    }
 
     public function changeMethods()
     {
@@ -2862,7 +2872,7 @@ class Request extends Model
                                         LEFT JOIN ulab_gost_to_probe ugtp ON ugtp.material_to_request_id = umtr.id
                                         WHERE umtr.deal_id = 15008 AND umtr.id <= 87656 AND umtr.id >= 86533 AND ugtp.method_id = 1334");
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $this->DB->Query("UPDATE ulab_gost_to_probe SET method_id = 1337 WHERE id = {$row['id']}");
         }
     }
@@ -2877,7 +2887,7 @@ class Request extends Model
             "
         );
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $this->DB->Query("UPDATE ulab_gost_to_probe SET tech_condition_id = '' WHERE material_to_request_id = '{$row['id']}'");
         }
     }
@@ -2961,7 +2971,7 @@ class Request extends Model
 
         $greyBg = true;
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $row['user_short'] = $userModel->getUserData($row['user_id'])['short_name'];
             $row['date'] = date('d.m.Y H:i', strtotime($row['date_comment']));
 
@@ -2992,7 +3002,7 @@ class Request extends Model
         $userfio = $user['user_name'];
         CModule::IncludeModule('im');
         $res = $this->DB->Query("SELECT `REQUEST_TITLE`, `COMPANY_TITLE` FROM `ba_tz` WHERE `ID_Z` = {$dealId}")->Fetch();
-        if(!empty($text)) {
+        if (!empty($text)) {
             $ar = array(
                 "TO_CHAT_ID" => 3523, // ID чата
                 "FROM_USER_ID" => 61, // ID пользователя состоящего в чате
@@ -3028,7 +3038,7 @@ class Request extends Model
             "
         );
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $row['user_short'] = $userModel->getUserData($row['user_id'])['short_name'];
             $result[] = $row;
         }
@@ -3049,7 +3059,7 @@ class Request extends Model
             "
         );
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $labId = $row['lab_id'];
             $sql = $this->DB->Query("SELECT HEAD_ID FROM ba_laba WHERE ID = '{$labId}'")->Fetch()['HEAD_ID'];
             $row['user_short'] = $userModel->getUserData($sql)['short_name'];

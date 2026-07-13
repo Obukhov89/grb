@@ -26,7 +26,7 @@ class Requirement extends Model
     public function getMaterialFromTz($dealId = 0)
     {
         $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
-        if ( !empty($dealId) ) {
+        if (!empty($dealId)) {
             $where = "umtr.deal_id = {$dealId}";
         }
 
@@ -54,7 +54,7 @@ class Requirement extends Model
      */
     public function getProbeFromTz(int $dealId)
     {
-        if ( empty($dealId) ) {
+        if (empty($dealId)) {
             return [];
         }
 
@@ -69,7 +69,7 @@ class Requirement extends Model
         );
 
         while ($row = $sql->Fetch()) {
-            if ( empty($row['cipher']) ) {
+            if (empty($row['cipher'])) {
                 $number = $row['probe_number'] + 1;
                 $row['cipher'] = "Не присвоен шифр #{$number}";
             }
@@ -87,7 +87,7 @@ class Requirement extends Model
      */
     public function getLabFromTz(int $dealId)
     {
-        if ( empty($dealId) ) {
+        if (empty($dealId)) {
             return [];
         }
 
@@ -116,7 +116,7 @@ class Requirement extends Model
      */
     public function getProbeFromTzWithoutAct(int $dealId)
     {
-        if ( empty($dealId) ) {
+        if (empty($dealId)) {
             return [];
         }
 
@@ -131,7 +131,7 @@ class Requirement extends Model
         );
 
         while ($row = $sql->Fetch()) {
-            if ( empty($row['cipher']) ) {
+            if (empty($row['cipher'])) {
                 $number = $row['probe_number'] + 1;
                 $row['cipher'] = "Не присвоен шифр #{$number}";
             }
@@ -150,7 +150,7 @@ class Requirement extends Model
     public function getMethodsFromTz($dealId = 0)
     {
         $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
-        if ( !empty($dealId) ) {
+        if (!empty($dealId)) {
             $where = "umtr.deal_id = {$dealId}";
         }
 
@@ -180,7 +180,7 @@ class Requirement extends Model
     public function getAssignedFromTz($dealId = 0)
     {
         $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
-        if ( !empty($dealId) ) {
+        if (!empty($dealId)) {
             $where = "umtr.deal_id = {$dealId}";
         }
 
@@ -196,7 +196,9 @@ class Requirement extends Model
         );
 
         while ($row = $sql->Fetch()) {
-            if ( empty($row['assigned_id']) ) { continue; }
+            if (empty($row['assigned_id'])) {
+                continue;
+            }
 
             $result[] = $userModel->getUserData($row['assigned_id']);
         }
@@ -223,7 +225,7 @@ class Requirement extends Model
             where material.deal_id = {$dealId}
         ")->Fetch();
 
-        if ( isset($sql['price']) ) {
+        if (isset($sql['price'])) {
             return (float) $sql['price'];
         } else {
             return 0;
@@ -245,13 +247,13 @@ class Requirement extends Model
 
         $tzData = $requestModel->getTzByDealId($dealId);
 
-        if ( $tzData['discount_type'] == 'percent' ) {
+        if ($tzData['discount_type'] == 'percent') {
             $priceDiscount -= $price * $tzData['DISCOUNT'] / 100;
-        } elseif ( $tzData['discount_type'] == 'rub' ) {
+        } elseif ($tzData['discount_type'] == 'rub') {
             $priceDiscount -= $tzData['DISCOUNT'];
         }
 
-        if ( $priceDiscount < 0 ) {
+        if ($priceDiscount < 0) {
             $priceDiscount = 0;
         }
 
@@ -276,11 +278,11 @@ class Requirement extends Model
             "
         )->Fetch()['dogovor_price'];
 
-        if(!$dogovorPrice || $dogovorPrice == '0.00') return false;
+        if (!$dogovorPrice || $dogovorPrice == '0.00') return false;
 
         $checkPrice = $priceArray['PRICE'];
 
-        if($priceArray['price_discrount']) $checkPrice = $priceArray['price_discrount'];
+        if ($priceArray['price_discrount']) $checkPrice = $priceArray['price_discrount'];
 
         return $checkPrice > $dogovorPrice;
     }
@@ -354,32 +356,32 @@ class Requirement extends Model
             'dir' => 'DESC'
         ];
 
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
+            if (!empty($filter['search'])) {
                 // ид материалов из таблицы materials
-                if ( isset($filter['search']['material_id']) ) {
+                if (isset($filter['search']['material_id'])) {
                     $where .= "mtr.material_id = '{$filter['search']['material_id']}' AND ";
                 }
                 // шифр пробы №акт.поряд_номер/год
-                if ( isset($filter['search']['cipher']) ) {
+                if (isset($filter['search']['cipher'])) {
                     $where .= "mtr.cipher LIKE '%{$filter['search']['cipher']}%' AND ";
                 }
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -420,7 +422,7 @@ class Requirement extends Model
 
         while ($row = $data->Fetch()) {
 
-            if ( empty($row['cipher']) ) {
+            if (empty($row['cipher'])) {
                 $number = $row['probe_number'] + 1;
                 $row['cipher'] = "Не присвоен шифр #{$number}";
             }
@@ -451,29 +453,29 @@ class Requirement extends Model
             'dir' => 'DESC'
         ];
 
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
+            if (!empty($filter['search'])) {
                 // ид материалов из таблицы materials
-                if ( isset($filter['search']['probe_id']) ) {
+                if (isset($filter['search']['probe_id'])) {
                     $in = implode(', ', $filter['search']['probe_id']);
                     $where .= "mtr.id in ({$in}) AND ";
                 }
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -530,7 +532,7 @@ class Requirement extends Model
 
         while ($row = $data->Fetch()) {
 
-            if ( empty($row['cipher']) ) {
+            if (empty($row['cipher'])) {
                 $number = $row['probe_number'] + 1;
                 $row['cipher'] = "Не присвоен шифр #{$number}";
             }
@@ -543,7 +545,7 @@ class Requirement extends Model
             $strClause = !empty($clause) ? " {$clause}" : '';
             $row['method_view_name'] = "{$row['reg_doc']}{$strYear}{$strClause} | {$strMpName}";
 
-            if ( !empty($row['tu_reg_doc']) ) {
+            if (!empty($row['tu_reg_doc'])) {
                 $strMpName = StringHelper::removeSpace($row['measured_properties_name']);
                 $clause = StringHelper::removeSpace($row['tu_clause']);
                 $strYear = !empty($row['tu_year']) ? "-{$row['tu_year']}" : '';
@@ -557,7 +559,7 @@ class Requirement extends Model
 
             $row['assigned_name'] = 'Не назначен';
 
-            if ( !empty($row['assigned_id']) ) {
+            if (!empty($row['assigned_id'])) {
                 $user = $userModel->getUserData($row['assigned_id']);
 
                 $row['assigned_name'] = $user['short_name'];
@@ -585,7 +587,8 @@ class Requirement extends Model
             "SELECT d_c.*, d_c.ID d_c_id, d.*, d.ID d_id 
                     FROM DEALS_TO_CONTRACTS d_c 
                     INNER JOIN DOGOVOR d ON d_c.ID_CONTRACT=d.ID 
-                    WHERE d_c.ID_DEAL = {$dealId}")->Fetch();
+                    WHERE d_c.ID_DEAL = {$dealId}"
+        )->Fetch();
 
         if (count($contract) > 0) {
             $contract['DATE'] = date("d.m.Y", strtotime($contract['DATE']));
@@ -604,7 +607,7 @@ class Requirement extends Model
     {
         $result = $this->DB->Query("SELECT DOGOVOR_NUM FROM `ba_tz` WHERE ID_Z = {$dealId} ")->Fetch();
 
-        if ( !empty($result) ) {
+        if (!empty($result)) {
             $idDogovorArr = explode('ID', $result['DOGOVOR_NUM']);
 
             if (isset($idDogovorArr[1])) {
@@ -624,7 +627,7 @@ class Requirement extends Model
         $result = $this->DB->Query("SELECT * FROM `ACT_BASE` WHERE `ID_Z` = {$dealId} order by id desc ")->Fetch();
         $date = strtotime($result['ACT_DATE']);
         $result['date_ru'] = StringHelper::dateRu($result['ACT_DATE']);
-        $result['year'] = (int)date("Y", $date)%10 ? substr(date("Y", $date), -2) : date("Y", $date);
+        $result['year'] = (int)date("Y", $date) % 10 ? substr(date("Y", $date), -2) : date("Y", $date);
 
         return $result;
     }
@@ -634,7 +637,7 @@ class Requirement extends Model
         $result = $this->DB->Query("SELECT * FROM `ACT_BASE` WHERE `ID` = {$actId} order by id desc ")->Fetch();
         $date = strtotime($result['ACT_DATE']);
         $result['date_ru'] = StringHelper::dateRu($result['ACT_DATE']);
-        $result['year'] = (int)date("Y", $date)%10 ? substr(date("Y", $date), -2) : date("Y", $date);
+        $result['year'] = (int)date("Y", $date) % 10 ? substr(date("Y", $date), -2) : date("Y", $date);
 
         return $result;
     }
@@ -697,7 +700,7 @@ class Requirement extends Model
 
             $row['addMail'] = [];
             foreach ($addMails as $mail) {
-                if ( !empty($mail) ) {
+                if (!empty($mail)) {
                     $row['addMail'][] = $mail;
                 }
             }
@@ -714,7 +717,7 @@ class Requirement extends Model
             preg_match($regx, $row['DOGOVOR_NUM'], $match);
             $row['DOGOVOR_NUM'] = $match[1] ?? '';
 
-            if ( !empty($row['PRICE']) ) {
+            if (!empty($row['PRICE'])) {
                 $row['PRICE'] = StringHelper::priceFormatRus($row['PRICE']);
             } else {
                 $row['PRICE'] = '--';
@@ -743,7 +746,7 @@ class Requirement extends Model
 
             $row['addMail'] = [];
             foreach ($addMails as $mail) {
-                if ( !empty($mail) ) {
+                if (!empty($mail)) {
                     $row['addMail'][] = $mail;
                 }
             }
@@ -761,21 +764,21 @@ class Requirement extends Model
             $row['DOGOVOR_NUM'] = $match[1] ?? '';
 
             $price = 0;
-            if ( !empty($row['PRICE']) ) {
+            if (!empty($row['PRICE'])) {
                 $price = (float)$row['PRICE'];
 
-                if ( $row['discount_type'] == 'percent' ) {
+                if ($row['discount_type'] == 'percent') {
                     $price = (float)$row['PRICE'];
                     $discount = (float)str_replace(',', '.', (string)$row['DISCOUNT']);
 
                     $price = round($price - $price * $discount / 100, 2);
                     $price -= $price * $row['DISCOUNT'] / 100;
-                } elseif ( $row['discount_type'] == 'rub' ) {
+                } elseif ($row['discount_type'] == 'rub') {
                     $price -= $row['DISCOUNT'];
                 }
             }
 
-            if ( $price < 0 ) {
+            if ($price < 0) {
                 $price = 0;
             }
 
@@ -911,7 +914,7 @@ class Requirement extends Model
                 'OBIEM' => $probeDataList[$keyMaterial]
             ];
 
-            if ( !empty($material['mtr_id']) ) {
+            if (!empty($material['mtr_id'])) {
                 $this->DB->Update('MATERIALS_TO_REQUESTS', $materialData, "WHERE ID = {$material['mtr_id']}");
             } else {
                 $material['mtr_id'] = $this->DB->Insert('MATERIALS_TO_REQUESTS', $materialData);
@@ -934,7 +937,7 @@ class Requirement extends Model
 
                 $c = $this->DB->Query("select id from ulab_material_to_request where mtr_id = {$material['mtr_id']} and probe_number = {$k}")->Fetch();
 
-                if ( isset($c['id']) ) {
+                if (isset($c['id'])) {
                     $this->DB->Update('ulab_material_to_request', $dataProbe, "WHERE mtr_id = {$material['mtr_id']} and probe_number = {$k}");
                     $ulabMaterialToRequest = $c['id'];
                 } else {
@@ -964,7 +967,7 @@ class Requirement extends Model
 
                     $c2 = $this->DB->Query("select * from ulab_gost_to_probe where material_to_request_id = {$ulabMaterialToRequest} and gost_number = {$key_g}")->SelectedRowsCount();
 
-                    if ( $c2 ) {
+                    if ($c2) {
                         $this->DB->Update('ulab_gost_to_probe', $gostToProbeData, "WHERE material_to_request_id = {$ulabMaterialToRequest} and gost_number = {$key_g}");
                     } else {
                         $gostToProbeData['material_to_request_id'] = $ulabMaterialToRequest;
@@ -1078,7 +1081,7 @@ class Requirement extends Model
      */
     public function deleteProbeMethod($tzId, $ugtpId)
     {
-        if ( empty($ugtpId) ) {
+        if (empty($ugtpId)) {
             return [
                 'success' => false,
                 'error' => "Нечего удалять"
@@ -1104,14 +1107,14 @@ class Requirement extends Model
         $sheet = json_decode($results['measuring_sheet'], true);
         $actualValue = $results['deal_id'] >= DEAL_NEW_RESULT ? $results['ugtp_actual_value'] : $value[0];
 
-        if ( $actualValue != '' || $sheet ) {
+        if ($actualValue != '' || $sheet) {
             return [
                 'success' => false,
                 'error' => "Невозможно удалить испытание, по которому уже внесены результаты"
             ];
         }
 
-        if ( empty($results) ) {
+        if (empty($results)) {
             return [
                 'success' => false,
                 'error' => "Нечего удалять"
@@ -1163,13 +1166,13 @@ class Requirement extends Model
                 $arrLabs[] = $value;
             }
 
-//            $arrLabs[] = $methodModel->getLab($row['new_method_id']);
+            //            $arrLabs[] = $methodModel->getLab($row['new_method_id']);
         }
 
         foreach ($labs as $lab) {
             $user = $userModel->checkHeader($labModel->getDepartmentIdByLabId($lab));
 
-            if ( !empty($arrLabs) && !in_array($lab, $arrLabs) ) {
+            if (!empty($arrLabs) && !in_array($lab, $arrLabs)) {
                 $this->deleteConfirmForUser($tzId, $user['user_id']);
             } else {
                 $this->clearConfirmForUser($tzId, $user['user_id']);
@@ -1202,14 +1205,14 @@ class Requirement extends Model
      */
     public function updateProbeGost($tzId, $ugtpId, $data)
     {
-        if ( empty($data) ) {
+        if (empty($data)) {
             return [
                 'success' => false,
                 'error' => "Невозможно обновить"
             ];
         }
 
-        if ( empty($ugtpId) ) {
+        if (empty($ugtpId)) {
             return [
                 'success' => false,
                 'error' => "Нечего обновлять"
@@ -1225,7 +1228,7 @@ class Requirement extends Model
 
         $dealId = $requestModel->getDealIdByTzId($tzId);
 
-        if ( isset($data['price']) && !in_array(23, $userData['groups'])/* && $_SESSION['SESS_AUTH']['USER_ID'] != 60*/ ) {
+        if (isset($data['price']) && !in_array(23, $userData['groups'])/* && $_SESSION['SESS_AUTH']['USER_ID'] != 60*/) {
             $info = $requestModel->getTzByDealId($dealId);
             if ($info['TYPE_ID'] == 'SALE') {
                 return [
@@ -1235,27 +1238,27 @@ class Requirement extends Model
             }
         }
 
-        if ( isset($data['new_method_id']) ) {
+        if (isset($data['new_method_id'])) {
             $method = $methodModel->get($data['new_method_id']);
 
             $data['price'] = $method['price'];
             $data['assigned_id'] = '';
         }
 
-        if ( isset($data['new_method_id']) || isset($data['tech_condition_id']) ) {
+        if (isset($data['new_method_id']) || isset($data['tech_condition_id'])) {
             $ugtpInfo = $this->getGostToProbe($ugtpId);
 
             $methodIdList[] = $ugtpInfo['method_id'];
 
-            if ( isset($data['new_method_id']) && $ugtpInfo['method_id'] !== $data['new_method_id'] ) {
+            if (isset($data['new_method_id']) && $ugtpInfo['method_id'] !== $data['new_method_id']) {
                 $methodIdList[] = $data['new_method_id'];
             }
 
             foreach ($methodIdList as $methodId) {
-				$labs = $methodModel->getLab($methodId);
+                $labs = $methodModel->getLab($methodId);
 
 
-				foreach ($labs as $lab) {
+                foreach ($labs as $lab) {
                     $user = $userModel->checkHeader($labModel->getDepartmentIdByLabId($lab));
 
                     if (empty($user) || in_array($lab, [5, 6])) {
@@ -1305,7 +1308,7 @@ class Requirement extends Model
      */
     public function updateProbeInfo($umtrId, $data)
     {
-        if ( isset($data['is_only_name_for_protocol']) ) {
+        if (isset($data['is_only_name_for_protocol'])) {
             $data['is_only_name_for_protocol'] = 1;
         } else {
             $data['is_only_name_for_protocol'] = 0;
@@ -1346,7 +1349,7 @@ class Requirement extends Model
             where id = {$probeId}"
         )->Fetch();
 
-        if ( !empty($probeData['in_act']) ) {
+        if (!empty($probeData['in_act'])) {
             return [
                 'success' => false,
                 'error' => "Невозможно удалить пробу, по которой сформирован акт."
@@ -1370,7 +1373,7 @@ class Requirement extends Model
             $gtpIds[] = $row['id'];
             $actualValue = $row['deal_id'] >= DEAL_NEW_RESULT ? $row['ugtp_actual_value'] : $value[0];
 
-            if ( $actualValue != '' || $sheet ) {
+            if ($actualValue != '' || $sheet) {
                 return [
                     'success' => false,
                     'error' => "Невозможно удалить пробу. Есть испытания, у которых внесены результаты."
@@ -1378,7 +1381,7 @@ class Requirement extends Model
             }
         }
 
-        if ( !empty($gtpIds) ) {
+        if (!empty($gtpIds)) {
             $strId = implode(',', $gtpIds);
 
             $this->DB->Query("delete from ulab_trial_results where gost_to_probe_id in ({$strId})");
@@ -1388,7 +1391,7 @@ class Requirement extends Model
 
         $this->DB->Query("delete from ulab_material_to_request where id = {$probeId}");
 
-//        $this->DB->Update('ulab_material_to_request', ['child_deal_id' => 'NULL'], "where child_deal_id = {$dealId}");
+        //        $this->DB->Update('ulab_material_to_request', ['child_deal_id' => 'NULL'], "where child_deal_id = {$dealId}");
 
         $requestModel = new Request();
 
@@ -1431,14 +1434,14 @@ class Requirement extends Model
             $mtrIds[] = $row['id'];
             $actualValue = $dealId >= DEAL_NEW_RESULT ? $row['ugtp_actual_value'] : $value[0];
 
-            if ( !empty($row['cipher']) ) {
+            if (!empty($row['cipher'])) {
                 return [
                     'success' => false,
                     'error' => "Невозможно удалить материал. Есть пробы, по которым сформирован акт."
                 ];
             }
 
-            if ( $actualValue != '' || $sheet ) {
+            if ($actualValue != '' || $sheet) {
                 return [
                     'success' => false,
                     'error' => "Невозможно удалить материал. Есть испытания, у которых внесены результаты."
@@ -1446,7 +1449,7 @@ class Requirement extends Model
             }
         }
 
-        if ( !empty($mtrIds) ) {
+        if (!empty($mtrIds)) {
             $strId = implode(',', $mtrIds);
 
             $this->DB->Query("delete from ulab_gost_to_probe where material_to_request_id in ({$strId})");
@@ -1480,7 +1483,7 @@ class Requirement extends Model
     public function updateMaterial($dealId, $data)
     {
         foreach ($data as $materialId => $newMaterialId) {
-            if ( $materialId != $newMaterialId ) {
+            if ($materialId != $newMaterialId) {
                 $this->DB->Update('ulab_material_to_request', ['material_id' => $newMaterialId], "WHERE deal_id = {$dealId} and material_id = {$materialId}");
             }
         }
@@ -1506,7 +1509,7 @@ class Requirement extends Model
 
             $materialId = (int)$materialId;
 
-            if ( !empty($materialId) ) {
+            if (!empty($materialId)) {
                 $arrMaterial[$materialId] = $materialModel->getById($materialId)['NAME'];
             }
 
@@ -1514,7 +1517,7 @@ class Requirement extends Model
 
                 $sqlProbeData = $this->prepearTableData('ulab_material_to_request', $probeData);
 
-                if ( stripos($probeId, 'new') === false ) {
+                if (stripos($probeId, 'new') === false) {
                     $this->DB->Update('ulab_material_to_request', $sqlProbeData, "WHERE id = {$probeId}");
                 } else {
                     $sqlProbeData['material_id'] = $materialId;
@@ -1522,17 +1525,19 @@ class Requirement extends Model
                     $probeId = $this->DB->Insert('ulab_material_to_request', $sqlProbeData);
                 }
 
-				$probeModel->setLabHeaderByUmtrId($probeId);
+                $probeModel->setLabHeaderByUmtrId($probeId);
 
                 // обновляет методы
                 foreach ($probeData['method'] as $ugtpId => $methodData) {
-                    if ( empty($methodData['new_method_id']) ) { continue; }
+                    if (empty($methodData['new_method_id'])) {
+                        continue;
+                    }
                     $methodData['method_id'] = $methodData['new_method_id'];
                     $methodData['conditions_id'] = $methodData['tech_condition_id'];
 
                     $sqlMethodData = $this->prepearTableData('ulab_gost_to_probe', $methodData);
 
-                    if ( stripos($ugtpId, 'new') === false ) {
+                    if (stripos($ugtpId, 'new') === false) {
                         $this->DB->Update('ulab_gost_to_probe', $sqlMethodData, "WHERE id = {$ugtpId}");
                     } else {
                         $sqlMethodData['material_to_request_id'] = $probeId;
@@ -1542,7 +1547,7 @@ class Requirement extends Model
             }
         }
 
-        if ( !empty($arrMaterial) ) {
+        if (!empty($arrMaterial)) {
             $strMaterial = implode(', ', $arrMaterial);
             $requestModel->updateTz($dealId, ['MATERIAL' => "'{$strMaterial}'"]);
         }
@@ -1587,17 +1592,19 @@ class Requirement extends Model
             $labs = $methodModel->getLab($row['method_id']);
             foreach ($labs as $lab) {
                 $user = $userModel->checkHeader($labModel->getDepartmentIdByLabId($lab));
-                if ( empty($user) || in_array($lab, [5]) ) { continue; }
+                if (empty($user) || in_array($lab, [5])) {
+                    continue;
+                }
 
                 $user['is_confirm'] = $this->getHasConfirmUser($dealId, $user['user_id']);
                 $state[] = $user['is_confirm'];
 
-                if ( $_SESSION['SESS_AUTH']['USER_ID'] == $user['user_id'] ) {
+                if ($_SESSION['SESS_AUTH']['USER_ID'] == $user['user_id']) {
                     $labsId['is_curr_user'] = 1;
                     $labsId['curr_user_status'] = $user['is_confirm'];
                 }
 
-                if ( !empty($labDuration[$lab]) ) {
+                if (!empty($labDuration[$lab])) {
                     $user['duration_str'] = "{$labDuration[$lab]['date_start']}; {$labDuration[$lab]['days']} д.";
                 } else {
                     $user['duration_str'] = '';
@@ -1605,63 +1612,6 @@ class Requirement extends Model
 
                 $labsId['user'][$lab] = $user;
             }
-        }
-
-        // Скопина
-        $tmpUser = $userModel->getUserData(156);
-        $tmpUser['user_id'] = 156;
-        $tmpUser['is_confirm'] = $this->getHasConfirmUser($dealId, 156);
-        $state[] = $tmpUser['is_confirm'];
-        if ( $_SESSION['SESS_AUTH']['USER_ID'] == 156 ) {
-            $labsId['is_curr_user'] = 1;
-            $labsId['curr_user_status'] = $tmpUser['is_confirm'];
-        }
-        if ( !empty($labDuration[6]) ) {
-            $tmpUser['duration_str'] = "{$labDuration[6]['date_start']}; {$labDuration[6]['days']} д.";
-        } else {
-            $tmpUser['duration_str'] = '';
-        }
-        $labsId['user'][6] = $tmpUser;
-
-        if ( empty($state) || array_search(CHECK_TZ_NOT_SENT, $state) !== false ) {
-            $labsId['check_state'] = CHECK_TZ_NOT_SENT;
-        } elseif ( array_search(CHECK_TZ_NOT_APPROVE, $state) !== false ) {
-            $labsId['check_state'] = CHECK_TZ_NOT_APPROVE;
-        } elseif ( array_search(CHECK_TZ_WAIT, $state) !== false ) {
-            $labsId['check_state'] = CHECK_TZ_WAIT;
-        } else {
-            $labsId['check_state'] = CHECK_TZ_APPROVE;
-        }
-
-        // Апаноич
-        $sertificationResponse = $this->DB->Query("SELECT tests_for FROM ba_tz WHERE ID_Z = '{$dealId}'")->Fetch()['tests_for'];
-
-        $isSertification = ($sertificationResponse == 'certification' || $sertificationResponse == 'declaration');
-        if($isSertification) {
-            $userData = $userModel->getUserData(10);
-            $userData['user_id'] = 10;
-            $userData['is_confirm'] = $this->getHasConfirmUser($dealId, 10);
-            $state[] = $userData['is_confirm'];
-            if ( $_SESSION['SESS_AUTH']['USER_ID'] == 10 ) {
-                $labsId['is_curr_user'] = 1;
-                $labsId['curr_user_status'] = $userData['is_confirm'];
-            }
-            if ( !empty($labDuration[7]) ) {
-                $userData['duration_str'] = "{$labDuration[7]['date_start']}; {$labDuration[7]['days']} д.";
-            } else {
-                $userData['duration_str'] = '';
-            }
-            $labsId['user'][7] = $userData;
-        }
-
-        if ( empty($state) || array_search(CHECK_TZ_NOT_SENT, $state) !== false ) {
-            $labsId['check_state'] = CHECK_TZ_NOT_SENT;
-        } elseif ( array_search(CHECK_TZ_NOT_APPROVE, $state) !== false ) {
-            $labsId['check_state'] = CHECK_TZ_NOT_APPROVE;
-        } elseif ( array_search(CHECK_TZ_WAIT, $state) !== false ) {
-            $labsId['check_state'] = CHECK_TZ_WAIT;
-        } else {
-            $labsId['check_state'] = CHECK_TZ_APPROVE;
         }
 
         return $labsId;
@@ -1689,7 +1639,7 @@ class Requirement extends Model
             "
         );
 
-        while($row = $sql->Fetch()) {
+        while ($row = $sql->Fetch()) {
             $result[] = $userModel->getUserData($row['leader']);
         }
 
@@ -1716,7 +1666,7 @@ class Requirement extends Model
         $users = [];
         $labList = [];
         while ($row = $sql->Fetch()) {
-            if ( !empty($row['assigned_id']) ) {
+            if (!empty($row['assigned_id'])) {
                 $users[$row['assigned_id']] = $row['assigned_id'];
             }
 
@@ -1725,13 +1675,15 @@ class Requirement extends Model
                 $depId = $labModel->getDepartmentIdByLabId($lab);
                 $labList[$lab] = $depId;
                 $user = $userModel->checkHeader($depId);
-                if ( empty($user) || in_array($lab, [5, 6]) ) { continue; }
+                if (empty($user) || in_array($lab, [5, 6])) {
+                    continue;
+                }
 
                 $users[$user['user_id']] = $user['user_id'];
             }
         }
 
-        if ( !empty($labList) ) {
+        if (!empty($labList)) {
             $labStr = implode(',', $labList);
             $this->DB->Update("ba_tz", ['LABA_ID' => "'{$labStr}'"], "where ID_Z = {$dealId}");
         }
@@ -1762,10 +1714,10 @@ class Requirement extends Model
 
         $dealSertification = $this->DB->Query("SELECT tests_for FROM ba_tz WHERE ID_Z = '{$dealId}'")->Fetch()['tests_for'];
 
-        if($dealSertification == "certification") {
+        if ($dealSertification == "certification") {
             $checkCount = $this->DB->Query("SELECT id FROM CHECK_TZ WHERE tz_id = '{$tzId}'")->SelectedRowsCount();
 
-            if($checkCount == 1) {
+            if ($checkCount == 1) {
                 $isSertificationDeal = true;
             }
         }
@@ -1783,20 +1735,20 @@ class Requirement extends Model
             }
         }
 
-        if ( empty($stateList)) {
+        if (empty($stateList)) {
             return CHECK_TZ_NOT_SENT;
         }
 
 
-        if($isSertificationDeal) {
+        if ($isSertificationDeal) {
             return CHECK_TZ_NOT_SENT;
         }
 
 
 
-        if ( array_search(CHECK_TZ_NOT_APPROVE, $stateList) !== false ) {
+        if (array_search(CHECK_TZ_NOT_APPROVE, $stateList) !== false) {
             $state = CHECK_TZ_NOT_APPROVE;
-        } else if ( array_search(CHECK_TZ_WAIT, $stateList) !== false ) {
+        } else if (array_search(CHECK_TZ_WAIT, $stateList) !== false) {
             $state = CHECK_TZ_WAIT;
         } else {
             $state = CHECK_TZ_APPROVE;
@@ -1885,7 +1837,7 @@ class Requirement extends Model
      */
     public function confirmTzClear($tzId)
     {
-//        $this->DB->Query("delete from CHECK_TZ where tz_id = {$tzId}");
+        //        $this->DB->Query("delete from CHECK_TZ where tz_id = {$tzId}");
     }
 
 
@@ -1921,7 +1873,8 @@ class Requirement extends Model
      * @param $tzId
      * @param $userId
      */
-    public function confirmTzApprove($tzId, $userId, $dataForLabDuration = []) {
+    public function confirmTzApprove($tzId, $userId, $dataForLabDuration = [])
+    {
         $data = [
             'confirm' => 1,
             'date_reply' => date('Y-m-d H:i:s'),
@@ -1935,7 +1888,7 @@ class Requirement extends Model
             $labId = $this->DB->Query("SELECT ID FROM ba_laba WHERE HEAD_ID = '{$dataForLabDuration['leaderId']}'")->Fetch()['ID'];
             $info = $this->DB->Query("select id from ulab_tz_lab_duration where deal_id = {$dataForLabDuration['dealId']} and lab_id = {$labId}")->Fetch();
             $dateStart = date('Y-m-d', strtotime($dataForLabDuration['dateLeader']));
-            if ( !empty($info) ) {
+            if (!empty($info)) {
                 $this->DB->Query("delete from ulab_tz_lab_duration where id = {$info['id']}");
                 $this->DB->Query("INSERT INTO ulab_tz_lab_duration(deal_id, lab_id, date_start, days) VALUES('{$dataForLabDuration['dealId']}', '{$labId}', '{$dateStart}', '{$dataForLabDuration['daysLeader']}')");
             } else {
@@ -1951,7 +1904,8 @@ class Requirement extends Model
      * @param $userId
      * @param string $desc
      */
-    public function confirmTzNotApprove($tzId, $userId, $desc = "") {
+    public function confirmTzNotApprove($tzId, $userId, $desc = "")
+    {
         $data = [
             'confirm' => 0,
             'date_return' => date('Y-m-d H:i:s'),
@@ -2063,7 +2017,7 @@ class Requirement extends Model
      */
     public function getHasConfirmUser($dealId, $userId)
     {
-        if ( empty($userId) ) {
+        if (empty($userId)) {
             return CHECK_TZ_NOT_SENT;
         }
 
@@ -2073,7 +2027,7 @@ class Requirement extends Model
 
         $check = $this->DB->Query("select * from CHECK_TZ where tz_id = {$tzId} and leader = {$userId}")->Fetch();
 
-        if ( empty($check) ) {
+        if (empty($check)) {
             return CHECK_TZ_NOT_SENT;
         } elseif ($check['confirm'] == 0 && !empty($check['date_return'])) {
             return CHECK_TZ_NOT_APPROVE;
@@ -2089,7 +2043,7 @@ class Requirement extends Model
      */
     public function setTzLabDuration($dealId, $data)
     {
-        if ( empty($data) ) {
+        if (empty($data)) {
             return;
         }
 
@@ -2099,7 +2053,7 @@ class Requirement extends Model
         $labInfo = $labModel->getLabByUserId($data['user_id']);
 
         $tzId = $requestModel->getTzIdByDealId($dealId)['ID'];
-        if ( empty($labInfo) ) {
+        if (empty($labInfo)) {
             return;
         }
         $info111 = $this->DB->Query("select id from ulab_tz_lab_duration where deal_id = {$dealId} and lab_id = {$labInfo['ID']}")->Fetch();
@@ -2110,10 +2064,10 @@ class Requirement extends Model
 
         $dataSql = $this->prepearTableData('ulab_tz_lab_duration', $data);
 
-        if ( !empty($info111) && $info2['confirm'] == 1 ) {
-           $info = $this->DB->Query("select * from ulab_tz_lab_duration where deal_id = {$data['deal_id']}");
-           $dateStart = date('Y-m-d', strtotime($data['date_start']));
-           while ($row = $info->Fetch()) {
+        if (!empty($info111) && $info2['confirm'] == 1) {
+            $info = $this->DB->Query("select * from ulab_tz_lab_duration where deal_id = {$data['deal_id']}");
+            $dateStart = date('Y-m-d', strtotime($data['date_start']));
+            while ($row = $info->Fetch()) {
                 $this->DB->Query("delete from ulab_tz_lab_duration where deal_id = {$row['deal_id']}");
                 //$this->DB->Query("UPDATE CHECK_TZ SET confirm = 0 WHERE tz_id = '{$tzId}'");
                 //$this->DB->Query("UPDATE CHECK_TZ SET confirm = 1 WHERE tz_id = '{$tzId}' AND leader = '{$data['user_id']}'");
@@ -2121,7 +2075,7 @@ class Requirement extends Model
             }
             $this->DB->Query("INSERT INTO ulab_tz_lab_duration(deal_id, lab_id, date_start, days) VALUES('{$data['deal_id']}', '{$data['lab_id']}', '{$dateStart}', '{$data['days']}')");
             $this->DB->Update('ulab_tz_lab_duration', $dataSql, "where id = {$info111['id']}");
-        } elseif($info2['confirm'] == 1) {
+        } elseif ($info2['confirm'] == 1) {
             $this->DB->Insert('ulab_tz_lab_duration', $dataSql);
         }
 
@@ -2141,7 +2095,7 @@ class Requirement extends Model
 
         $labInfo = $labModel->getLabByUserId($_SESSION['SESS_AUTH']['USER_ID']);
 
-        if ( empty($labInfo) ) {
+        if (empty($labInfo)) {
             return [];
         }
 
@@ -2588,13 +2542,15 @@ class Requirement extends Model
 
             /*if ($row['new_method_id']) {
                 $method = $methodModel->get($row['new_method_id']);
-            } else */if ($row['gost_method']) {
+            } else */
+            if ($row['gost_method']) {
                 $method = $this->getGostById($row['gost_method']);
             }
 
             /*if ($row['tech_condition_id']) {
                 $conditions = $tcModel->get($row['tech_condition_id']);
-            } else */if ($row['gost_conditions']) {
+            } else */
+            if ($row['gost_conditions']) {
                 $conditions = $this->getGostById($row['gost_conditions']);
             }
 
@@ -2707,16 +2663,16 @@ class Requirement extends Model
 
                 foreach ($gosts as $k => $i) {
                     $result['methods'][$key][$k]['name'] = $i['method']['view_gost'];
-                    $result['methods'][$key][$k]['id'] = $i['method']['ID']?? $i['method']['id'];
+                    $result['methods'][$key][$k]['id'] = $i['method']['ID'] ?? $i['method']['id'];
                     $result['methods'][$key][$k]['gtp_id'] = $i['gtp_id'];
                     $result['methods'][$key][$k]['is_old'] = $i['method']['is_old'];
 
                     $result['conditions'][$key][$k]['name'] = $i['conditions']['view_gost'];
-                    $result['conditions'][$key][$k]['id'] = $i['conditions']['ID']?? $i['conditions']['id'];
+                    $result['conditions'][$key][$k]['id'] = $i['conditions']['ID'] ?? $i['conditions']['id'];
 
                     //$result['price'][$key][$k] = $i['method']['PRICE'];
                     $result['price'][$key][$k] = (float)$i['price'];
-					$result['assigned'][$key][$k] = $i['assigned'];
+                    $result['assigned'][$key][$k] = $i['assigned'];
                 }
             }
 
@@ -2769,7 +2725,7 @@ class Requirement extends Model
                     $result['methods'][$key][$k]['assigned_list'] = $i['assigned_list'];
 
                     $result['conditions'][$key][$k]['name'] = $i['conditions']['view_name'];
-                    $result['conditions'][$key][$k]['id'] = $i['conditions']['ID']?? $i['conditions']['id'];
+                    $result['conditions'][$key][$k]['id'] = $i['conditions']['ID'] ?? $i['conditions']['id'];
 
                     $result['price'][$key][$k] = (float)$i['price'];
                     $result['assigned'][$key][$k] = $i['assigned'];
@@ -2794,22 +2750,22 @@ class Requirement extends Model
 
         $sqlData = $this->prepearTableData('ba_tz', $data);
 
-//        $this->pre($data, true);
+        //        $this->pre($data, true);
 
-        if($data['tests_for'] == 'certification' || $data['tests_for'] == 'declaration') {
+        if ($data['tests_for'] == 'certification' || $data['tests_for'] == 'declaration') {
             $response = $this->DB->Query("SELECT id FROM CHECK_TZ WHERE tz_id = '{$tzId}' AND leader = 10")->Fetch()['id'];
 
-            if(!$response) {
+            if (!$response) {
                 $userId = $_SESSION['SESS_AUTH']['USER_ID'];
                 $currentDate = date('Y-m-d H:i:s');
 
                 $this->DB->Query("INSERT INTO CHECK_TZ(tz_id, user_sent_id, date_submission, leader, confirm) 
                                     VALUES('{$tzId}', '{$userId}', '{$currentDate}', 10, 0)");
             }
-        }else if($data['test_for'] == 'own') {
+        } else if ($data['test_for'] == 'own') {
             $response = $this->DB->Query("SELECT id FROM CHECK_TZ WHERE tz_id = '{$tzId}' AND leader = 10")->Fetch()['id'];
 
-            if($response) {
+            if ($response) {
                 $this->DB->Query("DELETE FROM CHECK_TZ WHERE tz_id = '{$tzId}' AND leader = 10"); // delete second
             }
         }
@@ -2835,7 +2791,7 @@ class Requirement extends Model
         $probeNumber = $sql['probe_number'];
         $data['material_number'] = $sql['material_number'];
 
-        if ( !is_numeric($probeNumber) ) {
+        if (!is_numeric($probeNumber)) {
             $probeNumber = -1;
 
             $sql = $this->DB->Query("select max(material_number) as material_number from ulab_material_to_request where deal_id = {$dealId}")->Fetch();
@@ -2857,7 +2813,7 @@ class Requirement extends Model
      */
     public function setCommentGtp($ugtpId, $data)
     {
-        if ( empty($ugtpId) ) {
+        if (empty($ugtpId)) {
             return;
         }
 
@@ -2902,7 +2858,7 @@ class Requirement extends Model
         foreach ($probeIdList as $probeId) {
             $sql = $this->DB->Query("select max(gost_number) as gost_number from ulab_gost_to_probe where material_to_request_id = {$probeId}")->Fetch();
             $gostNumber = $sql['gost_number'];
-            if ( !is_numeric($gostNumber) ) {
+            if (!is_numeric($gostNumber)) {
                 $gostNumber = -1;
             }
 
@@ -2929,7 +2885,7 @@ class Requirement extends Model
      * @return void
      * При добавлении методик проверяет, учавствуют ли уже лаборатории, относящиеся к добавленным методикам
      */
-    public function checkHaveLeader($dealId, $probesArray) : void
+    public function checkHaveLeader($dealId, $probesArray): void
     {
         $idTz = $this->getTzIdByDealId($dealId);
 
@@ -2947,7 +2903,7 @@ class Requirement extends Model
                 "
             );
 
-            while($row = $leadersResponse->Fetch()) {
+            while ($row = $leadersResponse->Fetch()) {
                 $checkLeader = $this->DB->Query("SELECT id FROM CHECK_TZ WHERE tz_id = '{$idTz}' AND leader = '{$row['HEAD_ID']}'")->Fetch();
 
                 if ($checkLeader) continue;
@@ -2970,7 +2926,7 @@ class Requirement extends Model
         $mtr = $this->DB->Query("select * from ulab_material_to_request where id = {$umtrId} /*and (child_deal_id is null or child_deal_id = 0)*/")->Fetch();
         $sql = $this->DB->Query("select * from ulab_gost_to_probe where material_to_request_id = {$umtrId}");
 
-        if ( empty($mtr) ) {
+        if (empty($mtr)) {
             return [
                 'success' => false,
                 'error' => "Проба уже перенесена"
@@ -3037,9 +2993,9 @@ class Requirement extends Model
         while ($deal = $deals->Fetch()) {
             $request = $this->getTzByDealId($deal['ID']);
 
-//            if (empty($request['PRICE']) || $request['PRICE'] === '--') {
-//                continue;
-//            }
+            //            if (empty($request['PRICE']) || $request['PRICE'] === '--') {
+            //                continue;
+            //            }
 
             $request['DATE_CREATE'] = !empty($request['DATE_CREATE']) && $request['DATE_CREATE'] !== '' ?
                 StringHelper::dateRu($request['DATE_CREATE']) : '';
@@ -3126,7 +3082,7 @@ class Requirement extends Model
      * @param array $labsId
      * @return array
      */
-    public function getUserByLabId(array $labsId):array
+    public function getUserByLabId(array $labsId): array
     {
         $response = [];
 
@@ -3187,19 +3143,19 @@ class Requirement extends Model
         return $response;
     }
 
-	/**
-	 * @param int $tzId
-	 * @return bool
-	 */
-	public function isConfirm(int $tzId)
-	{
-		$result = $this->DB->Query("SELECT count(*) c FROM `CHECK_TZ` WHERE `tz_id`={$tzId} AND confirm = 0 AND `date_return` IS NULL")->Fetch();
-		if ($result['c'] > 0) {
-			return false;
-		}
+    /**
+     * @param int $tzId
+     * @return bool
+     */
+    public function isConfirm(int $tzId)
+    {
+        $result = $this->DB->Query("SELECT count(*) c FROM `CHECK_TZ` WHERE `tz_id`={$tzId} AND confirm = 0 AND `date_return` IS NULL")->Fetch();
+        if ($result['c'] > 0) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 
     /**
@@ -3225,24 +3181,24 @@ class Requirement extends Model
 
     //TODO: Костыль для утверждения заявки
 
-	/**
-	 * @param int $tzId
-	 * @return bool
-	 */
-	public function isConfirmTz(int $tzId)
-	{
-		$result = $this->DB->Query("SELECT * FROM `CHECK_TZ` WHERE `tz_id`={$tzId}");
+    /**
+     * @param int $tzId
+     * @return bool
+     */
+    public function isConfirmTz(int $tzId)
+    {
+        $result = $this->DB->Query("SELECT * FROM `CHECK_TZ` WHERE `tz_id`={$tzId}");
 
-		if ($result->SelectedRowsCount() > 0) {
-			while ($row = $result->Fetch()) {
-				if (empty($row['confirm'])) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
+        if ($result->SelectedRowsCount() > 0) {
+            while ($row = $result->Fetch()) {
+                if (empty($row['confirm'])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
 
     /**
@@ -3403,7 +3359,7 @@ class Requirement extends Model
                     $arr[$i]['gost_new'] = $item['gost_new'];
                     $arr[$i]['price'] = $item['price'];
                     //TODO: ДИЧАЙШИЙ КОСТЫЛЬ ДЛЯ ВЫВОДА МАТЕРИАЛОВ ИЗ КОПИРОВАННЫХ ЗАЯВОК! До рефакторинга копирования
-					$mater[] = $arr[$i]['mater'];
+                    $mater[] = $arr[$i]['mater'];
                 }
             }
         }
@@ -3411,34 +3367,35 @@ class Requirement extends Model
         $dataTz = [
             'TZ' => serialize($arr),
             'PROBE' => serialize($probe),
-			'MATERIAL' => implode(', ', $mater) //переделать
+            'MATERIAL' => implode(', ', $mater) //переделать
         ];
 
         $this->updateTzByIdTz($tzId, $dataTz);
     }
 
     //TODO: Сохранение измененных шифров в ACT_BASE и probe_to_materials
-	public function savingShNumbersToActBase(int $dealId, int $actNum) {
+    public function savingShNumbersToActBase(int $dealId, int $actNum)
+    {
 
-		$y_date = $this->getActBase($dealId);
+        $y_date = $this->getActBase($dealId);
 
-		$sh = 1;
-		$probe_arr = [];
-		$res_sh_num = $this->DB->Query("SELECT * FROM `MATERIALS_TO_REQUESTS` WHERE `ID_DEAL`= {$dealId}");
-		$h = 0;
-		while ($probeinform = $res_sh_num->Fetch()) {
-			$z = 0;
-			$NumProbe = [];
-			for ($z = 0; $z < $probeinform['OBIEM']; $z++) {
-				$NumProbe[$z] = $actNum . '.' . $sh . '/' . $y_date['year'];
-				$sh++;
-				$probe_arr[$h] = $NumProbe;
-			}
-			$h++;
-		}
-		$probe_arr = json_encode($probe_arr);
-		$this->DB->Query("UPDATE `ACT_BASE` SET `PROBE` = '{$probe_arr}' WHERE ID_Z={$dealId}");
-	}
+        $sh = 1;
+        $probe_arr = [];
+        $res_sh_num = $this->DB->Query("SELECT * FROM `MATERIALS_TO_REQUESTS` WHERE `ID_DEAL`= {$dealId}");
+        $h = 0;
+        while ($probeinform = $res_sh_num->Fetch()) {
+            $z = 0;
+            $NumProbe = [];
+            for ($z = 0; $z < $probeinform['OBIEM']; $z++) {
+                $NumProbe[$z] = $actNum . '.' . $sh . '/' . $y_date['year'];
+                $sh++;
+                $probe_arr[$h] = $NumProbe;
+            }
+            $h++;
+        }
+        $probe_arr = json_encode($probe_arr);
+        $this->DB->Query("UPDATE `ACT_BASE` SET `PROBE` = '{$probe_arr}' WHERE ID_Z={$dealId}");
+    }
 
     /**
      * @param int $dealId
@@ -3508,7 +3465,7 @@ class Requirement extends Model
 
         if (!empty($result)) {
             $result['measuring_sheet'] = json_decode($result['measuring_sheet'], true);
-            if ( empty($result['cipher']) ) {
+            if (empty($result['cipher'])) {
                 $number = $result['probe_number'] + 1;
                 $result['cipher'] = "Не присвоен шифр #{$number}";
             }
@@ -3536,7 +3493,7 @@ class Requirement extends Model
 
         if (!empty($result)) {
             $result['measuring_sheet'] = json_decode($result['measuring_sheet'], true);
-            if ( empty($result['cipher']) ) {
+            if (empty($result['cipher'])) {
                 $number = $result['probe_number'] + 1;
                 $result['cipher'] = "Не присвоен шифр #{$number}";
             }
@@ -3559,7 +3516,7 @@ class Requirement extends Model
             WHERE deal_id = {$dealId}
         ");
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $result[] = $row['assigned_id'];
         }
 
@@ -3577,7 +3534,7 @@ class Requirement extends Model
             WHERE deal_id = '{$dealId}'
         ");
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $result[] = $row;
         }
 
@@ -3689,7 +3646,7 @@ class Requirement extends Model
      */
     public function setGroupMaterialGroup($umtrId, $infoList)
     {
-    	foreach ($infoList as $materialId => $groupId) {
+        foreach ($infoList as $materialId => $groupId) {
             $this->DB->Update('ulab_material_to_request', ['group' => $groupId], "where material_id = {$materialId} and id = {$umtrId}");
         }
     }
@@ -3702,13 +3659,13 @@ class Requirement extends Model
      */
     public function copyProbe($umtrId)
     {
-        if ( empty($umtrId) ) {
+        if (empty($umtrId)) {
             return [];
         }
 
         $umtr = $this->DB->Query("select * from ulab_material_to_request where id = {$umtrId}")->Fetch();
 
-        if ( empty($umtr) ) {
+        if (empty($umtr)) {
             return [];
         }
 
@@ -3746,13 +3703,13 @@ class Requirement extends Model
      */
     public function copyMassiveProbe($umtrId, $count)
     {
-        if ( empty($umtrId) ) {
+        if (empty($umtrId)) {
             return [];
         }
 
         $umtr = $this->DB->Query("select * from ulab_material_to_request where id = {$umtrId}")->Fetch();
 
-        if ( empty($umtr) ) {
+        if (empty($umtr)) {
             return [];
         }
 
@@ -3770,7 +3727,7 @@ class Requirement extends Model
             $ugtpResult[] = $row;
         }
 
-        for($i = 1; $i <= $count; $i++) {
+        for ($i = 1; $i <= $count; $i++) {
             $currentProbeNumber = $umtr['probe_number'] + $i;
 
             $this->DB->Query(
@@ -3826,7 +3783,7 @@ class Requirement extends Model
             "
         );
 
-        while($row = $response->Fetch()) {
+        while ($row = $response->Fetch()) {
             $result[] = $row;
         }
 
@@ -3929,7 +3886,7 @@ class Requirement extends Model
 
         while ($value = $ugtpResponse->Fetch()) {
             $this->DB->Query(
-                            "
+                "
                             UPDATE ulab_gost_to_probe 
                             SET method_id = '{$newMethodData['id']}'
                             , new_method_id = '{$newMethodData['id']}'
@@ -3938,7 +3895,8 @@ class Requirement extends Model
                             , price = '{$newMethodData['price']}'
                             , assigned_id = '{$newMethodData['assigned_id']}'
                             WHERE id = '{$value['id']}'
-                            ");
+                            "
+            );
         }
     }
 
@@ -4067,9 +4025,9 @@ class Requirement extends Model
     {
         $response = $this->DB->Query("SELECT id FROM dogovor_documents WHERE dogovor_id = '{$dogovorId}' AND type_id = 3 AND is_scan = 0")->Fetch()['id'];
 
-        if($response) {
+        if ($response) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -4094,8 +4052,8 @@ class Requirement extends Model
         foreach ($infoByTableReviews as $method) {
             $currentString = $data['formatCipher'];
 
-            for($i = 1; $i <= 8; $i++) {
-                if(stripos($currentString, "{{$i}}") || stripos($currentString, "{{$i}}") == 0) {
+            for ($i = 1; $i <= 8; $i++) {
+                if (stripos($currentString, "{{$i}}") || stripos($currentString, "{{$i}}") == 0) {
                     $currentString = str_replace("{{$i}}", $method[$i - 1], $currentString);
                 }
             }
@@ -4126,15 +4084,15 @@ class Requirement extends Model
         $addInfoArray = json_decode($response['add_info'], JSON_UNESCAPED_UNICODE);
         $addInfoResultArray = [];
 
-        if(in_array('passport', $addInfoArray)) {
+        if (in_array('passport', $addInfoArray)) {
             $addInfoResultArray[] = 'особые сведения о физических, химических характеристиках продукции (состав, направления формования и т.д.)';
         }
 
-        if(in_array('tu', $addInfoArray)) {
+        if (in_array('tu', $addInfoArray)) {
             $addInfoResultArray[] = 'ТУ на производство продукции';
         }
 
-        if(in_array('consist', $addInfoArray)) {
+        if (in_array('consist', $addInfoArray)) {
             $addInfoResultArray[] = 'документ о качестве продукции';
         }
 
@@ -4145,30 +4103,30 @@ class Requirement extends Model
         $addInfoResult = implode(', ', $addInfoResultArray);
 
         $testsFor = '';
-        if($response['tests_for'] == 'own' || empty($response['tests_for'])) {
+        if ($response['tests_for'] == 'own' || empty($response['tests_for'])) {
             $testsFor = 'для собственных нужд';
-        }else if($response['tests_for'] == 'certification') {
+        } else if ($response['tests_for'] == 'certification') {
             $testsFor = 'для сертификации';
-        }else if($response['tests_for'] == 'declaration') {
+        } else if ($response['tests_for'] == 'declaration') {
             $testsFor = 'для декларации';
-        }else if($response['tests_for'] == 'forensic') {
+        } else if ($response['tests_for'] == 'forensic') {
             $testsFor = 'для проведения судебной экспертизы';
-        }else {
+        } else {
             $testsFor = '-';
         }
 
         $norm = 'нет';
-        if(strval($response['is_indicate_compliance']) == '0') {
+        if (strval($response['is_indicate_compliance']) == '0') {
             $norm = 'нет';
-        }else if ($response['is_indicate_compliance'] == 1) {
+        } else if ($response['is_indicate_compliance'] == 1) {
             $norm = 'ГОСТ ТУ: ' . ($response['compliance'] ?? '-');
-        }else if ($response['is_indicate_compliance'] == 2) {
+        } else if ($response['is_indicate_compliance'] == 2) {
             $norm = 'ТУ СТО: ' . ($response['tu_sto'] ?? '-');
         }
         $presented_as = '';
-        if($response['presented_as'] == 'protocol' || empty($response['presented_as'])) {
+        if ($response['presented_as'] == 'protocol' || empty($response['presented_as'])) {
             $presented_as = 'ПИ с ЭЦП';
-        } elseif($response['presented_as'] == 'no') {
+        } elseif ($response['presented_as'] == 'no') {
             $presented_as = 'Без выдачи протокола';
         } else {
             $presented_as = 'ПИ на бумажном носителе';
