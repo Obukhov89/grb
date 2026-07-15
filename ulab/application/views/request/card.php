@@ -295,7 +295,10 @@
                                     <?= $this->data['proposal']['date_send'] ?>
                                 </td>
                                 <td>
-                                    <?php if ($this->data['proposal']['is_disable_form']): ?>
+                                    <a class="no-decoration me-1 disabled" href="#" title="Сформировать">
+                                        <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
+                                    </a>
+                                    <!-- <?php if ($this->data['proposal']['is_disable_form']): ?>
                                         <a class="no-decoration me-1 disabled" href="#" title="Сформировать">
                                             <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                         </a>
@@ -303,10 +306,13 @@
                                         <a class="no-decoration me-1 reload" data-href="<?= $this->data['proposal']['link'] ?>" title="Сформировать">
                                             <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                         </a>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </td>
                                 <td>
-                                    <?php if ($this->data['proposal']['is_disable_mail']): ?>
+                                    <a class="no-decoration me-1 disabled" href="#" title="Отправить клиенту">
+                                        <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
+                                    </a>
+                                    <!-- <?php if ($this->data['proposal']['is_disable_mail']): ?>
                                         <a class="no-decoration me-1 disabled" href="#" title="Отправить клиенту">
                                             <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
                                         </a>
@@ -322,7 +328,7 @@
                                                 <use xlink:href="<?= URI ?>/assets/images/icons.svg#mail" />
                                             </svg>
                                         </a>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </td>
                                 <td></td>
                                 <td></td>
@@ -347,7 +353,10 @@
                                     <?= $this->data['order']['date_send'] ?>
                                 </td>
                                 <td>
-                                    <?php if ($this->data['order']['is_disable_form']): ?>
+                                    <a class="no-decoration me-1 disabled" href="#" title="Сформировать">
+                                        <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
+                                    </a>
+                                    <!-- <?php if ($this->data['order']['is_disable_form']): ?>
                                         <a class="no-decoration me-1 disabled" href="#" title="Сформировать">
                                             <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                         </a>
@@ -355,10 +364,13 @@
                                         <a class="no-decoration me-1 reloadS" data-href="/protocol_generator/dogovor.php?ID=<?= $this->data['deal_id'] ?>&TZ_ID=<?= $this->data['tz_id'] ?>" title="Сформировать">
                                             <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                         </a>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </td>
                                 <td>
-                                    <?php if (!$this->data['order']['is_disable_mail']): ?>
+                                    <a class="no-decoration disabled me-1" href="" title="Отправить клиенту">
+                                        <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
+                                    </a>
+                                    <!-- <?php if (!$this->data['order']['is_disable_mail']): ?>
                                         <a class="no-decoration me-1 popup-mail"
                                             data-id="<?= $this->data['order']['id'] ?>"
                                             data-type="3"
@@ -374,7 +386,7 @@
                                         <a class="no-decoration disabled me-1" href="" title="Отправить клиенту">
                                             <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
                                         </a>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </td>
                                 <td class="text-center">
                                     <input type="checkbox" data-text="Договор" class="form-check-input check-mail" <?= $this->data['order']['check'] ? 'checked' : 'disabled' ?>>
@@ -397,20 +409,23 @@
                                     <?= $this->data['attach']['date_send'] ?>
                                 </td>
                                 <td>
-                                    <?php if (
-                                        $this->data['deal_id'] == 15844 || $this->data['deal_id'] == 15572 || $this->data['deal_id'] == 16777
-                                        || $this->data['deal_id'] == 16821 || $this->data['deal_id'] == 17003 || $this->data['deal_id'] == 17056
-                                        || $this->data['deal_id'] == 16641 || $this->data['deal_id'] == 16633 || $this->data['deal_id'] == 16738
-                                        || $this->data['deal_id'] == 17237 || $this->data['deal_id'] == 16682 || $this->data['deal_id'] == 17393
-                                        || $this->data['deal_id'] == 17460 || $this->data['deal_id'] == 17484 || $this->data['deal_id'] == 17670
-                                        || $this->data['deal_id'] == 18047 || $this->data['deal_id'] == 18059 || $this->data['deal_id'] == 17691
-                                        || $this->data['deal_id'] == 18104 || $this->data['deal_id'] == 18012 || $this->data['deal_id'] == 17581
-                                        || $this->data['deal_id'] == 17713 || $this->data['deal_id'] == 18151 || $this->data['deal_id'] == 18222
-                                        || $this->data['deal_id'] == 18383 || $this->data['deal_id'] == 18252 || $this->data['deal_id'] == 18494
-                                        || $this->data['deal_id'] == 18083 || $this->data['deal_id'] == 18518 || $this->data['deal_id'] == 18441
-                                        || $this->data['deal_id'] == 18691 || $this->data['deal_id'] == 18589 || $this->data['deal_id'] == 18820
-                                        || $this->data['deal_id'] == 18414 || $this->data['deal_id'] == 18886
-                                    ): ?>
+                                    <a class="no-decoration me-1 disabled" href="#" title="Сформировать">
+                                        <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
+                                    </a>
+                                    <!-- <?php if (
+                                                $this->data['deal_id'] == 15844 || $this->data['deal_id'] == 15572 || $this->data['deal_id'] == 16777
+                                                || $this->data['deal_id'] == 16821 || $this->data['deal_id'] == 17003 || $this->data['deal_id'] == 17056
+                                                || $this->data['deal_id'] == 16641 || $this->data['deal_id'] == 16633 || $this->data['deal_id'] == 16738
+                                                || $this->data['deal_id'] == 17237 || $this->data['deal_id'] == 16682 || $this->data['deal_id'] == 17393
+                                                || $this->data['deal_id'] == 17460 || $this->data['deal_id'] == 17484 || $this->data['deal_id'] == 17670
+                                                || $this->data['deal_id'] == 18047 || $this->data['deal_id'] == 18059 || $this->data['deal_id'] == 17691
+                                                || $this->data['deal_id'] == 18104 || $this->data['deal_id'] == 18012 || $this->data['deal_id'] == 17581
+                                                || $this->data['deal_id'] == 17713 || $this->data['deal_id'] == 18151 || $this->data['deal_id'] == 18222
+                                                || $this->data['deal_id'] == 18383 || $this->data['deal_id'] == 18252 || $this->data['deal_id'] == 18494
+                                                || $this->data['deal_id'] == 18083 || $this->data['deal_id'] == 18518 || $this->data['deal_id'] == 18441
+                                                || $this->data['deal_id'] == 18691 || $this->data['deal_id'] == 18589 || $this->data['deal_id'] == 18820
+                                                || $this->data['deal_id'] == 18414 || $this->data['deal_id'] == 18886
+                                            ): ?>
                                         <a class="no-decoration me-1 reload" data-href="<?= $this->data['attach']['link'] ?>" title="Сформировать">
                                             <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                         </a>
@@ -424,12 +439,15 @@
                                                 <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                             </a>
                                         <?php endif; ?>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
 
                                 </td>
                                 <td>
+                                    <a class="no-decoration disabled me-1" href="#" title="Отправить клиенту">
+                                        <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
+                                    </a>
 
-                                    <?php if ($this->data['attach']['is_disable_mail']): ?>
+                                    <!-- <?php if ($this->data['attach']['is_disable_mail']): ?>
                                         <a class="no-decoration disabled me-1" href="#" title="Отправить клиенту">
                                             <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
                                         </a>
@@ -442,7 +460,7 @@
                                             title="Отправить клиенту">
                                             <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
                                         </a>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </td>
                                 <td class="text-end">
                                     <input type="checkbox" class="form-check-input check-need-sended" title="Не требуется отправка" <?= $this->data['not_need_send'] ? 'checked' : '' ?>>
@@ -476,21 +494,24 @@
                                 <td><?= $this->data['invoice']['date'] ?></td>
                                 <td><?= $this->data['invoice']['date_send'] ?></td>
                                 <td>
-                                    <?php if (
-                                        $this->data['deal_id'] == 15554 || $this->data['deal_id'] == 16166 || $this->data['deal_id'] == 17003
-                                        || $this->data['deal_id'] == 17056 || $this->data['deal_id'] == 16633 || $this->data['deal_id'] == 12866
-                                        || $this->data['deal_id'] == 17252 || $this->data['deal_id'] == 16946 || $this->data['deal_id'] == 17393
-                                        || $this->data['deal_id'] == 17409 || $this->data['deal_id'] == 14389 || $this->data['deal_id'] == 17460
-                                        || $this->data['deal_id'] == 17670 || $this->data['deal_id'] == 17613 || $this->data['deal_id'] == 17391
-                                        || $this->data['deal_id'] == 17707 || $this->data['deal_id'] == 17158 || $this->data['deal_id'] == 17144
-                                        || $this->data['deal_id'] == 18047 || $this->data['deal_id'] == 18059 || $this->data['deal_id'] == 17691
-                                        || $this->data['deal_id'] == 18104 || $this->data['deal_id'] == 18012 || $this->data['deal_id'] == 17581
-                                        || $this->data['deal_id'] == 17713 || $this->data['deal_id'] == 18151 || $this->data['deal_id'] == 18222
-                                        || $this->data['deal_id'] == 18383 || $this->data['deal_id'] == 18494 || $this->data['deal_id'] == 18518
-                                        || $this->data['deal_id'] == 18441 || $this->data['deal_id'] == 18691 || $this->data['deal_id'] == 18589
-                                        || $this->data['deal_id'] == 18724 || $this->data['deal_id'] == 18820 || $this->data['deal_id'] == 18414
-                                        || $this->data['deal_id'] == 18886
-                                    ): ?>
+                                    <a class="no-decoration disabled me-1" href="" title="Сформировать">
+                                        <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
+                                    </a>
+                                    <!-- <?php if (
+                                                $this->data['deal_id'] == 15554 || $this->data['deal_id'] == 16166 || $this->data['deal_id'] == 17003
+                                                || $this->data['deal_id'] == 17056 || $this->data['deal_id'] == 16633 || $this->data['deal_id'] == 12866
+                                                || $this->data['deal_id'] == 17252 || $this->data['deal_id'] == 16946 || $this->data['deal_id'] == 17393
+                                                || $this->data['deal_id'] == 17409 || $this->data['deal_id'] == 14389 || $this->data['deal_id'] == 17460
+                                                || $this->data['deal_id'] == 17670 || $this->data['deal_id'] == 17613 || $this->data['deal_id'] == 17391
+                                                || $this->data['deal_id'] == 17707 || $this->data['deal_id'] == 17158 || $this->data['deal_id'] == 17144
+                                                || $this->data['deal_id'] == 18047 || $this->data['deal_id'] == 18059 || $this->data['deal_id'] == 17691
+                                                || $this->data['deal_id'] == 18104 || $this->data['deal_id'] == 18012 || $this->data['deal_id'] == 17581
+                                                || $this->data['deal_id'] == 17713 || $this->data['deal_id'] == 18151 || $this->data['deal_id'] == 18222
+                                                || $this->data['deal_id'] == 18383 || $this->data['deal_id'] == 18494 || $this->data['deal_id'] == 18518
+                                                || $this->data['deal_id'] == 18441 || $this->data['deal_id'] == 18691 || $this->data['deal_id'] == 18589
+                                                || $this->data['deal_id'] == 18724 || $this->data['deal_id'] == 18820 || $this->data['deal_id'] == 18414
+                                                || $this->data['deal_id'] == 18886
+                                            ): ?>
                                         <a class="no-decoration me-1 reloadS" data-href="/ulab/generator/invoiceDoc/<?= $this->data['deal_id'] ?>" title="Сформировать">
                                             <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                         </a>
@@ -504,10 +525,13 @@
                                                 <i class="text-black fa-light fa-file-circle-plus font-size-35"></i>
                                             </a>
                                         <?php endif; ?>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </td>
                                 <td>
-                                    <?php if ($this->data['invoice']['is_disable_mail']): ?>
+                                    <a class="no-decoration disabled me-1" href="" title="Отправить клиенту">
+                                        <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
+                                    </a>
+                                    <!-- <?php if ($this->data['invoice']['is_disable_mail']): ?>
                                         <a class="no-decoration disabled me-1" href="" title="Отправить клиенту">
                                             <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
                                         </a>
@@ -520,7 +544,7 @@
                                             title="Отправить клиенту">
                                             <i class="fa-regular fa-envelope-open text-black font-size-35"></i>
                                         </a>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </td>
                                 <td class="text-center">
                                     <input type="checkbox" data-text="Счет" class="form-check-input check-mail" <?= $this->data['invoice']['check'] ? 'checked' : 'disabled' ?>>
@@ -920,7 +944,7 @@
                                 <td></td>
                             </tr>
 
-                            <tr class="<?= $this->data['act_complete']['check'] ? 'table-green' : '' ?>">
+                            <!-- <tr class="<?= $this->data['act_complete']['check'] ? 'table-green' : '' ?>">
                                 <td><strong>УПД</strong></td>
                                 <td>
                                     <?php if ($this->data['act_complete']['check']): ?>
@@ -983,7 +1007,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>
