@@ -32,7 +32,7 @@ $(function ($) {
             return all = ($(this).prop("checked") === curState)
         })
 
-        if ( all ) {
+        if (all) {
             parent.prop({
                 indeterminate: false,
                 checked: curState
@@ -86,7 +86,7 @@ $(function ($) {
             return all = ($(this).prop("checked") === curState)
         })
 
-        if ( all ) {
+        if (all) {
             parent.prop({
                 indeterminate: false,
                 checked: curState
@@ -102,7 +102,7 @@ $(function ($) {
             return all = ($(this).prop("checked") === curState)
         })
 
-        if ( all ) {
+        if (all) {
             parentParent.prop({
                 indeterminate: false,
                 checked: curState
@@ -118,17 +118,17 @@ $(function ($) {
     })
 
     function toggleProbe() {
-        let probeIdList = $journalMethods.find(".probe-check:checked").map(function() {
+        let probeIdList = $journalMethods.find(".probe-check:checked").map(function () {
             return $(this).val();
         }).get()
 
-        let measurementIdList = $journalMethods.find(".probe-check:checked").map(function() {
+        let measurementIdList = $journalMethods.find(".probe-check:checked").map(function () {
             let tmp = $(this).data('measurement_id')
-            if ( tmp === `undefined` ) { return }
+            if (tmp === `undefined`) { return }
             return $(this).data('measurement_id')
         }).get()
 
-        if ( probeIdList.length > 0 ) {
+        if (probeIdList.length > 0) {
             $btnStart.removeClass('disabled')
             $btnPause.removeClass('disabled')
             $btnStop.removeClass('disabled')
@@ -142,16 +142,16 @@ $(function ($) {
             $btnUnboundProtocol.addClass('disabled')
         }
 
-        if ( measurementIdList.length > 0 ) {
+        if (measurementIdList.length > 0) {
             $btnMeasurementSheet.removeClass('disabled')
         } else {
             $btnMeasurementSheet.addClass('disabled')
         }
     }
 
-    let stickyEl2 = new Sticksy('.js-sticky-widget2', {topSpacing: 20, listen: true,})
+    let stickyEl2 = new Sticksy('.js-sticky-widget2', { topSpacing: 20, listen: true, })
     stickyEl2.onStateChanged = function (state) {
-        if(state === 'fixed') {
+        if (state === 'fixed') {
             stickyEl2.nodeRef.classList.add('widget--sticky')
         } else {
             stickyEl2.nodeRef.classList.remove('widget--sticky')
@@ -175,8 +175,8 @@ $(function ($) {
         stateSave: true,
         stateDuration: -1,
         ajax: {
-            type : 'POST',
-            data: function ( d ) {
+            type: 'POST',
+            data: function (d) {
                 d.deal_id = dealId
                 d.material_id = $('#filter-material').val()
                 d.method_id = $('#filter-methods').val()
@@ -186,7 +186,7 @@ $(function ($) {
                 d.protocol_id = $('.selected-probe:checked').val()
                 d.selected_protocol_id = $('.selected_protocol_id').val()
             },
-            url : '/ulab/result/getMethodsProbeJournalAjax/',
+            url: '/ulab/result/getMethodsProbeJournalAjax/',
             dataSrc: function (json) {
                 return json.data
             }
@@ -219,7 +219,7 @@ $(function ($) {
                 orderable: false,
                 render: function (data, type, item) {
                     let materialGroup = ``
-                    if ( item.material_group_name != null ) {
+                    if (item.material_group_name != null) {
                         materialGroup = `(${item.material_group_name})`
                     }
 
@@ -238,15 +238,15 @@ $(function ($) {
                 orderable: false,
                 className: 'text-center',
                 render: function (data, type, item) {
-                    if ( item.state_action.state === 'start' ) {
+                    if (item.state_action.state === 'start') {
                         return `<i class="fa-regular fa-circle-play icon-big" title="В работе"></i>`
                     }
 
-                    if ( item.state_action.state === 'pause' ) {
+                    if (item.state_action.state === 'pause') {
                         return `<i class="fa-solid fa-circle-pause icon-big" title="Приостановлено"></i>`
                     }
 
-                    if ( item.state_action.state === 'complete' ) {
+                    if (item.state_action.state === 'complete') {
                         return `<i class="fa-regular fa-circle-check icon-big" title="Завершено"></i>`
                     }
 
@@ -258,7 +258,7 @@ $(function ($) {
                 orderable: false,
                 className: 'text-center',
                 render: function (data, type, item) {
-                    if ( item.measurement.id === undefined ) {
+                    if (item.measurement.id === undefined) {
                         return `<button type="button" class="btn bg-transparent border-0 mt-0 p-0 measurement-sheet disabled" title="Лист измерения">
                                     <i class="fa-solid fa-calculator font-size-35"></i>
                                 </button>`
@@ -278,7 +278,7 @@ $(function ($) {
                 orderable: false,
                 className: 'text-center',
                 render: function (data, type, item) {
-                    if ( item.tech_condition_id > 0 ) {
+                    if (item.tech_condition_id > 0) {
                         return `<a href="/ulab/techCondition/edit/${item.tech_condition_id}" class="text-decoration-none">${item.tech.reg_doc} ${item.tech.measured_properties_name}</a>`
                     }
 
@@ -290,7 +290,7 @@ $(function ($) {
                 orderable: false,
                 className: 'text-center',
                 render: function (data, type, item) {
-                    let html = `<div class="form-text text-start aa">${item.normative_text?? ''}</div>`
+                    let html = `<div class="form-text text-start aa">${item.normative_text ?? ''}</div>`
 
                     if (item.readonly_normative_value) {
                         html += `<div class="normative-value w-100 border p-2 like-input text-start bg-light-secondary like-input"
@@ -299,9 +299,9 @@ $(function ($) {
                                     </div>`
                     } else {
                         html += `<textarea class="form-control normative-value bg-white w-100"
-                                           name="normative_value[${item.mtr_id}][${item.ugtp_id}]">${item.normative_value?? ''}</textarea>`
+                                           name="normative_value[${item.mtr_id}][${item.ugtp_id}]">${item.normative_value ?? ''}</textarea>`
                     }
-                    html += `<div class="form-text text-start">${item.normative_message?? ''}</div>`
+                    html += `<div class="form-text text-start">${item.normative_message ?? ''}</div>`
 
                     return html
                 }
@@ -311,10 +311,10 @@ $(function ($) {
                 orderable: false,
                 className: '',
                 render: function (data, type, item) {
-                    let html = `<div class="form-text text-danger text-start">${item.out_range?? ''}</div>`
+                    let html = `<div class="form-text text-danger text-start">${item.out_range ?? ''}</div>`
                     let readonly = item.confirm_oa_readonly ? 'readonly' : ''
 
-                    if ( item.readonly_actual_value ) {
+                    if (item.readonly_actual_value) {
                         html += `<input ${item.actual_value_type}
                                     class="me-2 actual-value actual-value-${item.ugtp_id} w-100 border p-2 bg-light-secondary"
                                     name="actual_value[${item.mtr_id}][${item.ugtp_id}]"
@@ -329,7 +329,7 @@ $(function ($) {
                                             value="${item.actual_value}" ${readonly}>
                                 </div>`
                     }
-                    html += `<div class="form-text text-start">${item.actual_value_message?? ''}</div>`
+                    html += `<div class="form-text text-start">${item.actual_value_message ?? ''}</div>`
 
                     return html
                 }
@@ -339,9 +339,24 @@ $(function ($) {
                 orderable: false,
                 className: '',
                 render: function (data, type, item) {
-                    let html = `<button class="btn bg-transparent border-0 mt-0 p-0 edit-description" type="button" data-ugtp="${item.ugtp_id}">
-                                    <svg width="45px" height="45px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8 9.00006H6.2C5.0799 9.00006 4.51984 9.00006 4.09202 9.21805C3.71569 9.40979 3.40973 9.71575 3.21799 10.0921C3 10.5199 3 11.08 3 12.2001V17.8001C3 18.9202 3 19.4802 3.21799 19.908C3.40973 20.2844 3.71569 20.5903 4.09202 20.7821C4.51984 21.0001 5.07989 21.0001 6.2 21.0001H17.787C18.9071 21.0001 19.4671 21.0001 19.895 20.7821C20.2713 20.5903 20.5772 20.2844 20.769 19.908C20.987 19.4802 20.987 18.9202 20.987 17.8001V12.0001M6 15.0001H6.01M10 15H10.01M11.5189 12.8946L12.8337 12.6347C13.5432 12.4945 13.8979 12.4244 14.2287 12.2953C14.5223 12.1807 14.8013 12.0318 15.06 11.8516C15.3514 11.6487 15.607 11.393 16.1184 10.8816L21.2668 5.73321C21.9541 5.04596 21.9541 3.9317 21.2668 3.24444C20.5796 2.55719 19.4653 2.55719 18.7781 3.24445L13.5416 8.48088C13.0625 8.96004 12.8229 9.19963 12.6294 9.47121C12.4576 9.71232 12.3131 9.97174 12.1986 10.2447C12.0696 10.5522 11.9921 10.8821 11.837 11.5417L11.5189 12.8946Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                                </button>`
+                    let html = `<div class="form-text text-danger text-start">${item.out_range ?? ''}</div>`
+                    let readonly = item.confirm_oa_readonly ? 'readonly' : ''
+
+                    if (item.readonly_actual_value) {
+                        html += `<input ${item.actual_value_type}
+                                    class="me-2 actual-value actual-value-${item.ugtp_id} w-100 border p-2 bg-light-secondary"
+                                    name="uncertainty_value[${item.mtr_id}][${item.ugtp_id}]"
+                                    value="${item.uncertainty == null ? '' : item.uncertainty}"
+                                    title="Доступно для редактирования если нет номера протокола или есть номер но протокол на редактировании и у методики ф/значение текстом или у методики ф/значение не текстом и нет листа измерения"
+                                    readonly>`
+                    } else {
+                        html += `<div class="d-flex actual-value-wrapper mb-1">
+                                    <input ${item.actual_value_type}
+                                            class="me-2 actual-value actual-value-${item.ugtp_id} w-100 border p-2 "
+                                            name="uncertainty_value[${item.mtr_id}][${item.ugtp_id}]"
+                                            value="${item.uncertainty}" ${readonly}>
+                                </div>`
+                    }
 
                     return html
                 }
@@ -352,45 +367,45 @@ $(function ($) {
                 className: '',
                 render: function (data, type, item) {
                     let html = ``
-                    let isInvalid = item.match_message? 'is-invalid' : ''
+                    let isInvalid = item.match_message ? 'is-invalid' : ''
 
-                    if ( item.readonly_match ) {
+                    if (item.readonly_match) {
                         html += `<div class="form-control match w-100 p-2 text-start bg-light-secondary text-start like-input ${isInvalid}"
                                      aria-describedby="match_${item.mtr_id}_${item.ugtp_id}"
                                      title="Доступно для редактирования если нет номера протокола или есть номер но протокол на редактировании и ТУ не нормируемое или в ТУ ручное управление 'соотв/не соотв' или фактических значений более 1">
-                                    ${item.match_view?? ''}
+                                    ${item.match_view ?? ''}
                                 </div>
                                 <div id="match_${item.mtr_id}_${item.ugtp_id}"
                                      class="invalid-feedback">
-                                    ${item.match_message?? ''}
+                                    ${item.match_message ?? ''}
                                 </div>`
                     } else {
                         html += `<select class="form-select match ${isInvalid}"
                                         name="match[${item.mtr_id}][${item.ugtp_id}]"
                                         aria-describedby="match_${item.mtr_id}_${item.ugtp_id}">
                                     <option value="0"
-                                        ${item.match == 0? 'selected' : ''}>
+                                        ${item.match == 0 ? 'selected' : ''}>
                                         Не соответствует
                                     </option>
                                     <option value="1"
-                                        ${item.match == 1? 'selected' : ''}>
+                                        ${item.match == 1 ? 'selected' : ''}>
                                         Соответствует
                                     </option>
                                     <option value="2"
-                                        ${item.match == 2? 'selected' : ''}>
+                                        ${item.match == 2 ? 'selected' : ''}>
                                         -
                                     </option>
                                     <option value="3"
-                                        ${item.match == 3? 'selected' : ''}>
+                                        ${item.match == 3 ? 'selected' : ''}>
                                         Не нормируется
                                     </option>
                                 </select>
                                 <div id="match_${item.mtr_id}_${item.ugtp_id}"
                                      class="invalid-feedback">
-                                    ${item.match_message?? ''}
+                                    ${item.match_message ?? ''}
                                 </div>`
                     }
-                    html += `<div class="form-text">${item.match_text?? ''}</div>`
+                    html += `<div class="form-text">${item.match_text ?? ''}</div>`
 
                     return html
                 }
@@ -403,7 +418,7 @@ $(function ($) {
                     let html = ``
                     let title = `Диапазон: ${item.range_ao}`
 
-                    if ( item.in_field ) {
+                    if (item.in_field) {
                         html += `<i class="fa-regular fa-circle-check icon-big" title="${title}"></i>`
                     } else {
                         html += `<i class="fa-regular fa-circle-xmark icon-big" title="${title}></i>`
@@ -417,11 +432,11 @@ $(function ($) {
                 orderable: false,
                 className: '',
                 render: function (data, type, item) {
-                    if ( item.protocol.ID && item.protocol.INVALID == 0 ) {
+                    if (item.protocol.ID && item.protocol.INVALID == 0) {
 
                         return `<a href="/ulab/result/card_oati/${item.deal_id}?protocol_id=${item.protocol.ID}"
                                    class="text-decoration-none text-nowrap fw-bold">
-                                    ${item.protocol.NUMBER?? 'Номер не присвоен'}
+                                    ${item.protocol.NUMBER ?? 'Номер не присвоен'}
                                 </a>`
                     }
                     return ``
@@ -440,7 +455,7 @@ $(function ($) {
                 .data()
                 .each(function (group, i) {
                     if (last !== group) {
-                        if ( data[i].measurement.id === undefined ) {
+                        if (data[i].measurement.id === undefined) {
                             disableMs = 'disabled'
                         }
                         $(rows)
@@ -472,24 +487,24 @@ $(function ($) {
                     }
                 });
         },
-        createdRow: function( row, data, dataIndex ) {
-            if ( data.selected_protocol_id !== null && data.selected_protocol_id == data.gtp_protocol_id ) {
+        createdRow: function (row, data, dataIndex) {
+            if (data.selected_protocol_id !== null && data.selected_protocol_id == data.gtp_protocol_id) {
                 $(row).addClass("bg-pele-green")
             }
         },
         language: dataTablesSettings.language,
-        lengthMenu: [[10, 25, 50, 100, -1], [10,25, 50, 100, "Все"]],
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Все"]],
         pageLength: 100,
-        order: [[ 2, "asc" ]],
+        order: [[2, "asc"]],
         dom: 'frt<"bottom"lip>',
         buttons: dataTablesSettings.buttons,
     })
 
-    journalDataTable.columns().every( function () {
-        $(this.header()).closest('thead').find('.search:eq('+ this.index() +')').on( 'keyup change clear', function () {
+    journalDataTable.columns().every(function () {
+        $(this.header()).closest('thead').find('.search:eq(' + this.index() + ')').on('keyup change clear', function () {
             journalDataTable
-                .column( $(this).parent().index() )
-                .search( this.value )
+                .column($(this).parent().index())
+                .search(this.value)
                 .draw();
         })
     })
@@ -500,7 +515,7 @@ $(function ($) {
         $btnStop.addClass('disabled')
         $btnCreateProtocol.addClass('disabled')
         $btnMeasurementSheet.addClass('disabled')
-        $body.find('.all-check').prop({indeterminate: false,checked: false})
+        $body.find('.all-check').prop({ indeterminate: false, checked: false })
     })
 
     $('.filter, .selected-probe').on('input', function () {
@@ -526,7 +541,7 @@ $(function ($) {
 
 
     $body.on('click', '.btn_start', function () {
-        let probeIdList = $(".probe-check:checked").map(function(){
+        let probeIdList = $(".probe-check:checked").map(function () {
             return $(this).val();
         }).get()
 
@@ -549,22 +564,22 @@ $(function ($) {
                     closeOnBgClick: false,
                     showCloseBtn: true,
                     callbacks: {
-                        beforeOpen: function() {
+                        beforeOpen: function () {
                             $contentBlock.empty()
 
                             let html = ``
 
-                            if ( json.length === 0 ) {
+                            if (json.length === 0) {
                                 $contentBlock.append(`<p>Нечего стартовать</p>`)
                             } else {
                                 $.each(json, function (i, probe) {
 
-                                    if ( probe[0].rooms.length === 0 ) { return true }
+                                    if (probe[0].rooms.length === 0) { return true }
 
                                     html += `<div class="text-center mb-2"><strong>${probe[0].material_name} | ${probe[0].cipher}</strong></div>`
 
                                     $.each(probe, function (j, method) {
-                                        if ( method.rooms.length === 0 ) { return true }
+                                        if (method.rooms.length === 0) { return true }
 
                                         let roomHtml = ``
                                         $.each(method.rooms, function (k, room) {
@@ -572,17 +587,17 @@ $(function ($) {
                                             let textLabelWet = ``
                                             let textLabelPress = ``
 
-                                            if ( method.is_not_cond_temp == 1 ) {
+                                            if (method.is_not_cond_temp == 1) {
                                                 textLabelTemp = `Не нормируется`
                                             } else {
                                                 textLabelTemp = `От ${method.cond_temp_1} до ${method.cond_temp_2}`
                                             }
-                                            if ( method.is_not_cond_wet == 1 ) {
+                                            if (method.is_not_cond_wet == 1) {
                                                 textLabelWet = `Не нормируется`
                                             } else {
                                                 textLabelWet = `От ${method.cond_wet_1} до ${method.cond_wet_2}`
                                             }
-                                            if ( method.is_not_cond_pressure == 1 ) {
+                                            if (method.is_not_cond_pressure == 1) {
                                                 textLabelPress = `Не нормируется`
                                             } else {
                                                 textLabelPress = `От ${method.cond_pressure_1} до ${method.cond_pressure_2}`
@@ -595,15 +610,15 @@ $(function ($) {
                                                                 </div>
                                                             </div>
                                                             <div class="col">
-                                                                <input type="number" step="any" class="form-control input_temp" data-room_id="${room.room_id}" name="form[${method.ugtp_id}][${room.room_id}][temp]" value="${room.temp?? ''}">
+                                                                <input type="number" step="any" class="form-control input_temp" data-room_id="${room.room_id}" name="form[${method.ugtp_id}][${room.room_id}][temp]" value="${room.temp ?? ''}">
                                                                 <div class="form-text">${textLabelTemp}</div>
                                                             </div>
                                                             <div class="col">
-                                                                <input type="number" step="any" class="form-control input_wet" data-room_id="${room.room_id}" name="form[${method.ugtp_id}][${room.room_id}][wet]" value="${room.wet?? ''}">
+                                                                <input type="number" step="any" class="form-control input_wet" data-room_id="${room.room_id}" name="form[${method.ugtp_id}][${room.room_id}][wet]" value="${room.wet ?? ''}">
                                                                 <div class="form-text">${textLabelWet}</div>
                                                             </div>
                                                             <div class="col">
-                                                                <input type="number" step="any" class="form-control input_press" data-room_id="${room.room_id}" name="form[${method.ugtp_id}][${room.room_id}][pressure]" value="${room.pressure?? ''}">
+                                                                <input type="number" step="any" class="form-control input_press" data-room_id="${room.room_id}" name="form[${method.ugtp_id}][${room.room_id}][pressure]" value="${room.pressure ?? ''}">
                                                                 <div class="form-text">${textLabelPress}</div>
                                                             </div>
                                                         </div>`
@@ -671,11 +686,11 @@ $(function ($) {
     })
 
     function startStop($button, method) {
-        let probeIdList = $(".probe-check:checked").map(function(){
+        let probeIdList = $(".probe-check:checked").map(function () {
             return $(this).val();
         }).get()
 
-        if ( probeIdList.length === 0 ) {
+        if (probeIdList.length === 0) {
             return false
         }
 
@@ -760,7 +775,7 @@ $(function ($) {
             methodId = $(this).data('method');
 
         let measurementObject = []
-        measurementObject.push({ugtpId : ugtpId, measurement_id : measurementId, methodId : methodId})
+        measurementObject.push({ ugtpId: ugtpId, measurement_id: measurementId, methodId: methodId })
 
         btn.find('i').addClass('spinner-animation');
         btn.addClass('disabled');
@@ -792,7 +807,7 @@ $(function ($) {
                     closeOnBgClick: false,
                     showCloseBtn: true,
                     callbacks: {
-                        beforeOpen: function() {
+                        beforeOpen: function () {
                             $contentBlock.empty()
 
                             $contentBlock.append(data)
@@ -838,16 +853,16 @@ $(function ($) {
         const $form = $('#measurementModalForm')
         const $contentBlock = $form.find('.measurement_content')
 
-        let measurementObject = $journalMethods.find(".probe-check:checked").map(function() {
+        let measurementObject = $journalMethods.find(".probe-check:checked").map(function () {
             let measurementId = $(this).data('measurement_id')
-            if ( measurementId === `undefined` ) { return }
+            if (measurementId === `undefined`) { return }
             let ugtpId = $(this).val()
             let methodId = $(this).data('method_id')
 
-            return {ugtpId : ugtpId, measurement_id : measurementId, methodId : methodId}
+            return { ugtpId: ugtpId, measurement_id: measurementId, methodId: methodId }
         }).get()
 
-        if ( measurementObject.length === 0 ) { return false }
+        if (measurementObject.length === 0) { return false }
 
         let btnHtml = $btn.html()
         $btn.html(`<i class="fa-solid fa-arrows-rotate spinner-animation"></i>`)
@@ -869,7 +884,7 @@ $(function ($) {
                     closeOnBgClick: false,
                     showCloseBtn: true,
                     callbacks: {
-                        beforeOpen: function() {
+                        beforeOpen: function () {
                             $contentBlock.empty()
 
                             $contentBlock.append(data)
@@ -904,7 +919,7 @@ $(function ($) {
 
 
     $body.on('click', '.btn_unbound_protocol', function () {
-        let probeIdList = $(".probe-check:checked").map(function(){
+        let probeIdList = $(".probe-check:checked").map(function () {
             return $(this).val();
         }).get()
 
@@ -970,7 +985,7 @@ $(function ($) {
                 const container = $('#equipmentList');
 
                 const src = data['protocol_equipment'] || {};
-// новая структура: объект { "261": {...}, "300": {...} }
+                // новая структура: объект { "261": {...}, "300": {...} }
                 const equipmentList = Array.isArray(src) ? src : Object.values(src);
 
                 for (const eq of equipmentList) {
@@ -1084,7 +1099,7 @@ $(function ($) {
     // })
     function renderUsedEquipmentRemoveList($root) {
         const $select = $root.find('.equipment-used');
-        const $list   = $root.find('.equipment-used-remove-list');
+        const $list = $root.find('.equipment-used-remove-list');
 
         if (!$list.length) return; // некуда рисовать
 
@@ -1125,7 +1140,7 @@ $(function ($) {
         let arr = [];
         try {
             arr = JSON.parse($root.find('#equipmentIds').val() || '[]');
-        } catch (e) {}
+        } catch (e) { }
 
         arr = arr.filter(x => Number(x) !== id);
         $root.find('#equipmentIds').val(JSON.stringify(arr));
@@ -1206,7 +1221,7 @@ $(function ($) {
                         equipmentUsed = protocolInformation.find('.equipment-used'),
                         equipment = protocolInformation.find('#equipment')
 
-                    $.each(data['assigned'], function(key, value) {
+                    $.each(data['assigned'], function (key, value) {
                         verify.append(`<option value="${value['user_id']}">${value['user_name']}</option>`);
                     });
                     verify.append(`<option value="263">Алена Ширлянова</option>`);
@@ -1215,7 +1230,7 @@ $(function ($) {
 
                     let userCreateProtocol = protocolInformation.find('.user-create-protocol')
                     userCreateProtocol.append(`<option value=""></option>`);
-                    $.each(data['create_users'], function(key, value) {
+                    $.each(data['create_users'], function (key, value) {
                         userCreateProtocol.append(`<option value="${value['ID']}">${value['user_name']}</option>`);
                     });
                     userCreateProtocol.append(`<option value="291">Александр Минченков</option>`);
@@ -1224,7 +1239,7 @@ $(function ($) {
 
                     let userNormProtocol = protocolInformation.find('.user-norm-protocol')
                     userNormProtocol.append(`<option value=""></option>`);
-                    $.each(data['norm_users'], function(key, value) {
+                    $.each(data['norm_users'], function (key, value) {
                         userNormProtocol.append(`<option value="${value['ID']}">${value['user_name']}</option>`);
                     });
                     userNormProtocol.append(`<option value="9">Алия Габдрахманова</option>`);
@@ -1249,7 +1264,7 @@ $(function ($) {
                     const $root = protocolInformation.find('.js-equipment-info'); // добавьте этот класс на общий блок
                     renderUsedEquipmentRemoveList($root);
 
-                    $.each(data['oboruds'], function(key, value) {
+                    $.each(data['oboruds'], function (key, value) {
                         equipment.append(
                             `<option value="${value['o_id']}" data-gost="${value['g_id']}">
                                 ${value['TYPE_OBORUD']} ${value['OBJECT']}
@@ -1262,7 +1277,7 @@ $(function ($) {
                     container.empty();
 
                     const src = data['protocol_equipment'] || {};
-// новая структура: объект { "261": {...}, "300": {...} }
+                    // новая структура: объект { "261": {...}, "300": {...} }
                     const equipmentList = Array.isArray(src) ? src : Object.values(src);
 
                     for (const eq of equipmentList) {
@@ -1322,17 +1337,17 @@ $(function ($) {
                     let protocolTemplate = data['protocol']['id_template'] ? data['protocol']['id_template'] : 0;
                     protocolInformation.find('.protocol-template').val(protocolTemplate);
                     protocolInformation.find('.verify').val(data['protocol']['verify']);
-                    if(protocolType == 0 || protocolType == 43) {
+                    if (protocolType == 0 || protocolType == 43) {
                         protocolInformation.find('.norm-control').show()
                     }
-                    if(protocolType == 57) {
+                    if (protocolType == 57) {
                         protocolInformation.find('.osk1').show();
                         protocolInformation.find('.osk-1-name').val(data['protocol']['osk_1_name']);
                         protocolInformation.find('.osk-1-norm').val(data['protocol']['osk_1_norm']);
                         var valuepl = data['protocol']['osk_1_place'] ? data['protocol']['osk_1_place'] : 'г. Челябинск, Промзона, ул. Монтажников 11';
                         protocolInformation.find('.osk-1-place').val(valuepl);
                     }
-                    if(protocolType == 58) {
+                    if (protocolType == 58) {
                         console.log(data)
                         protocolInformation.find('.osk2').show();
                         var value2norm = data['protocol']['osk_2_norm'] ? data['protocol']['osk_2_norm'] : '49.2';
@@ -1536,7 +1551,7 @@ $(function ($) {
         const text = $(this).data('full') || '';
         $('#osk1Norm').val(text);
     });
-// если нужно применить выбранное при загрузке:
+    // если нужно применить выбранное при загрузке:
     $('input[name="placeProbePreset"]:checked').trigger('change');
     $('input[name="objectProbePreset"]:checked').trigger('change');
     $('input[name="descObjectProbePreset"]:checked').trigger('change');
@@ -1548,8 +1563,8 @@ $(function ($) {
 
 function setFilterFromCookie($select, keyCookie) {
     let value = $.cookie(keyCookie)
-    if ( value !== '' && value !== undefined ) {
-        $.each(value.split(','), function(i, e) {
+    if (value !== '' && value !== undefined) {
+        $.each(value.split(','), function (i, e) {
             $select.find(`option[value='${e}']`).prop("selected", true)
         })
         $select.trigger('change')

@@ -3015,6 +3015,7 @@ class Result extends Model
                 // Фактическое значение
                 $actual = $data['actual_value'][$umtrId][$ugtpId] ?? null;
                 $actualData = $resultModel->getActualData($methodData, $actual);
+                $unsert = $data['uncertainty_value'][$umtrId][$ugtpId] ?? null;
 
                 // Соответствие требованиям
                 $match = $data['match'][$umtrId][$ugtpId] ?? null;
@@ -3045,7 +3046,8 @@ class Result extends Model
                     'match' => isset($normativeValue) ? $this->quoteStr($this->DB->ForSql($matchValue)) : 'NULL',
                     'is_confirm_oa' => $isConfirmOa,
                     'date_last_update_actual_value' => "'{$currentDateUpdate}'",
-                    'date_set_actual_value' => "'{$currentDateSet}'"
+                    'date_set_actual_value' => "'{$currentDateSet}'",
+                    'uncertainty' => isset($unsert) ? $this->quoteStr($this->DB->ForSql($unsert)) : 'NULL',
                 ];
 
 
