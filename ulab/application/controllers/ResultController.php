@@ -2953,7 +2953,7 @@ class ResultController extends Controller
 
 
         $dealId = (int)$_POST['deal_id'];
-        $location = "/result/" . ($dealId >= DEAL_START_NEW_AREA ? 'resultCard' : 'card') . "/{$dealId}";
+        $location = "/result/card_oati" . "/{$dealId}";
 
         $deal = $request->getDealById($dealId);
 

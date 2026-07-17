@@ -25,11 +25,12 @@ class Requirement extends Model
      */
     public function getMaterialFromTz($dealId = 0)
     {
-        $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
-        if (!empty($dealId)) {
-            $where = "umtr.deal_id = {$dealId}";
-        }
+        // $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
+        // if (!empty($dealId)) {
 
+        // }
+
+        $where = "umtr.deal_id = {$dealId}";
         $result = [];
 
         $sql = $this->DB->Query(
@@ -149,10 +150,11 @@ class Requirement extends Model
      */
     public function getMethodsFromTz($dealId = 0)
     {
-        $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
-        if (!empty($dealId)) {
-            $where = "umtr.deal_id = {$dealId}";
-        }
+        // $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
+        // if (!empty($dealId)) {
+
+        // }
+        $where = "umtr.deal_id = {$dealId}";
 
         $methodsModel = new Methods();
 
@@ -179,11 +181,10 @@ class Requirement extends Model
      */
     public function getAssignedFromTz($dealId = 0)
     {
-        $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
-        if (!empty($dealId)) {
-            $where = "umtr.deal_id = {$dealId}";
-        }
-
+        // $where = "umtr.deal_id >" . DEAL_NEW_RESULT;
+        // if (!empty($dealId)) {
+        // }
+        $where = "umtr.deal_id = {$dealId}";
         $userModel = new User();
 
         $result = [];
