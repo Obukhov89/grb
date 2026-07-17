@@ -250,7 +250,7 @@ class Result extends Model
     {
         $requestModel = new Request;
 
-        if ( empty($protocols) ) {
+        if (empty($protocols)) {
             return [];
         }
 
@@ -264,8 +264,7 @@ class Result extends Model
                 $dir = "/home/bitrix/www/protocol_generator/archive/{$protocol['ID_TZ']}{$year}/{$protocol['ID']}/";
                 $path = "/protocol_generator/archive/{$protocol['ID_TZ']}{$year}/{$protocol['ID']}/";
                 $files = $requestModel->getFilesFromDirWithFileType($dir, ['signed.docx', 'forsign.docx', 'qrNEW.png', "{$protocol['NUMBER']}.sig"], "pdf");
-                usort($files, function($a, $b)
-                {
+                usort($files, function ($a, $b) {
                     $a = mb_substr($a, -24);
                     $b = mb_substr($b, -24);
 
@@ -427,7 +426,7 @@ class Result extends Model
         }
 
         $result = $this->DB->Query(
-        "SELECT umtr.id umtr_id, umtr.deal_id, umtr.probe_number, umtr.cipher, umtr.protocol_id,
+            "SELECT umtr.id umtr_id, umtr.deal_id, umtr.probe_number, umtr.cipher, umtr.protocol_id,
                 umtr.material_id, umtr.material_number, m.ID m_id,
                 m.NAME m_mame, ugtp.id ugtp_id, ugtp.method_id, ugtp.conditions_id, ugtp.gost_number, bgm.GOST bgm_gost, bgm.IN_OA bgm_in_oa, bgm.IN_OUT bgm_in_out,
                 bgm.IN_OUT bgm_in_out, bgm.GOST_PUNKT bgm_punkt, bgm.NORM_TEXT bgm_norm_text,
@@ -445,7 +444,8 @@ class Result extends Model
             INNER JOIN ba_gost bgc ON bgc.ID = ugtp.conditions_id
             LEFT JOIN ulab_trial_results utr ON utr.gost_to_probe_id = ugtp.id
             LEFT JOIN PROTOCOLS p ON p.ID = umtr.protocol_id
-            WHERE umtr.id = {$umtr_id}")->Fetch();
+            WHERE umtr.id = {$umtr_id}"
+        )->Fetch();
 
         if (!empty($result)) {
             $response = $result;
@@ -524,7 +524,7 @@ class Result extends Model
         }
 
         $result = $this->DB->Query(
-        "SELECT utr.*, ugtp.measuring_sheet 
+            "SELECT utr.*, ugtp.measuring_sheet 
                 FROM `ulab_trial_results` as utr, `ulab_gost_to_probe` as ugtp 
                 WHERE utr.`gost_to_probe_id` = ugtp.`id` AND ugtp.`id` = {$ugtp_id}"
         );
@@ -575,8 +575,7 @@ class Result extends Model
         bool $isCheck = true,
         ?int $protocolId = null,
         ?int $selectedProtocol = null
-    ): array
-    {
+    ): array {
         $resultModel = new Result;
         $methodsModel = new Methods;
         $labModel = new Lab;
@@ -612,12 +611,12 @@ class Result extends Model
             LEFT JOIN ulab_dimension as d on d.id = um.unit_id
             LEFT JOIN materials_groups as mg on mg.id = umtr.group 
             LEFT JOIN materials_groups_tu as mgt on mg.id = mgt.materials_groups_id and mgt.tu_id = ugtp.conditions_id
-            WHERE umtr.deal_id = {$dealId} AND um.is_selection <> 1 {$where} ORDER BY umtr.id, ugtp.gost_number");//, umtr.material_number, umtr.probe_number
+            WHERE umtr.deal_id = {$dealId} AND um.is_selection <> 1 {$where} ORDER BY umtr.id, ugtp.gost_number"); //, umtr.material_number, umtr.probe_number
 
         $prevMaterialNumber = 0;
         $prevProbeNumber = 0;
         while ($row = $result->Fetch()) {
-            if ( empty($row['protocol_id']) && $row['ugtp_protocol_id'] ) {
+            if (empty($row['protocol_id']) && $row['ugtp_protocol_id']) {
                 $row['protocol_id'] = $row['ugtp_protocol_id'];
             }
 
@@ -651,8 +650,7 @@ class Result extends Model
 
             // ОА (Если "Входящий диапазон" то "от - до")
             $row['range_ao'] = $row['um_definition_range_type'] == 1 ?
-                'от ' . ($row['um_definition_range_1'] ?? '-') . ' до ' . ($row['um_definition_range_2'] ?? '-') :
-                ($row['um_definition_range_type'] == 2 ? 'до ' . ($row['um_definition_range_1'] ?? '-') . ' и от ' . ($row['um_definition_range_2'] ?? '-') : '');
+                'от ' . ($row['um_definition_range_1'] ?? '-') . ' до ' . ($row['um_definition_range_2'] ?? '-') : ($row['um_definition_range_type'] == 2 ? 'до ' . ($row['um_definition_range_1'] ?? '-') . ' и от ' . ($row['um_definition_range_2'] ?? '-') : '');
 
 
 
@@ -676,9 +674,8 @@ class Result extends Model
             $row['measurement_sheet'] =
                 !empty($row['protocol']['NUMBER']) && empty($row['protocol']['EDIT_RESULTS']) || empty($row['measurement']['name']);
             $row['sheet_title'] =
-                empty($row['measurement']['name']) ? 'Для текущей методике отсутствует или не выбран лист измерения' :
-                    (!empty($row['protocol']['NUMBER']) && empty($row['protocol']['EDIT_RESULTS']) ?
-                        'Лист измерения недоступен, у протокола есть номер и протокол не разблокирован' : '');
+                empty($row['measurement']['name']) ? 'Для текущей методике отсутствует или не выбран лист измерения' : (!empty($row['protocol']['NUMBER']) && empty($row['protocol']['EDIT_RESULTS']) ?
+                    'Лист измерения недоступен, у протокола есть номер и протокол не разблокирован' : '');
 
             if ($isCheck) {
                 // Нормативное значение
@@ -709,7 +706,7 @@ class Result extends Model
                 ];
 
                 $val1 = $row['val_1'] != '' ? $ex[$row['comparison_val_1']] . ' ' . $row['val_1'] : '';
-                $val2 = $row['val_2'] != '' ? $ex[$row['comparison_val_2']] . ' ' . $row['val_2']: '';
+                $val2 = $row['val_2'] != '' ? $ex[$row['comparison_val_2']] . ' ' . $row['val_2'] : '';
 
                 $row['normative_value'] = $val1 . ' ' . $val2;
                 $row['normative_message'] = 'группа материала ' . $row['group_name'];
@@ -740,62 +737,62 @@ class Result extends Model
             'mtr.deal_id desc, gtp.method_id asc, mtr.probe_number asc, mtr.cipher asc, gtp.gost_number asc, mtr.material_number asc',
             'mtr.deal_id desc, mtr.material_number asc, mtr.probe_number asc, gtp.method_id asc, gtp.gost_number asc',
         ];
-        $whereDealId = "mtr.deal_id > " . DEAL_NEW_RESULT;
+        $whereDealId = "mtr.deal_id";
         if (!isset($filter['order'])) {
             $filter['order'] = 0;
         }
 
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
+            if (!empty($filter['search'])) {
                 // ид заявки
-                if ( isset($filter['search']['deal_id']) ) {
+                if (isset($filter['search']['deal_id'])) {
                     $whereDealId = "mtr.deal_id = {$filter['search']['deal_id']}";
                 }
                 // ид материалов из таблицы materials
-                if ( isset($filter['search']['material_id']) ) {
+                if (isset($filter['search']['material_id'])) {
                     $str = implode(',', $filter['search']['material_id']);
                     $where .= "mtr.material_id in ({$str}) AND ";
                 }
-                if ( isset($filter['search']['method_id']) ) {
+                if (isset($filter['search']['method_id'])) {
                     $str = implode(',', $filter['search']['method_id']);
                     $where .= "gtp.method_id in ({$str}) AND ";
                 }
-                if ( isset($filter['search']['probe_id']) ) {
+                if (isset($filter['search']['probe_id'])) {
                     $str = implode(',', $filter['search']['probe_id']);
                     $where .= "mtr.id in ({$str}) AND ";
                 }
-                if ( isset($filter['search']['lab_id']) ) {
+                if (isset($filter['search']['lab_id'])) {
                     $str = implode(',', $filter['search']['lab_id']);
                     $where .= "uml.lab_id in ({$str}) AND ";
                 }
-                if ( isset($filter['search']['protocol_id']) ) {
+                if (isset($filter['search']['protocol_id'])) {
                     $where .= "gtp.protocol_id = {$filter['search']['protocol_id']} AND ";
                 }
-                if ( isset($filter['search']['assigned_id']) ) {
+                if (isset($filter['search']['assigned_id'])) {
                     $str = implode(',', $filter['search']['assigned_id']);
                     $where .= "gtp.assigned_id in ({$str}) AND ";
-//                    if ( $filter['search']['assigned_id'] == -1 ) {
-//                        $where .= "(gtp.assigned_id = '' or gtp.assigned_id is null) AND ";
-//                    } else {
-//                        $where .= "gtp.assigned_id = {$filter['search']['assigned_id']} AND ";
-//                    }
+                    //                    if ( $filter['search']['assigned_id'] == -1 ) {
+                    //                        $where .= "(gtp.assigned_id = '' or gtp.assigned_id is null) AND ";
+                    //                    } else {
+                    //                        $where .= "gtp.assigned_id = {$filter['search']['assigned_id']} AND ";
+                    //                    }
                 }
-                if ( isset($filter['search']['deal_title']) ) {
+                if (isset($filter['search']['deal_title'])) {
                     $where .= "tz.REQUEST_TITLE like '%{$filter['search']['deal_title']}%' and ";
                 }
-                if ( isset($filter['search']['cipher']) ) {
+                if (isset($filter['search']['cipher'])) {
                     $where .= "mtr.cipher like '%{$filter['search']['cipher']}%' and ";
                 } else {
-//                    $where .= "mtr.cipher <> '' and ";
+                    //                    $where .= "mtr.cipher <> '' and ";
                     $where .= "";
                 }
-                if ( isset($filter['search']['status']) ) {
+                if (isset($filter['search']['status'])) {
                     $arrStartWhere = [
                         '',
                         "gtp.id not in (select ugtp_id from ulab_start_trials)",
@@ -806,18 +803,18 @@ class Result extends Model
                 }
             }
 
-            if ( $filter['order'] == 1 ) {
+            if ($filter['order'] == 1) {
                 $where .= "gtp.assigned_id > 0 AND ";
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -827,7 +824,7 @@ class Result extends Model
         $where .= "1 ";
 
         $data = $this->DB->Query(
-                    "SELECT 
+            "SELECT 
                         gtp.*, gtp.id as ugtp_id, gtp.protocol_id as gtp_protocol_id, gtp.assigned_id, 
                         mtr.*, mtr.id as mtr_id, mtr.id as umtr_id, 
                         m.ID as material_id, m.NAME as material_name,
@@ -845,7 +842,7 @@ class Result extends Model
         );
 
         $dataTotal = $this->DB->Query(
-                    "SELECT 
+            "SELECT 
                         gtp.method_id, mtr.id
                     FROM ulab_material_to_request as mtr
                     inner join MATERIALS as m ON m.ID = mtr.material_id
@@ -857,7 +854,7 @@ class Result extends Model
         )->SelectedRowsCount();
 
         $dataFiltered = $this->DB->Query(
-                    "SELECT 
+            "SELECT 
                         gtp.method_id, mtr.id
                     FROM ulab_material_to_request as mtr
                     inner join MATERIALS as m ON m.ID = mtr.material_id
@@ -873,13 +870,13 @@ class Result extends Model
 
         while ($row = $data->Fetch()) {
 
-            if ( !empty($row['material_group_name']) ) {
+            if (!empty($row['material_group_name'])) {
                 $row['material_name'] .= " ({$row['material_group_name']})";
             }
 
             $row['material_cipher'] = "{$row['material_name']} {$row['material_group_name']} ({$row['name_for_protocol']}) | {$row['cipher']}";
 
-            if ( !empty($row['assigned_id']) ) {
+            if (!empty($row['assigned_id'])) {
                 $row['assigned_user'] = $userModel->getUserData($row['assigned_id'])['short_name'];
             } else {
                 $row['assigned_user'] = "Не назначен";
@@ -918,8 +915,7 @@ class Result extends Model
 
             // ОА (Если "Входящий диапазон" то "от - до")
             $row['range_ao'] = $row['um_definition_range_type'] == 1 ?
-                'от ' . ($row['um_definition_range_1'] ?? '-') . ' до ' . ($row['um_definition_range_2'] ?? '-') :
-                ($row['um_definition_range_type'] == 2 ? 'до ' . ($row['um_definition_range_1'] ?? '-') . ' и от ' . ($row['um_definition_range_2'] ?? '-') : '');
+                'от ' . ($row['um_definition_range_1'] ?? '-') . ' до ' . ($row['um_definition_range_2'] ?? '-') : ($row['um_definition_range_type'] == 2 ? 'до ' . ($row['um_definition_range_1'] ?? '-') . ' и от ' . ($row['um_definition_range_2'] ?? '-') : '');
 
             // "Испытание" (если есть номер протокола и протокол не разблокирован,
             // то начать или возобновить или завершить испытание неользя)
@@ -930,9 +926,8 @@ class Result extends Model
             $row['measurement_sheet'] =
                 !empty($row['protocol']['NUMBER']) && empty($row['protocol']['EDIT_RESULTS']) || empty($row['measurement']['name']);
             $row['sheet_title'] =
-                empty($row['measurement']['name']) ? 'Для текущей методике отсутствует или не выбран лист измерения' :
-                    (!empty($row['protocol']['NUMBER']) && empty($row['protocol']['EDIT_RESULTS']) ?
-                        'Лист измерения недоступен, у протокола есть номер и протокол не разблокирован' : '');
+                empty($row['measurement']['name']) ? 'Для текущей методике отсутствует или не выбран лист измерения' : (!empty($row['protocol']['NUMBER']) && empty($row['protocol']['EDIT_RESULTS']) ?
+                    'Лист измерения недоступен, у протокола есть номер и протокол не разблокирован' : '');
 
             if (true) {
                 // Нормативное значение
@@ -954,7 +949,7 @@ class Result extends Model
                 $row = array_merge($row, $attestatData);
             }
 
-            if ( !empty($row['group'] && (!empty($row['val_1']) || $row['val_1'] == '0')) ) {
+            if (!empty($row['group'] && (!empty($row['val_1']) || $row['val_1'] == '0'))) {
                 $ex = [
                     'less_or_equal' => 'до',
                     'more_or_equal' => 'от',
@@ -1042,7 +1037,7 @@ class Result extends Model
 
             //Фактическое значение
             $row['actual_value'] = json_decode($row['actual_value'], true);
-            if ( isset($row['measuring_sheet']['result_value']) ) {
+            if (isset($row['measuring_sheet']['result_value'])) {
                 $row['actual_value'][0] = $row['measuring_sheet']['result_value'];
             }
 
@@ -1075,8 +1070,10 @@ class Result extends Model
             $row['out_range'] = '';
 
 
-            if ($row['lab_id'] == 1 && isset($row['actual_value'][0]) && is_numeric($row['actual_value'][0]) &&
-                is_numeric($row['um_definition_range_1']) && is_numeric($row['um_definition_range_2'])) {
+            if (
+                $row['lab_id'] == 1 && isset($row['actual_value'][0]) && is_numeric($row['actual_value'][0]) &&
+                is_numeric($row['um_definition_range_1']) && is_numeric($row['um_definition_range_2'])
+            ) {
                 if ($row['um_definition_range_type'] == 1) {
                     if ($row['actual_value'][0] < $row['um_definition_range_1']) {
                         $row['out_range'] = 'менее ' . $row['um_definition_range_1'];
@@ -1094,19 +1091,21 @@ class Result extends Model
 
 
             //Соответствие требованиям
-            if ( !empty($row['protocol_id']) ) {
-                if ( !empty($row['in_field']) ) {
+            if (!empty($row['protocol_id'])) {
+                if (!empty($row['in_field'])) {
                     // если нормы НЕ текстом в методике, то проверяем на соответсвие диапазона
-                    if ( empty($row['um_is_text_norm']) ) {
-                        if ( is_numeric($row['actual_value'][0]) ) {
+                    if (empty($row['um_is_text_norm'])) {
+                        if (is_numeric($row['actual_value'][0])) {
                             if (($row['actual_value'][0] < $row['um_definition_range_1'] || $row['actual_value'][0] > $row['um_definition_range_2'])
-                                && $row['um_definition_range_type'] == 1) { // Входящий(внутренний) диапазон 1
+                                && $row['um_definition_range_type'] == 1
+                            ) { // Входящий(внутренний) диапазон 1
                                 $row['match_message'] = 'Внимание! Значение вне области!';
                                 $row['no_oa'][$row['protocol_id']] = 1;
                             }
 
                             if (($row['actual_value'][0] > $row['um_definition_range_1'] && $row['actual_value'][0] < $row['um_definition_range_2']) &&
-                                $row['um_definition_range_type'] == 2) { // Исходящий(внешний) диапазон 2
+                                $row['um_definition_range_type'] == 2
+                            ) { // Исходящий(внешний) диапазон 2
                                 if (!empty($row['in_field']) && !empty($row['protocol_id'])) {
                                     $row['match_message'] = 'Внимание! Значение вне области!';
                                     $row['no_oa'][$row['protocol_id']] = 1;
@@ -1117,7 +1116,6 @@ class Result extends Model
                             $row['no_oa'][$row['protocol_id']] = 1; // Без аттестата и в не диапазона
                         }
                     }
-
                 } else { // если методика не в области
                     $row['no_oa'][$row['protocol_id']] = 1; // Без аттестата и в не диапазона
                 }
@@ -1143,8 +1141,7 @@ class Result extends Model
 
             //ОА (Если "Входящий диапазон" то "от - до")
             $row['range_title'] = $row['um_definition_range_type'] == 1 ?
-                'от ' . ($row['um_definition_range_1'] ?: '-') . ' до ' . ($row['um_definition_range_2'] ?: '-') :
-                ($row['um_definition_range_type'] == 2 ? 'до ' . ($row['um_definition_range_1'] ?: '-') . ' и от ' . ($row['um_definition_range_2'] ?: '-') : '');
+                'от ' . ($row['um_definition_range_1'] ?: '-') . ' до ' . ($row['um_definition_range_2'] ?: '-') : ($row['um_definition_range_type'] == 2 ? 'до ' . ($row['um_definition_range_1'] ?: '-') . ' и от ' . ($row['um_definition_range_2'] ?: '-') : '');
 
             if ($row['um_definition_range_type'] == 1 && empty($row['in_field']) && !empty($row['protocol_id'])) {
                 $row['no_oa'][$row['protocol_id']] = 1;
@@ -1163,7 +1160,7 @@ class Result extends Model
      */
     public function getMaterialGostDataByDealId(int $dealId): array
     {
-    	$user = new User();
+        $user = new User();
 
         $response = [];
 
@@ -1195,14 +1192,16 @@ class Result extends Model
             WHERE umtr.deal_id = {$dealId} AND bgm.GOST_TYPE <> 'metodic_otbor'");
 
         while ($row = $result->Fetch()) {
-            if (empty($row['bgm_in_oa']) && $row['bgm_gost_type'] !== 'metodic_otbor' &&
-                !in_array($row['method_id'], [2875, 3376]) && !empty($row['protocol_id'])) {
+            if (
+                empty($row['bgm_in_oa']) && $row['bgm_gost_type'] !== 'metodic_otbor' &&
+                !in_array($row['method_id'], [2875, 3376]) && !empty($row['protocol_id'])
+            ) {
                 $row['no_oa'][$row['protocol_id']] = 1;
             }
 
             if (!empty($row['assigned_id'])) {
-				$row['tester'] = $user->getUserShortById($row['assigned_id']);
-			}
+                $row['tester'] = $user->getUserShortById($row['assigned_id']);
+            }
 
             //Единицы измерения
             $row['units'] = $row['bgm_ed'] . ($row['bgm_ed_index'] ? "<sup>{$row['bgm_ed_index']}</sup>" : '');
@@ -1233,8 +1232,10 @@ class Result extends Model
             $row['out_range'] = '';
 
 
-            if (!empty($row['bgm_lfhi']) && isset($row['actual_value'][0]) && is_numeric($row['actual_value'][0]) &&
-                is_numeric($row['bgm_norm_1']) && is_numeric($row['bgm_norm_2'])) {
+            if (
+                !empty($row['bgm_lfhi']) && isset($row['actual_value'][0]) && is_numeric($row['actual_value'][0]) &&
+                is_numeric($row['bgm_norm_1']) && is_numeric($row['bgm_norm_2'])
+            ) {
                 if (!empty($row['bgm_in_out'])) {
                     if ($row['actual_value'][0] < $row['bgm_norm_1']) {
                         $row['out_range'] = 'менее ' . $row['bgm_norm_1'];
@@ -1260,45 +1261,46 @@ class Result extends Model
 
 
             //Соответствие требованиям
-//            if ($row['bgm_res_text']) {
-//                $actualValue = preg_replace("/[^,.0-9]/", '', $row['actual_value'][0]);
-//
-//                if (($actualValue < $row['bgm_norm1'] || $actualValue > $row['bgm_norm2']) && $row['bgm_in_out']) {
-//                    $row['match_message'] = 'Внимание! Значение вне области!';
-//
-//                    if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
-//                        $row['no_oa'][$row['protocol_id']] = 1;
-//                    }
-//                } elseif (($actualValue > $row['bgm_norm1'] || $actualValue < $row['bgm_norm2']) && empty($row['bgm_in_out'])) {
-//                    $row['match_message'] = 'Внимание! Значение вне области!';
-//
-//                    if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
-//                        $row['no_oa'][$row['protocol_id']] = 1;
-//                    }
-//                }
-//            } else {
-                if (empty($row['bgm_norm_text']) && $row['average_value'] !== null) {
-                    if ($row['method_id'] === 6402) {
-                        //TODO: а если несколько фактических значений ?
-                        $row['average_value'] = explode('F', $row['actual_value'][0])[1];
+            //            if ($row['bgm_res_text']) {
+            //                $actualValue = preg_replace("/[^,.0-9]/", '', $row['actual_value'][0]);
+            //
+            //                if (($actualValue < $row['bgm_norm1'] || $actualValue > $row['bgm_norm2']) && $row['bgm_in_out']) {
+            //                    $row['match_message'] = 'Внимание! Значение вне области!';
+            //
+            //                    if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
+            //                        $row['no_oa'][$row['protocol_id']] = 1;
+            //                    }
+            //                } elseif (($actualValue > $row['bgm_norm1'] || $actualValue < $row['bgm_norm2']) && empty($row['bgm_in_out'])) {
+            //                    $row['match_message'] = 'Внимание! Значение вне области!';
+            //
+            //                    if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
+            //                        $row['no_oa'][$row['protocol_id']] = 1;
+            //                    }
+            //                }
+            //            } else {
+            if (empty($row['bgm_norm_text']) && $row['average_value'] !== null) {
+                if ($row['method_id'] === 6402) {
+                    //TODO: а если несколько фактических значений ?
+                    $row['average_value'] = explode('F', $row['actual_value'][0])[1];
+                }
+
+                if (($row['average_value'] < $row['bgm_norm1'] || $row['average_value'] > $row['bgm_norm2']) && $row['bgm_in_out']) {
+                    $row['match_message'] = 'Внимание! Значение вне области!';
+
+                    if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
+                        $row['no_oa'][$row['protocol_id']] = 1;
                     }
+                } elseif (($row['average_value'] > $row['bgm_norm1'] || $row['average_value'] < $row['bgm_norm2'])
+                    && empty($row['bgm_in_out'])
+                ) {
+                    $row['match_message'] = 'Внимание! Значение вне области!';
 
-                    if (($row['average_value'] < $row['bgm_norm1'] || $row['average_value'] > $row['bgm_norm2']) && $row['bgm_in_out']) {
-                        $row['match_message'] = 'Внимание! Значение вне области!';
-
-                        if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
-                            $row['no_oa'][$row['protocol_id']] = 1;
-                        }
-                    } elseif (($row['average_value'] > $row['bgm_norm1'] || $row['average_value'] < $row['bgm_norm2'])
-                        && empty($row['bgm_in_out'])) {
-                        $row['match_message'] = 'Внимание! Значение вне области!';
-
-                        if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
-                            $row['no_oa'][$row['protocol_id']] = 1;
-                        }
+                    if (!empty($row['bgm_in_oa']) && !empty($row['protocol_id'])) {
+                        $row['no_oa'][$row['protocol_id']] = 1;
                     }
                 }
-//            }
+            }
+            //            }
 
 
             switch ($row['match']) {
@@ -1496,7 +1498,8 @@ class Result extends Model
      * @param $id
      * @return array
      */
-    public function getMeasurement($id) {
+    public function getMeasurement($id)
+    {
         $response = [];
 
         if (empty($id) || $id < 0) {
@@ -1505,7 +1508,7 @@ class Result extends Model
 
         $result = $this->DB->Query("SELECT * FROM `ulab_measurement` WHERE id = {$id}")->Fetch();
 
-        if ( !empty($result) ) {
+        if (!empty($result)) {
             $result['initial_data_json'] = $result['initial_data'];
             $result['initial_data'] = json_decode($result['initial_data'], true);
             $response = $result;
@@ -1524,13 +1527,11 @@ class Result extends Model
 
         $unserialized = [];
         parse_str($data, $unserialized);
-        foreach ($unserialized['form_data'] as $val)
-		{
-
-		}
-//        $tmp = $unserialized['form_data'];
-//        unset($unserialized['form_data']);
-//        $unserialized = array_merge($unserialized, $tmp);
+        foreach ($unserialized['form_data'] as $val) {
+        }
+        //        $tmp = $unserialized['form_data'];
+        //        unset($unserialized['form_data']);
+        //        $unserialized = array_merge($unserialized, $tmp);
         $dataJson = json_encode($unserialized, JSON_UNESCAPED_UNICODE);
 
         $sqlData = [
@@ -1549,8 +1550,8 @@ class Result extends Model
      */
     public function saveMeasurementDataNew($data, $ugtpId)
     {
-//        $this->pre($data);
-    	$dataJson = json_encode($data, JSON_UNESCAPED_UNICODE);
+        //        $this->pre($data);
+        $dataJson = json_encode($data, JSON_UNESCAPED_UNICODE);
 
         $sqlData = [
             'measuring_sheet' => $this->quoteStr($this->DB->ForSql(trim($dataJson)))
@@ -1562,51 +1563,52 @@ class Result extends Model
 
 
     public function grain($ugtp, $methodId)
-	{
-		$materialModel = new Material();
-		$methodModel = new Methods();
-		$gostModel = new Gost();
+    {
+        $materialModel = new Material();
+        $methodModel = new Methods();
+        $gostModel = new Gost();
 
-		$material = [];
+        $material = [];
 
-		$sieve = $materialModel->getZern();
+        $sieve = $materialModel->getZern();
 
-		$material['sieve'] = $sieve;
-		$material['method_id'] = $methodId;
+        $material['sieve'] = $sieve;
+        $material['method_id'] = $methodId;
 
-		return $material;
-	}
+        return $material;
+    }
 
-	public function asphalt($ugtp, $methodId)
-	{
-		$materialModel = new Material();
-		$methodModel = new Methods();
-		$gostModel = new Gost();
+    public function asphalt($ugtp, $methodId)
+    {
+        $materialModel = new Material();
+        $methodModel = new Methods();
+        $gostModel = new Gost();
 
-		$material = [];
+        $material = [];
 
-		$sieve = $materialModel->getZern();
+        $sieve = $materialModel->getZern();
 
-		$material['sieve'] = $sieve;
-		$material['method_id'] = $methodId;
+        $material['sieve'] = $sieve;
+        $material['method_id'] = $methodId;
 
-		return $material;
-	}
+        return $material;
+    }
 
-	public function grain_composition_31424($ugtp, $methodId)
-	{
-		$materialModel = new Material();
-		$methodModel = new Methods();
-		$gostModel = new Gost();
+    public function grain_composition_31424($ugtp, $methodId)
+    {
+        $materialModel = new Material();
+        $methodModel = new Methods();
+        $gostModel = new Gost();
 
-		$material = [];
+        $material = [];
 
-		$material['method_id'] = $methodId;
+        $material['method_id'] = $methodId;
 
-		return $material;
-	}
+        return $material;
+    }
 
-	public function average($ugtp, $methodId) {
+    public function average($ugtp, $methodId)
+    {
         $methodsModel = new Methods();
         $method = $methodsModel->get($methodId);
 
@@ -1617,7 +1619,8 @@ class Result extends Model
         return $method;
     }
 
-    public function average2($ugtp, $methodId) {
+    public function average2($ugtp, $methodId)
+    {
         $methodsModel = new Methods();
         $method = $methodsModel->get($methodId);
 
@@ -1628,7 +1631,8 @@ class Result extends Model
         return $method;
     }
 
-    public function average3($ugtp, $methodId) {
+    public function average3($ugtp, $methodId)
+    {
         $methodsModel = new Methods();
         $method = $methodsModel->get($methodId);
 
@@ -1639,7 +1643,8 @@ class Result extends Model
         return $method;
     }
 
-    public function average4($ugtp, $methodId) {
+    public function average4($ugtp, $methodId)
+    {
         $methodsModel = new Methods();
         $method = $methodsModel->get($methodId);
 
@@ -1650,7 +1655,8 @@ class Result extends Model
         return $method;
     }
 
-    public function medium2($ugtp, $methodId) {
+    public function medium2($ugtp, $methodId)
+    {
         $methodsModel = new Methods();
         $method = $methodsModel->get($methodId);
 
@@ -1667,7 +1673,8 @@ class Result extends Model
      * @param $methodId
      * @return array
      */
-    public function frost($ugtp, $methodId) {
+    public function frost($ugtp, $methodId)
+    {
         $materialModel = new Material();
         $methodsModel = new Methods();
 
@@ -1689,7 +1696,8 @@ class Result extends Model
      * @param $methodId
      * @return array
      */
-    public function concrete_strength_17624_7($ugtp, $methodId) {
+    public function concrete_strength_17624_7($ugtp, $methodId)
+    {
         $gostModel = new Gost();
         $nkModel = new Nk;
 
@@ -1736,7 +1744,8 @@ class Result extends Model
      * @param $methodId
      * @return array
      */
-    public function actual_class_18105_8_4_1($ugtp, $methodId) {
+    public function actual_class_18105_8_4_1($ugtp, $methodId)
+    {
         $gostModel = new Gost();
         $methodsModel = new Methods();
         $nkModel = new Nk;
@@ -1796,9 +1805,9 @@ class Result extends Model
         $stateLastAction = $resultModel->getStateLastAction($ugtpId);
         $method = $methodsModel->getMethodByUgtpId($ugtpId);
 
-        $anchor = "<a href='".URI."/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
+        $anchor = "<a href='" . URI . "/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
 
-        if ( in_array($stateLastAction['state'], ['start', 'complete']) ) {
+        if (in_array($stateLastAction['state'], ['start', 'complete'])) {
             $errors = ["Не удалось начать испытание для методики {$anchor}, испытание уже начато или закончено"];
             return [
                 'success' => false,
@@ -1816,7 +1825,7 @@ class Result extends Model
 
         $result = $this->DB->Insert('ulab_start_trials', $data);
 
-        if ( empty(intval($result)) ) {
+        if (empty(intval($result))) {
             $errors = ["Не удалось начать испытание для методики {$anchor}"];
             $isSuccess = false;
         }
@@ -1842,9 +1851,9 @@ class Result extends Model
         $stateLastAction = $resultModel->getStateLastAction($ugtpId);
         $method = $methodsModel->getMethodByUgtpId($ugtpId);
 
-        $anchor = "<a href='".URI."/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
+        $anchor = "<a href='" . URI . "/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
 
-        if ( in_array($stateLastAction['state'], ['pause', 'complete']) ) {
+        if (in_array($stateLastAction['state'], ['pause', 'complete'])) {
             return [
                 'success' => false,
                 'errors' => ["Не удалось приостановить испытание для методики {$anchor}, испытание уже приостановлено или закончено"]
@@ -1860,7 +1869,7 @@ class Result extends Model
 
         $result = $this->DB->Insert('ulab_start_trials', $data);
 
-        if ( empty(intval($result)) ) {
+        if (empty(intval($result))) {
             return [
                 'success' => false,
                 'errors' => ["Не удалось приостановить испытание для методики {$anchor}"]
@@ -1890,9 +1899,9 @@ class Result extends Model
         $stateLastAction = $resultModel->getStateLastAction($ugtpId);
         $method = $methodsModel->getMethodByUgtpId($ugtpId);
 
-        $anchor = "<a href='".URI."/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
+        $anchor = "<a href='" . URI . "/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
 
-        if ( in_array($stateLastAction['state'], ['complete']) ) {
+        if (in_array($stateLastAction['state'], ['complete'])) {
             $errors = ["Не удалось завершить испытание для методики {$anchor}, испытание уже завершено"];
             return [
                 'success' => false,
@@ -1910,7 +1919,7 @@ class Result extends Model
 
         $result = $this->DB->Insert('ulab_start_trials', $data);
 
-        if ( empty(intval($result)) ) {
+        if (empty(intval($result))) {
             $errors = ["Не удалось завершить испытание для методики {$anchor}"];
             $isSuccess = false;
         }
@@ -2003,7 +2012,7 @@ class Result extends Model
             "SELECT * FROM `ulab_start_trials` WHERE `ugtp_id` = {$ugtpId} AND state = 'start' AND is_change = 1"
         )->Fetch();
 
-        if ( !empty($result) ) {
+        if (!empty($result)) {
             $response = $result;
         }
 
@@ -2027,7 +2036,7 @@ class Result extends Model
             "SELECT * FROM `ulab_start_trials` WHERE `ugtp_id` = {$ugtpId} AND state = 'complete' AND is_change = 1"
         )->Fetch();
 
-        if ( !empty($result) ) {
+        if (!empty($result)) {
             $response = $result;
         }
 
@@ -2058,7 +2067,7 @@ class Result extends Model
             $trialsCompletionModific = $this->trialsCompletionModific($ugtpId);
 
             //Делаем не актуальные даты испытания
-            if ( !empty($startTrial) && empty($modifiedStartTrials) ) {
+            if (!empty($startTrial) && empty($modifiedStartTrials)) {
                 $data = [
                     'is_actual' => 0,
                 ];
@@ -2068,7 +2077,7 @@ class Result extends Model
             }
 
             // если дата испытаний ,была уже изменена обновляем её, если дату еще не меняли то делаем даты неактуальными и создаём новые измененные
-            if ( !empty($modifiedStartTrials) ) {
+            if (!empty($modifiedStartTrials)) {
                 foreach ($startTrial as $data) {
                     if ($data['state'] === 'start') {
                         $dataUpdate = [
@@ -2091,7 +2100,7 @@ class Result extends Model
                 $this->DB->Insert('ulab_start_trials', $dataStart);
             }
 
-            if ( !empty($trialsCompletionModific) ) {
+            if (!empty($trialsCompletionModific)) {
                 foreach ($startTrial as $data) {
                     if ($data['state'] === 'complete') {
                         $dataUpdate = [
@@ -2232,7 +2241,7 @@ class Result extends Model
                     $where .= "CONCAT(ug.reg_doc, ' ', um.clause, ' / ', um.name) LIKE '%{$filter['search']['method']}%' AND ";
                 }
                 // Кол-во испытаний
-                if ( isset($filter['search']['ugtp_count']) ) {
+                if (isset($filter['search']['ugtp_count'])) {
                     $where .= "ugtp_count = '{$filter['search']['ugtp_count']}' AND ";
                 }
             }
@@ -2347,10 +2356,9 @@ class Result extends Model
 
             // работа с фильтрами
             if (!empty($filter['search'])) {
-                if ( isset($filter['search']['method_id']) ) {
+                if (isset($filter['search']['method_id'])) {
                     $where .= "ugtp.method_id = {$filter['search']['method_id']} AND ust.is_actual = 1 AND ";
                 }
-
             }
             // везде
             if (isset($filter['search']['everywhere'])) {
@@ -2445,7 +2453,7 @@ class Result extends Model
         $i = 0;
         foreach ($arrUst as $ugtpId => $ust) {
             // Если испытание не завершено, то пропускаем
-            if ( end($ust)['state'] !== 'complete' ) {
+            if (end($ust)['state'] !== 'complete') {
                 continue;
             }
 
@@ -2475,8 +2483,10 @@ class Result extends Model
                     $dateBegin = $val['created_at'];
                 }
 
-                if (!empty($dateBegin) && !empty($id) && $id == $val['ugtp_id'] &&
-                    ($val['state'] == 'pause' || $val['state'] == 'complete')) {
+                if (
+                    !empty($dateBegin) && !empty($id) && $id == $val['ugtp_id'] &&
+                    ($val['state'] == 'pause' || $val['state'] == 'complete')
+                ) {
                     $dateEnd = $val['created_at'];
                     $periods[] = abs(strtotime($dateEnd) - strtotime($dateBegin));
 
@@ -2488,10 +2498,10 @@ class Result extends Model
             // Получаем время потраченное на испытание
             $diff = array_sum($periods);
 
-            $timeYears = 365*60*60*24;
-            $timeMonths = 30*60*60*24;
-            $timeDays = 60*60*24;
-            $timeHours = 60*60;
+            $timeYears = 365 * 60 * 60 * 24;
+            $timeMonths = 30 * 60 * 60 * 24;
+            $timeDays = 60 * 60 * 24;
+            $timeHours = 60 * 60;
             $timeMinutes = 60;
 
             $years = floor($diff / ($timeYears));
@@ -2544,10 +2554,10 @@ class Result extends Model
         $result = [];
 
         // ТУ выбрано при формировании ТЗ
-        if ( !empty($data['tech']['id']) ) {
+        if (!empty($data['tech']['id'])) {
             // Если в ТУ(Тех.Усл.) - Ручное управление "соотв/не соотв"
-            if ( !empty($data['tech']['is_manual']) ) {
-//                $result['normative_value'] = $normativeValue ?? ($data['normative_val'] ?? '');
+            if (!empty($data['tech']['is_manual'])) {
+                //                $result['normative_value'] = $normativeValue ?? ($data['normative_val'] ?? '');
                 $result['normative_value'] = $normativeValue ? html_entity_decode($normativeValue) : ($data['normative_val'] ? html_entity_decode($data['normative_val']) : '');
                 $result['normative_message'] = 'В ТУ Ручное управление "соотв/не соотв';
                 $result['readonly_normative_value'] = !(empty($data['protocol']['NUMBER']) || !empty($data['protocol']['EDIT_RESULTS']));
@@ -2605,8 +2615,8 @@ class Result extends Model
         $result['actual_value_message'] = '';
 
         // Если есть лист измерения у методики, то фактическое значение берём из листа измерения
-        if ( !empty($data['measurement_id']) ) {
-            if(!empty($data['is_select_fact'])) {
+        if (!empty($data['measurement_id'])) {
+            if (!empty($data['is_select_fact'])) {
                 if (!empty($data['tech']['id']) && empty($data['tech']['is_manual'])) { // В ГОСТе ТУ НЕ Ручное управление "соотв/не соотв"
                     $result['actual_value'] = '';
                     $result['actual_value_type'] = 'select';
@@ -2730,7 +2740,7 @@ class Result extends Model
         // Если у методики фактическое значение текстом
         if ($data['is_text_fact']) {
             // Если в ТУ(Тех.Усл.) - Ручное управление "соотв/не соотв"
-            if ( !empty($data['tech']['is_manual']) ) {
+            if (!empty($data['tech']['is_manual'])) {
                 $result['match'] = (int)($match ?? ($data['match'] ?? 2));
                 switch ($result['match']) {
                     case 0:
@@ -2762,7 +2772,7 @@ class Result extends Model
         }
 
         // Если в ТУ(Тех.Усл.) - Ручное управление "соотв/не соотв"
-        if ( !empty($data['tech']['is_manual']) ) {
+        if (!empty($data['tech']['is_manual'])) {
             $result['match'] = (int)($match ?? ($data['match'] ?? 2));
             switch ($result['match']) {
                 case 0:
@@ -2787,7 +2797,7 @@ class Result extends Model
         }
 
         // Если отсутвует фактическое значение или не верно заполнено
-        if ( !is_numeric($data['actual_value']) ) {
+        if (!is_numeric($data['actual_value'])) {
             $result['match'] = 2;
             $result['match_view'] = '-';
             $result['match_text'] = 'не заполнено или не верно заполнено ф/значение';
@@ -2801,16 +2811,16 @@ class Result extends Model
         $keyNorm = array_search($data['group'], $dopValue, true);
 
         // Если "Группы материала" выбрана в ТЗ и "Группы материала" создана в ГОСТе Тех.Усл., получаем "Нормы от" и "Нормы до"
-//        if (!empty($data['group']) && $keyNorm !== false) {
+        //        if (!empty($data['group']) && $keyNorm !== false) {
         if (!empty($data['group'] && !empty($data['tu_id']))) {
             // Если не заполнены или не верно заполнены нормы ТУ
-//            if ( !is_numeric($dopNorms[$keyNorm][0]) || !is_numeric($dopNorms[$keyNorm][1]) ) {
-//                $result['match'] = 2;
-//                $result['match_view'] = '-';
-//                $result['match_text'] = 'не заполнены или не верно заполнены нормы ТУ';
-//                $result['readonly_match'] = true; // НЕ доступно для редактировния
-//                return $result;
-//            }
+            //            if ( !is_numeric($dopNorms[$keyNorm][0]) || !is_numeric($dopNorms[$keyNorm][1]) ) {
+            //                $result['match'] = 2;
+            //                $result['match_view'] = '-';
+            //                $result['match_text'] = 'не заполнены или не верно заполнены нормы ТУ';
+            //                $result['readonly_match'] = true; // НЕ доступно для редактировния
+            //                return $result;
+            //            }
 
             $val1 = true;
             $val2 = true;
@@ -2865,8 +2875,10 @@ class Result extends Model
             $range2 = $data['tech']['definition_range_2'];
 
             if ($data['tech']['definition_range_type'] == 1) { // В ГОСТе ТУ - Внутренний диапазон
-                if ($range1 <= $data['actual_value'] &&
-                    $range2 >= $data['actual_value']) {
+                if (
+                    $range1 <= $data['actual_value'] &&
+                    $range2 >= $data['actual_value']
+                ) {
                     $result['match'] = 1;
                     $result['match_view'] = 'Соответствует';
                     $result['match_text'] = 'соот. внутренниму диапазону ТУ';
@@ -2876,8 +2888,10 @@ class Result extends Model
                     $result['match_text'] = 'не соот. внутренниму диапазону ТУ';
                 }
             } elseif ($data['tech']['definition_range_type'] == 2) { // В ГОСТе ТУ - Внешний диапазон
-                if ($range1 < $data['actual_value'] &&
-                    $range2 > $data['actual_value']) {
+                if (
+                    $range1 < $data['actual_value'] &&
+                    $range2 > $data['actual_value']
+                ) {
                     $result['match'] = 0;
                     $result['match_view'] = 'Не соответствует';
                     $result['match_text'] = 'внешнему диапазону ТУ';
@@ -2926,8 +2940,10 @@ class Result extends Model
             $confirmOa = (int)($isConfirmOa ?? ($data['is_confirm_oa'] ?? 0));
 
             // Если Фактическое значение НЕ подтверждено что в ОА (checkbox НЕ отмечен) и ф/значение не пустое
-            if (empty($confirmOa) &&
-                !(!isset($actualValue) || $actualValue === '')) {
+            if (
+                empty($confirmOa) &&
+                !(!isset($actualValue) || $actualValue === '')
+            ) {
                 $result['match_message'] = 'Ф/значение текстом. Отсутствует подтверждение нахождения значения в ОА!';
                 $result['out_diapason'] = 1;
             }
@@ -3017,9 +3033,9 @@ class Result extends Model
 
                 // Дата первичного ввода факт. значения
                 $currentDateSet = "";
-                if(isset($actualData['actual_value']) && $actualData['actual_value']) {
+                if (isset($actualData['actual_value']) && $actualData['actual_value']) {
                     $currentDateSet = $methodData['date_set_actual_value'] ? $methodData['date_set_actual_value'] : date('Y-m-d H:i:s');
-                }else if($methodData['date_set_actual_value']) {
+                } else if ($methodData['date_set_actual_value']) {
                     $currentDateSet = $methodData['date_set_actual_value'];
                 }
 
@@ -3035,7 +3051,6 @@ class Result extends Model
 
                 $this->DB->Update('ulab_gost_to_probe', $sqlMethodData, "WHERE id = {$ugtpId}");
             }
-
         }
         $protocolModel->updateAttestat($dealId, $outDiapason);
     }
@@ -3138,7 +3153,7 @@ class Result extends Model
         foreach ($data['gost_check'] as $ugtpId => $val) {
             $ugtp = $this->DB->Query("select * from ulab_gost_to_probe where id = {$ugtpId}")->Fetch();
 
-            if ( !empty($ugtp['protocol_id']) ) {
+            if (!empty($ugtp['protocol_id'])) {
                 continue;
             }
 
@@ -3186,41 +3201,41 @@ class Result extends Model
         $permissionModel = new Permission;
         $protocolModel = new Protocol;
 
-//        $this->pre($data, true);
+        //        $this->pre($data, true);
 
         $dopInfoArray = explode("\n", $data['DOP_INFO']);
         $dopInfoArray2 = explode("\n", $data['DOP_INFO2']);
-//        $data['DOP_INFO'] = str_replace(":marker", "");
+        //        $data['DOP_INFO'] = str_replace(":marker", "");
 
         $data['DOP_INFO'] = "";
         $data['DOP_INFO2'] = "";
 
-//        $this->pre($dopInfoArray, true);
+        //        $this->pre($dopInfoArray, true);
 
         foreach ($dopInfoArray as $key => $value) {
-            if(!$value || empty($value)) continue;
+            if (!$value || empty($value)) continue;
 
-//            if($key != 0) {
-//                $data['DOP_INFO'] .= "\n";
-//            }
+            //            if($key != 0) {
+            //                $data['DOP_INFO'] .= "\n";
+            //            }
 
-            if($value[0] != '-' && $value[1] != '-') {
+            if ($value[0] != '-' && $value[1] != '-') {
                 $data['DOP_INFO'] .= "- {$value}";
-            }else {
+            } else {
                 $data["DOP_INFO"] .= $value;
             }
         }
 
         foreach ($dopInfoArray2 as $key => $value) {
-            if(!$value || empty($value)) continue;
+            if (!$value || empty($value)) continue;
 
-//            if($key != 0) {
-//                $data['DOP_INFO'] .= "\n";
-//            }
+            //            if($key != 0) {
+            //                $data['DOP_INFO'] .= "\n";
+            //            }
 
-            if($value[0] != '-' && $value[1] != '-') {
+            if ($value[0] != '-' && $value[1] != '-') {
                 $data['DOP_INFO2'] .= "- {$value}";
-            }else {
+            } else {
                 $data["DOP_INFO2"] .= $value;
             }
         }
@@ -3240,7 +3255,7 @@ class Result extends Model
 
         // Протокол с аттестатом акредитации если протокол соответствует диапазону(условиям) аттестации
         // И в результатах испытаний у протокола отмечен чекбокс "C аттестатом аккредитации"
-//        $data['ATTESTAT_IN_PROTOCOL'] = !empty($protocol['IN_ATTESTAT_DIAPASON']) && !empty($attestatInProtocol) ? 1 : 0;
+        //        $data['ATTESTAT_IN_PROTOCOL'] = !empty($protocol['IN_ATTESTAT_DIAPASON']) && !empty($attestatInProtocol) ? 1 : 0;
         $data['ATTESTAT_IN_PROTOCOL'] = $data['ATTESTAT_IN_PROTOCOL'] ?? 0;
 
         // Место отбора проб
@@ -3253,7 +3268,8 @@ class Result extends Model
         }
         // Изменить условия испытаний
         // Проверка на доступ редактирования данных условий окружающей среды(помещения)
-        if (!in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], [86, 277])) {            unset($data['CHANGE_TRIALS_DATE']);
+        if (!in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], [86, 277])) {
+            unset($data['CHANGE_TRIALS_DATE']);
             unset($data['CHANGE_TRIALS_CONDITIONS']);
         }
 
@@ -3400,8 +3416,9 @@ class Result extends Model
 
             $condToday = $labModel->getConditionsRoomToday($roomId);
 
-            if ( $item[$roomId]['temp'] != '' ) {
-                if ( empty($condToday)
+            if ($item[$roomId]['temp'] != '') {
+                if (
+                    empty($condToday)
                     || $condToday['temp'] != $item[$roomId]['temp']
                     || $condToday['humidity'] != $item[$roomId]['wet']
                     || $condToday['pressure'] != $item[$roomId]['pressure']
@@ -3488,5 +3505,4 @@ class Result extends Model
 
         return true;
     }
-
 }
