@@ -454,6 +454,20 @@ class Requirement extends Model
             'dir' => 'DESC'
         ];
 
+        $labModel = new Lab();
+
+        $userData = $userModel->getUserData($_SESSION['SESS_AUTH']['USER_ID']);
+        $labInfo = $labModel->getLabByUserId($userData['ID']);
+        $joinHeadLab = "";
+        if ($labInfo['HEAD_ID'] == $userData['ID'] && $labInfo['ID'] !== '4') {
+            $lab_id = $labInfo['ID'];
+            $joinHeadLab = "
+                INNER JOIN ulab_methods_lab lab
+                    ON lab.method_id = gtp.new_method_id
+                AND lab.lab_id = {$lab_id}
+                ";
+        }
+
         if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
@@ -499,6 +513,7 @@ class Requirement extends Model
                     inner join ulab_methods as methods ON gtp.new_method_id = methods.id
                     inner join ulab_gost as gost ON gost.id = methods.gost_id
                     left join ulab_tech_condition as tu ON tu.id = gtp.tech_condition_id
+                    {$joinHeadLab}
                     WHERE mtr.deal_id = {$dealId} and {$where}
                     ORDER BY mtr.material_number asc, mtr.probe_number asc, gtp.gost_number asc {$limit}"
         );

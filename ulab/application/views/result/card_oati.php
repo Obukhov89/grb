@@ -740,7 +740,7 @@
                                             <th scope="col">ТУ</th>
                                             <th scope="col">Нормативное значение</th>
                                             <th scope="col">Фактическое значение</th>
-                                            <th scope="col">Примечание</th>
+                                            <th scope="col">Неопределенность / Погрешность</th>
                                             <th scope="col">Соответствие требованиям</th>
                                             <th scope="col">В ОА</th>
                                             <th scope="col">Номер протокола</th>

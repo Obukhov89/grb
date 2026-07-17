@@ -1159,7 +1159,8 @@ class RequestController extends Controller
         //
         // Результаты испытаний
         //$this->data['results']['check'] = $dealId >= DEAL_START_NEW_AREA ? !empty($countResults['count_utr']) : !empty($requestData['RESULTS']);
-        $this->data['results']['check'] = $isResults;
+        $this->data['results']['check'] = $dealId >= DEAL_START_NEW_AREA ?
+            ($dealId >= DEAL_NEW_RESULT ? $isResults : !empty($countResults['count_utr'])) : !empty($requestData['RESULTS']);
         $this->data['results']['is_disabled'] = (!$this->data['is_deal_pr'] && !$requestData['order_type'] == 2 && !$this->data['is_deal_osk'] && !$this->data['is_deal_sc'] && empty($requestData['TAKEN_ID_DEAL'])) &&
             (empty($requestData) || empty($requestData['ACT_NUM']) || empty($invoiceData)) /*|| !$isConfirm
             || (!$this->data['payment']['check'] && !$this->data['is_good_company'])*/;
