@@ -729,6 +729,7 @@ class Result extends Model
         $tuModel = new TechCondition();
         $protocolModel = new Protocol();
         $userModel = new User();
+        $permissionModel = new Permission();
 
         $where = "";
         $limit = "";
@@ -821,6 +822,14 @@ class Result extends Model
                 }
             }
         }
+
+        $currUser = $userModel->getCurrentUser();
+        $permUser = $permissionModel->getUserPermission($currUser['ID']);
+
+        if ($permUser['id'] == 6) {
+            $where .= "gtp.assigned_id = " . $currUser['ID'] . " AND ";
+        }
+
         $where .= "1 ";
 
         $data = $this->DB->Query(

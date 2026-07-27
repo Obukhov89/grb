@@ -350,12 +350,27 @@ class Requirement extends Model
      */
     public function getMaterialProbeJournal($dealId, $filter)
     {
+        $userModel = new User();
+        $labModel = new Lab();
+
         $where = "";
         $limit = "";
         $order = [
             'by' => 'b.ID',
             'dir' => 'DESC'
         ];
+
+        $userData = $userModel->getUserData($_SESSION['SESS_AUTH']['USER_ID']);
+        $labInfo = $labModel->getLabByUserId($userData['ID']);
+        $joinHeadLab = "";
+        if ($labInfo['HEAD_ID'] == $userData['ID'] && $labInfo['ID'] !== '4') {
+            $lab_id = $labInfo['ID'];
+            $joinHeadLab = "
+                INNER JOIN ulab_methods_lab lab
+                    ON lab.method_id = gtp.new_method_id
+                AND lab.lab_id = {$lab_id}
+                ";
+        }
 
         if (!empty($filter)) {
             // из $filter собирать строку $where тут
@@ -398,6 +413,7 @@ class Requirement extends Model
                     inner join MATERIALS as m ON m.ID = mtr.material_id
                     left join materials_groups as mg ON mtr.group = mg.id
                     left join ulab_gost_to_probe as gtp on gtp.material_to_request_id = mtr.id
+                    {$joinHeadLab}
                     WHERE mtr.deal_id = {$dealId} and {$where}
                     group by mtr.id
                     ORDER BY mtr.material_number asc, mtr.probe_number asc {$limit}"
