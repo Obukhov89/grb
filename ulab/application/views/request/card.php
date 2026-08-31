@@ -241,7 +241,7 @@
                         </thead>
                         <tbody>
                             <tr class="<?= $this->data['tz']['check'] ? 'table-green' : '' ?>">
-                                <td><strong>Техническое задание</strong></td>
+                                <td><strong>Заявка на испытания</strong></td>
                                 <td>
                                     <?php if ($this->data['tz']['check']): ?>
                                         <a href="<?= $this->data['is_deal_nk'] ? '/tz_show_nk.php?ID=' . $this->data['request']['ID'] : $this->data['tz']['tz_link'] ?>">

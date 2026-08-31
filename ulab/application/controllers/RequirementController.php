@@ -453,7 +453,7 @@
 
             global $USER;
 
-            $this->data['title'] = 'Формирование технического задания';
+            $this->data['title'] = 'Формирование заявки на испытания';
 
             /** @var Request $request */
             $request = $this->model('Request');
@@ -1859,6 +1859,7 @@
          */
         public function updateMethodAjax()
         {
+
             global $APPLICATION;
 
             $APPLICATION->RestartBuffer();
@@ -1881,8 +1882,7 @@
                     'assigned_id' => $_POST['val'],
                 ],
                 'tu' => [
-                    'tech_condition_id' => $_POST['val'],
-                    'conditions_id' => $_POST['val'],
+                    'tech_condition_string' => "'{$_POST['val']}'",
                 ],
                 'method' => [
                     'new_method_id' => $_POST['val'],

@@ -2904,6 +2904,7 @@ class Requirement extends Model
                     'price' => $item['price'],
                     'assigned_id' => $item['assigned_id'],
                     'gost_number' => ++$gostNumber,
+                    'tech_condition_string' => "'{$item['nd_string_input']}'"
                 ];
 
                 $this->DB->Insert('ulab_gost_to_probe', $sqlData);

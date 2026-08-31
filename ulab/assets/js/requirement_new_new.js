@@ -53,7 +53,7 @@ function updateMethodFilterSelect(probes) {
 
     // Добавляем новые опции
     if (Array.isArray(probes) && probes.length > 0) {
-        probes.forEach(function(probe) {
+        probes.forEach(function (probe) {
             $select.append(
                 $('<option>', {
                     value: probe.group,
@@ -98,22 +98,19 @@ function getHtmlCharForm(dealTypeId = '', userGroups = []) {
     let optionCondition = getHtmlOptionsTu(conditionList);
     let priceReadonly = ''
 
-    if ( dealTypeId === 'COMPLEX' ) {
+    if (dealTypeId === 'COMPLEX') {
         priceReadonly = ''
     }
 
-    if ( dealTypeId === 'SALE' && !userGroups.includes('23') ) {
+    if (dealTypeId === 'SALE' && !userGroups.includes('23')) {
         priceReadonly = 'readonly'
     }
 
 
     return `<div class="row justify-content-between method-block mb-2">
                 <div class="col">
-                    <label class="form-label mb-1">Нормативная документация</label>
-                    <select class="form-control select2 group-tu-select w-100" name="method[tech_condition_id]">
-                            <option value="">--</option>
-                            ${optionCondition}
-                    </select>
+                    <label class="form-label mb-1">НД</label>
+                    <input type = "text"/>
                 </div>
             </div>
             <div class="row justify-content-between method-block mb-2">
@@ -138,7 +135,7 @@ function getHtmlCharForm(dealTypeId = '', userGroups = []) {
  */
 function refreshMethodFilterAfterProbeDelete() {
     // Получаем все данные, которые сейчас отображаются в таблице
-    let allProbes = $('#journal_material_2').DataTable().rows({search: 'applied'}).data().toArray();
+    let allProbes = $('#journal_material_2').DataTable().rows({ search: 'applied' }).data().toArray();
 
     // Собираем id всех проб
     let allProbeIds = allProbes.map(item => item.id);
@@ -185,17 +182,17 @@ function loadCharBlock() {
     })
 }
 
-$('#form_requirement').on('submit', function(e) {
+$('#form_requirement').on('submit', function (e) {
     e.preventDefault();
     var $form = $(this);
     if ($('#filter-group').val() !== '') {
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get();
         console.log(probeIdList); // например ['125357', '125358']
 
         // Для каждого probeId ищем соответствующую группу по data-id
-        probeIdList.forEach(function(probeId) {
+        probeIdList.forEach(function (probeId) {
             // Ищем элемент группы, у которого data-id совпадает с probeId
             let $group = $(`.select_group2[data-id="${probeId}"]`);
 
@@ -273,12 +270,12 @@ function formatState(state) {
 
 $(function ($) {
     // подгружаем методики для проб в селект формы замены
-    $('.btn-replace-method').on('click', function() {
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+    $('.btn-replace-method').on('click', function () {
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get()
 
-        probeIdList.forEach(function(id) {
+        probeIdList.forEach(function (id) {
             $('#probe-ids-container').append(
                 $('<input>', {
                     type: 'hidden',
@@ -302,7 +299,7 @@ $(function ($) {
                 console.log(data);
 
                 if (Array.isArray(data) && data.length > 0) {
-                    data.forEach(function(item) {
+                    data.forEach(function (item) {
                         var $option = $('<option>', {
                             value: item.id,
                             text: item.name
@@ -323,12 +320,12 @@ $(function ($) {
         });
     })
 
-    $('.btn-delete-method').on('click', function() {
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+    $('.btn-delete-method').on('click', function () {
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get()
 
-        probeIdList.forEach(function(id) {
+        probeIdList.forEach(function (id) {
             $('#delete-ids-container').append(
                 $('<input>', {
                     type: 'hidden',
@@ -350,7 +347,7 @@ $(function ($) {
                 $select.empty();
 
                 if (Array.isArray(data) && data.length > 0) {
-                    data.forEach(function(item) {
+                    data.forEach(function (item) {
                         var $option = $('<option>', {
                             value: item.id,
                             text: item.name
@@ -428,7 +425,7 @@ $(function ($) {
     })
 
     $body.on('change', '.nds', function () {
-        if ( $(this).prop('checked') ) {
+        if ($(this).prop('checked')) {
             $('.is_nds_block').removeClass('d-none').addClass('d-flex')
         } else {
             $('.is_nds_block').removeClass('d-flex').addClass('d-none')
@@ -441,7 +438,7 @@ $(function ($) {
         updateTotalWithNds(ndsValue);
     });
 
-    $( document ).ready(()=> {
+    $(document).ready(() => {
         updateTotalWithNds();
     });
 
@@ -449,7 +446,7 @@ $(function ($) {
         updateTotalWithNds();
     });
 
-// Функция для обновления суммы с НДС
+    // Функция для обновления суммы с НДС
     function updateTotalWithNds() {
         const isNdsChecked = $('.nds').prop('checked');
         const ndsPercent = $('.nds-percent-select').val();
@@ -464,7 +461,7 @@ $(function ($) {
         let ndsAmount = 0;
         console.log(isNdsChecked);
         if (isNdsChecked) {
-            switch(ndsPercent) {
+            switch (ndsPercent) {
                 case '5':
                     ndsMultiplier = 0.05;
                     isNds = '1';
@@ -510,7 +507,7 @@ $(function ($) {
             return all = ($(this).prop("checked") === curState)
         })
 
-        if ( all ) {
+        if (all) {
             parent.prop({
                 indeterminate: false,
                 checked: curState
@@ -525,9 +522,9 @@ $(function ($) {
         toggleProbe()
     })
 
-    let stickyEl2 = new Sticksy('.js-sticky-widget2', {topSpacing: 20, listen: true,})
+    let stickyEl2 = new Sticksy('.js-sticky-widget2', { topSpacing: 20, listen: true, })
     stickyEl2.onStateChanged = function (state) {
-        if(state === 'fixed') {
+        if (state === 'fixed') {
             stickyEl2.nodeRef.classList.add('widget--sticky')
         } else {
             stickyEl2.nodeRef.classList.remove('widget--sticky')
@@ -602,14 +599,14 @@ $(function ($) {
         stateSave: true,
         stateDuration: -1,
         ajax: {
-            type : 'POST',
-            data: function ( d ) {
+            type: 'POST',
+            data: function (d) {
                 d.deal_id = dealId
                 d.material_id = $('#filter-material option:selected').val()
                 d.cipher = $('#filter-cipher').val()
                 d.group_id = $('#filter-group').val(); // <-- Добавлен новый фильтр по методике
             },
-            url : '/ulab/requirement/getMaterialProbeJournalAjax/',
+            url: '/ulab/requirement/getMaterialProbeJournalAjax/',
             dataSrc: function (json) {
                 setGroups(json.data);
 
@@ -646,7 +643,7 @@ $(function ($) {
                 className: 'ps-4',
                 render: function (data, type, item) {
                     let str = ``
-                    if ( item.child_deal_id > 0 ) {
+                    if (item.child_deal_id > 0) {
                         str = `(проба перенесена в дочернюю <a target="_blank" href="/ulab/request/card/${item.child_deal_id}">заявку</a>)`
                     }
 
@@ -742,23 +739,23 @@ $(function ($) {
                     }
                 });
         },
-        createdRow: function( row, data, dataIndex ) {
+        createdRow: function (row, data, dataIndex) {
             // $(row).addClass("bg-pele-green")
         },
         language: dataTablesSettings.language,
-        lengthMenu: [[10, 25, 50, 100, -1], [10,25, 50, 100, "Все"]],
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Все"]],
         pageLength: 25,
-        order: [[ 2, "asc" ]],
+        order: [[2, "asc"]],
         dom: 'frt<"bottom"lip>',
         buttons: dataTablesSettings.buttons,
     })
 
 
-    journalDataTable.columns().every( function () {
-        $(this.header()).closest('thead').find('.search:eq('+ this.index() +')').on( 'keyup change clear', function () {
+    journalDataTable.columns().every(function () {
+        $(this.header()).closest('thead').find('.search:eq(' + this.index() + ')').on('keyup change clear', function () {
             journalDataTable
-                .column( $(this).parent().index() )
-                .search( this.value )
+                .column($(this).parent().index())
+                .search(this.value)
                 .draw();
         })
     })
@@ -979,7 +976,7 @@ $(function ($) {
     })
 
     function toggleProbe() {
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get()
 
@@ -991,7 +988,7 @@ $(function ($) {
         let $btnDeleteProbes = $('.btn-delete-probes')
         let $btnImportProbes = $('.btn-import-probes')
 
-        if ( probeIdList.length > 0 ) {
+        if (probeIdList.length > 0) {
             $btnGroupEdit.removeClass('disabled')
             $btnAddMethods.removeClass('disabled')
             $btnLinkDeal.removeClass('disabled')
@@ -1013,7 +1010,7 @@ $(function ($) {
     $body.on('click', '.btn-import-probes', function () {
         let form = $('#import-probes-from-xlsx')
 
-        $(".filter-probe-id:checked").map(function(){
+        $(".filter-probe-id:checked").map(function () {
             form.append(
                 `
                 <input type="hidden" name="ugtp[]" value="${$(this).val()}">
@@ -1023,7 +1020,7 @@ $(function ($) {
     })
 
     $body.on('click', '.btn-delete-probes', function () {
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get()
 
@@ -1043,7 +1040,7 @@ $(function ($) {
     })
 
     $body.on('click', '.btn-link-deal', function () {
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get()
 
@@ -1052,7 +1049,7 @@ $(function ($) {
     })
 
     $body.on('click', '.btn-add-methods', function () {
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get()
         let materialId = $(".filter-probe-id:checked").data('material_id')
@@ -1088,7 +1085,7 @@ $(function ($) {
     $body.on('click', '.btn-group-edit', function () {
         let $form = $('#edit-group-probe-modal-form') //block-group-probe-method
 
-        let probeIdList = $(".filter-probe-id:checked").map(function(){
+        let probeIdList = $(".filter-probe-id:checked").map(function () {
             return $(this).val();
         }).get()
 
@@ -1110,7 +1107,7 @@ $(function ($) {
                     let options = ``
                     $.each(item.method.assigned, function (j, user) {
                         let selected = ``
-                        if ( user.user_id == item.assigned_id ) {
+                        if (user.user_id == item.assigned_id) {
                             selected = 'selected'
                         }
                         options += `<option value="${user.user_id}" ${selected}>${user.user_name}</option>`
@@ -1182,15 +1179,15 @@ $(function ($) {
         const dealTypeId = $('#deal_type_id').val()
         const userGroups = JSON.parse($('#user_groups').val())
 
-        if ( $methodBlock.length > 0 ) {
-            let num = $methodContainer.find('.method-block').map(function() {
+        if ($methodBlock.length > 0) {
+            let num = $methodContainer.find('.method-block').map(function () {
                 return $(this).data('gost_number');
             }).get();
 
             countMethod = Math.max.apply(Math, num) + 1;
         }
 
-        if ( schemeId !== undefined && schemeId > 0 ) {
+        if (schemeId !== undefined && schemeId > 0) {
             $.ajax({
                 url: "/ulab/material/getSchemeParamAjax/",
                 method: "POST",
@@ -1235,8 +1232,8 @@ $(function ($) {
         const userGroups = JSON.parse($('#user_groups').val())
 
 
-        if ( $methodBlock.length > 0 ) {
-            let num = $methodContainer.find('.method-block').map(function() {
+        if ($methodBlock.length > 0) {
+            let num = $methodContainer.find('.method-block').map(function () {
                 return $(this).data('gost_number');
             }).get();
 
@@ -1266,34 +1263,44 @@ $(function ($) {
 
     // выбираем методику в модальном окне добавление методик
     $body.on('change', '.method-select', function () {
-        const id = $(this).val()
-        const $parent = $(this).parents('.method-block')
+        const id = $(this).val();
+        const $parent = $(this).closest('.method-block'); // Используем .closest() для надёжности
 
         $.ajax({
             method: 'POST',
-            async: false,
-            data: {
-                id: id
-            },
+            async: true,
+            data: { id: id },
             url: '/ulab/requirement/getMethodDataAjax',
             dataType: 'json',
             success: function (data) {
-                $parent.find('.price-input').val(parseFloat(data.price))
+                // Вставляем строку в нужный инпут
 
-                let options = `<option value="">Исполнитель</option>`
+                let ndString = `от ${data.definition_range_1} до ${data.definition_range_2}`;
+                $parent.find('.nd_string_input').val(ndString);
+
+                // Обновляем поле цены
+                $parent.find('.price-input').val(parseFloat(data.price));
+
+                // Обновляем список исполнителей
+                let options = `<option value="">Исполнитель</option>`;
                 $.each(data.assigned, function (i, item) {
-                    options += `<option value="${item.user_id}">${item.short_name}</option>`
-                })
+                    options += `<option value="${item.user_id}">${item.short_name}</option>`;
+                });
+                $parent.find('.user-select').html(options);
 
-                $parent.find('.user-select').html(options)
+                // Переинициализируем Select2 для .user-select
+                $parent.find('.user-select').select2({
+                    theme: 'bootstrap-5',
+                    templateResult: formatState,
+                    templateSelection: formatState,
+                });
             }
-        })
+        });
 
         $parent.find('.method-link')
             .removeClass('disabled')
-            .attr('href', `/ulab/gost/method/${id}`)
-
-    })
+            .attr('href', `/ulab/gost/method/${id}`);
+    });
     // выбираем ТУ в модальном окне добавление методик
     $body.on('change', '.tu-select', function () {
         const id = $(this).val()
@@ -1323,7 +1330,7 @@ $(function ($) {
             },
             url: '/ulab/requirement/confirmTzSentAjax',
             dataType: 'json',
-        }).always( function (data) {
+        }).always(function (data) {
             $block.find('i').removeClass().addClass('fa-solid fa-hourglass-half').attr('title', 'Ожидание проверки')
             $btn.html(`<i class="fa-regular fa-paper-plane"></i> Передано`)
         })
@@ -1344,7 +1351,7 @@ $(function ($) {
             showErrorMessage("Заполните ориентировочную дату начала и кол-во рабочий дней!")
 
             window.scrollTo(0, 0)
-        }else {
+        } else {
             $btn.find('i').removeClass().addClass('fa-solid fa-arrows-rotate spinner-animation')
             $btn.addClass('disable')
             $('.not_approve_tz').addClass('disable')
@@ -1360,7 +1367,7 @@ $(function ($) {
                 },
                 url: '/ulab/requirement/confirmTzApproveAjax',
                 dataType: 'json',
-            }).always( function (data) {
+            }).always(function (data) {
                 $block.find('.icon').addClass('text-green').find('i').removeClass().addClass('fa-regular fa-circle-check').attr('title', 'ТЗ потверждено')
                 $btn.find('i').removeClass().addClass('fa-regular fa-circle-check')
 
@@ -1389,7 +1396,7 @@ $(function ($) {
             },
             url: '/ulab/requirement/confirmTzSentApproveAjax',
             dataType: 'json',
-        }).always( function (data) {
+        }).always(function (data) {
             $headBlock.find('i').removeClass().addClass('fa-solid fa-hourglass-half').attr('title', 'Ожидание проверки')
             $block.find('.icon').addClass('text-green').find('i').removeClass().addClass('fa-regular fa-circle-check').attr('title', 'ТЗ потверждено')
             $btn.find('i').removeClass().addClass('fa-regular fa-circle-check')
@@ -1415,7 +1422,7 @@ $(function ($) {
             },
             url: '/ulab/requirement/confirmTzNotApproveAjax',
             dataType: 'json',
-        }).always( function (data) {
+        }).always(function (data) {
             $block.find('.icon').addClass('text-red').find('i').removeClass().addClass('fa-regular fa-circle-xmark')
             $btn.find('i').removeClass().addClass('fa-regular fa-circle-xmark')
             $.magnificPopup.close()
@@ -1430,11 +1437,11 @@ $(function ($) {
         if (type == 'custom') {
             inputDTT.val('')
             inputDTT.removeClass('number-only')
-            inputDTT.prop('type','date')
+            inputDTT.prop('type', 'date')
         } else {
             inputDTT.removeClass('number-only')
             inputDTT.addClass('number-only')
-            inputDTT.prop('type','number')
+            inputDTT.prop('type', 'number')
             inputDTT.val(20)
         }
     })
@@ -1455,7 +1462,7 @@ $(function ($) {
             success: function (data) {
 
             },
-            complete: function(data) {
+            complete: function (data) {
                 $form.find('textarea').text('')
                 $form.find('.ugtp_id').val('')
 
@@ -1509,11 +1516,11 @@ function getHtmlMethod(methodList, conditionList, gostNumber = 0, defaultMethod 
     let optionCondition = getHtmlOptionsTu(conditionList, defaultTu)
     let priceReadonly = ''
 
-    if ( dealTypeId === 'COMPLEX' ) {
+    if (dealTypeId === 'COMPLEX') {
         priceReadonly = ''
     }
 
-    if ( dealTypeId === 'SALE' && !userGroups.includes('23') ) {
+    if (dealTypeId === 'SALE' && !userGroups.includes('23')) {
         priceReadonly = 'readonly'
     }
 
@@ -1532,13 +1539,7 @@ function getHtmlMethod(methodList, conditionList, gostNumber = 0, defaultMethod 
                 </div>
                 <div class="col-4">
                     <div class="input-group">
-                        <select class="form-control select2 tu-select" name="form[${gostNumber}][tech_condition_id]">
-                            <option value="">--</option>
-                            ${optionCondition}
-                        </select>
-                        <a class="btn btn-outline-secondary tu-link disabled" target="_blank" title="Перейти в ТУ" href="">
-                            <i class="fa-solid fa-right-to-bracket"></i>
-                        </a>
+                        <input type = "text" class="form-control nd_string_input" name="form[${gostNumber}][nd_string_input]">
                     </div>
                 </div>
                 <div class="col-2">
@@ -1576,7 +1577,7 @@ function getHtmlOptionsTu(conditionList, defaultTu = 0) {
     $.each(conditionList, function (i, item) {
         let selected = ``
 
-        if ( item.id == defaultTu ) {
+        if (item.id == defaultTu) {
             selected = 'selected'
         }
 
@@ -1601,15 +1602,15 @@ function getHtmlOptionsMethod(methodList, defaultMethod = 0) {
         let dataColor = ''
         let selected = ``
 
-        if ( item.is_actual == 0 ) {
+        if (item.is_actual == 0) {
             dataColor = `data-color="#F00"`
-        } else if ( item.in_field == 0 ) {
+        } else if (item.in_field == 0) {
             dataColor = `data-color="#060060"`
-        } else if ( item.is_confirm == 0 ) {
+        } else if (item.is_confirm == 0) {
             dataColor = `data-color="#dfdf11"`
         }
 
-        if ( item.id == defaultMethod ) {
+        if (item.id == defaultMethod) {
             selected = 'selected'
         }
 
@@ -1632,7 +1633,7 @@ function getHtmlOptions(list, id = 0) {
     $.each(list, function (i, item) {
         let selected = ``
 
-        if ( item.id == id ) {
+        if (item.id == id) {
             selected = 'selected'
         }
 
@@ -1665,7 +1666,7 @@ function getHtmlOptionAssignedByMethod(methodId, defaultUserId = 0) {
             htmlOption += `<option value="">Не назначен</option>`
             $.each(data.assigned, function (i, item) {
                 let selected = ``
-                if ( item.user_id == defaultUserId ) {
+                if (item.user_id == defaultUserId) {
                     selected = 'selected'
                 }
                 htmlOption += `<option value="${item.user_id}" ${selected}>${item.short_name}</option>`
@@ -1688,7 +1689,7 @@ function getHtmlOptionGost(gostList, defaultId) {
     $.each(gostList, function (i, item) {
         let selected = ``
 
-        if ( item.id == defaultId ) {
+        if (item.id == defaultId) {
             selected = 'selected'
         }
 
@@ -1717,7 +1718,7 @@ function createChild(row) {
                 <th scope="col" style="width: 2%">№</th>
                 <th scope="col" style="width: 61%">Методика испытаний</th>
                 <th scope="col" style="width: 2%"></th>
-                <th scope="col" style="width: 16%">Нормативная документация</th>
+                <th scope="col" style="width: 16%">НД</th>
                 <th scope="col" style="width: 9%">Исполнитель</th>
                 <th scope="col" style="width: 10%">Цена</th>
                 <th scope="col" style="width: 3%"></th>
@@ -1731,23 +1732,23 @@ function createChild(row) {
     row.child(table).show()
 
     let journal = table.DataTable({
-        destroy : true,
+        destroy: true,
         ordering: false,
         serverSide: true,
         rowReorder: true,
-        initialValue:true,
+        initialValue: true,
         dom: 't<"bottom"lip>',
         bAutoWidth: false,
         autoWidth: false,
         responsive: true,
         pageLength: -1,
         ajax: {
-            type : 'POST',
-            data: function ( d ) {
+            type: 'POST',
+            data: function (d) {
                 d.deal_id = dealId
                 d.probe_id = probeId
             },
-            url : '/ulab/requirement/getMethodJournalAjax/',
+            url: '/ulab/requirement/getMethodJournalAjax/',
             dataSrc: function (json) {
                 return json.data
             }
@@ -1763,17 +1764,17 @@ function createChild(row) {
                 orderable: false,
                 className: 'method_view_name edit-cell cursor-pointer',
                 render: function (data, type, item) {
-                    if ( item.is_actual == 0 ) {
+                    if (item.is_actual == 0) {
                         return `<div class="text-danger is-invalid">${item.method_view_name}</div>
                                 <div class="invalid-feedback">
                                     <i>Методика не актуальна</i>
                                 </div>`
-                    } else if ( item.in_field == 0 && item.is_extended_field == 0 ) {
+                    } else if (item.in_field == 0 && item.is_extended_field == 0) {
                         return `<div class="text-dark-blue is-invalid">${item.method_view_name}</div>
                                 <div class="text-dark-blue invalid-feedback">
                                     <i>Методика не в области аккредитации</i>
                                 </div>`
-                    } else if ( item.is_confirm == 0 ) {
+                    } else if (item.is_confirm == 0) {
                         return `<div class="text-yellow is-invalid">${item.method_view_name}</div>
                                 <div class="text-yellow invalid-feedback">
                                     <i>Методика не проверена</i>
@@ -1788,7 +1789,7 @@ function createChild(row) {
                 orderable: false,
                 className: 'text-center',
                 render: function (data, type, item) {
-                    if ( item.comment !== '' && item.comment !== null && item.comment !== undefined ) {
+                    if (item.comment !== '' && item.comment !== null && item.comment !== undefined) {
                         return `<a href="#" class="cursor-pointer add_comment_modal_form"><i class="text-black fa-regular fa-message-dots icon-big"></i></a>`
                     }
 
@@ -1796,7 +1797,7 @@ function createChild(row) {
                 }
             },
             {
-                data: 'tu_view_name',
+                data: 'tech_condition_string',
                 orderable: false,
                 className: 'tu_view_name edit-cell cursor-pointer'
             },
@@ -1844,7 +1845,7 @@ function createChild(row) {
             dataList.push(data)
         })
 
-        if ( dataList.length > 0 ) {
+        if (dataList.length > 0) {
             $.ajax({
                 url: "/ulab/requirement/changeGostNumberAjax",
                 data: {
@@ -1863,7 +1864,7 @@ function createChild(row) {
 
     // удалить методику
     journal.on('click', '.delete-method', function () {
-        if ( confirm("Подтвердите удаление методики.\nВнимание, методика, у которой есть результат испытания, не удалится.") ) {
+        if (confirm("Подтвердите удаление методики.\nВнимание, методика, у которой есть результат испытания, не удалится.")) {
             const id = $(this).data('gtp_id')
             const tzId = $('#tz_id').val()
 
@@ -1876,7 +1877,7 @@ function createChild(row) {
                 dataType: "json",
                 method: "POST",
                 success: function (json) {
-                    if ( json.success ) {
+                    if (json.success) {
                         $spanMethodCount.text(--rowData.count_methods)
 
                         $strTotal.text(json.data.price_discount + ' руб.')
@@ -1947,13 +1948,15 @@ function createChild(row) {
 
         let textConfirmTz = $('.confirmed-tz')
 
-        if ( $thisCell.hasClass('assigned_name') ) {
+        if ($thisCell.hasClass('assigned_name')) {
             $thisCell.html(`<select class="form-control select2">` + getHtmlOptionAssignedByMethod(data.new_method_id, data.assigned_id) + `</select>`)
-        } else if ( $thisCell.hasClass('tu_view_name') ) {
-            $thisCell.html(`<select class="form-control select2 hud" style="width: 400px">` + getHtmlOptionsTu(conditionList, data.tech_condition_id) + `</select>`)
-        } else if ( $thisCell.hasClass('method_view_name') && (userGroups.includes('23') || textConfirmTz.length === 0)) {
+        } else if ($thisCell.hasClass('tu_view_name')) {
+            $thisCell.html(
+                `<input type="text" class="form-control" style="width: 400px" value="${data.tech_condition_string ?? ''}">`
+            );
+        } else if ($thisCell.hasClass('method_view_name') && (userGroups.includes('23') || textConfirmTz.length === 0)) {
             $thisCell.html(`<select class="form-control select2">` + getHtmlOptionsMethod(methodList, data.new_method_id) + `</select>`)
-        } else if ( $thisCell.hasClass('price') && userGroups.includes('23') ) {
+        } else if ($thisCell.hasClass('price') && userGroups.includes('23')) {
             $thisCell.html($(`<input type="number" class="form-control" style="min-width: 160px" value="${data.price}">`))
         } else {
             return false
@@ -1992,16 +1995,18 @@ function createChild(row) {
         let cellName = ''
         let lastVal = ''
 
-        if ( $thisCell.hasClass('assigned_name') ) {
+        if ($thisCell.hasClass('assigned_name')) {
             cellName = 'assigned'
             lastVal = data.assigned_id
-        } else if ( $thisCell.hasClass('tu_view_name') ) {
+
+        } else if ($thisCell.hasClass('tu_view_name')) {
             cellName = 'tu'
-            lastVal = data.tech_condition_id
-        } else if ( $thisCell.hasClass('method_view_name') ) {
+            lastVal = data.tech_condition_string
+        }
+        else if ($thisCell.hasClass('method_view_name')) {
             cellName = 'method'
             lastVal = data.new_method_id
-        } else if ( $thisCell.hasClass('price') ) {
+        } else if ($thisCell.hasClass('price')) {
             cellName = 'price'
             lastVal = data.price
         } else {
@@ -2020,7 +2025,9 @@ function createChild(row) {
             dataType: "json",
             method: "POST",
             success: function (json) {
-                if ( json.success ) {
+                console.log(json);
+
+                if (json.success) {
                     journal.ajax.reload()
                     journal.draw()
 
