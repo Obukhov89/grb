@@ -903,7 +903,19 @@ class Result extends Model
             $row['utc_definition_range_2'] = $tuInfo['definition_range_2'];
 
             // Единицы измерения
+            $row['unit_id'] = $methodInfo['unit_id'];
             $row['units'] = $methodInfo['unit_rus'];
+            $row['all_units'] = $methodInfo['units'];
+
+            if (!empty($row['changed_unit_id'])) {
+                foreach ($methodInfo['units'] as $unit) {
+                    if ($unit['id'] == $row['changed_unit_id']) {
+                        $row['units'] = $unit['unit_rus'];
+                        $row['unit_id'] = $unit['id'];
+                        break;
+                    }
+                }
+            }
             $row['view_gost'] = $methodInfo['view_gost'];
             $row['tu_name'] = $tuInfo['reg_doc'];
             $row['measurement'] = $this->getMeasurement($methodInfo['measurement_id']);
@@ -3515,5 +3527,17 @@ class Result extends Model
         }
 
         return true;
+    }
+
+    public function updateUnitForUgtp($data)
+    {
+        $where = 'where id = ' . (int)$data['ugtp_id'];
+        $arrUpdate = ['changed_unit_id' => (int)$data['unit_id']];
+
+        return $this->DB->Update(
+            'ulab_gost_to_probe',
+            $arrUpdate,
+            $where
+        );
     }
 }

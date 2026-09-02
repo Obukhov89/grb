@@ -271,20 +271,47 @@ $(function ($) {
             {
                 data: 'units',
                 orderable: false,
-                className: 'text-center'
-            },
-            {
-                data: 'ewq3',
-                orderable: false,
                 className: 'text-center',
-                render: function (data, type, item) {
-                    if (item.tech_condition_id > 0) {
-                        return `<a href="/ulab/techCondition/edit/${item.tech_condition_id}" class="text-decoration-none">${item.tech.reg_doc} ${item.tech.measured_properties_name}</a>`
+                render: function (data, type, row) {
+
+                    if (type !== 'display') {
+                        return data;
                     }
 
-                    return `-`
+                    let options = '';
+
+                    row.all_units.forEach(function (unit) {
+
+                        options += `
+                <option value="${unit.id}" ${unit.unit_rus === data ? 'selected' : ''}>
+                    ${unit.unit_rus}
+                </option>
+            `;
+
+                    });
+
+                    return `
+                        <select 
+                            class="method-unit-select" 
+                            data-ugtp-id="${row.ugtp_id}"
+                        >
+                            ${options}
+                        </select>
+                    `;
                 }
             },
+            // {
+            //     data: 'ewq3',
+            //     orderable: false,
+            //     className: 'text-center',
+            //     render: function (data, type, item) {
+            //         if (item.tech_condition_id > 0) {
+            //             return `<a href="/ulab/techCondition/edit/${item.tech_condition_id}" class="text-decoration-none">${item.tech.reg_doc} ${item.tech.measured_properties_name}</a>`
+            //         }
+
+            //         return `-`
+            //     }
+            // },
             {
                 data: 'ewq3',
                 orderable: false,
@@ -295,13 +322,12 @@ $(function ($) {
                     if (item.readonly_normative_value) {
                         html += `<div class="normative-value w-100 border p-2 like-input text-start bg-light-secondary like-input"
                                          title="Доступно для редактирования если ТУ выбрано при формировании ТЗ и ТУ не нормируемое и нет номера протокола или есть номер но протокол разблокирован">
-                                        ${item.normative_value}
+                                        ${item.tech_condition_string ?? ''}
                                     </div>`
                     } else {
                         html += `<textarea class="form-control normative-value bg-white w-100"
-                                           name="normative_value[${item.mtr_id}][${item.ugtp_id}]">${item.normative_value ?? ''}</textarea>`
+                                           name="normative_value[${item.mtr_id}][${item.ugtp_id}]">${item.tech_condition_string ?? ''}</textarea>`
                     }
-                    html += `<div class="form-text text-start">${item.normative_message ?? ''}</div>`
 
                     return html
                 }
@@ -326,11 +352,10 @@ $(function ($) {
                                     <input ${item.actual_value_type}
                                             class="me-2 actual-value actual-value-${item.ugtp_id} w-100 border p-2 "
                                             name="actual_value[${item.mtr_id}][${item.ugtp_id}]"
+                                            title = "${item.actual_value_message ?? ''}"
                                             value="${item.actual_value}" ${readonly}>
                                 </div>`
                     }
-                    html += `<div class="form-text text-start">${item.actual_value_message ?? ''}</div>`
-
                     return html
                 }
             },
@@ -372,12 +397,13 @@ $(function ($) {
                     if (item.readonly_match) {
                         html += `<div class="form-control match w-100 p-2 text-start bg-light-secondary text-start like-input ${isInvalid}"
                                      aria-describedby="match_${item.mtr_id}_${item.ugtp_id}"
-                                     title="Доступно для редактирования если нет номера протокола или есть номер но протокол на редактировании и ТУ не нормируемое или в ТУ ручное управление 'соотв/не соотв' или фактических значений более 1">
+                                     title="${item.match_message ?? ''}">
                                     ${item.match_view ?? ''}
                                 </div>
                                 <div id="match_${item.mtr_id}_${item.ugtp_id}"
-                                     class="invalid-feedback">
-                                    ${item.match_message ?? ''}
+                                     class="invalid-feedback"
+                                     title="${item.match_message ?? ''}>
+                                   
                                 </div>`
                     } else {
                         html += `<select class="form-select match ${isInvalid}"
@@ -451,6 +477,17 @@ $(function ($) {
             let data = rows.data()
             let disableMs = ''
 
+            $('.method-unit-select').each(function () {
+
+                if (!$(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2({
+                        width: '100px',
+                        minimumResultsForSearch: 0
+                    });
+                }
+
+            });
+
             api.column(0, { page: 'current' })
                 .data()
                 .each(function (group, i) {
@@ -517,6 +554,35 @@ $(function ($) {
         $btnMeasurementSheet.addClass('disabled')
         $body.find('.all-check').prop({ indeterminate: false, checked: false })
     })
+
+    journalDataTable.on('change', '.method-unit-select', function () {
+        const $select = $(this);
+
+        const ugtpId = $select.data('ugtp-id');
+        const unitId = $select.val();
+
+        $select.prop('disabled', true);
+
+        $.ajax({
+            url: '/ulab/result/updateUnitForUgtpAjax',
+            type: 'POST',
+            data: {
+                ugtp_id: ugtpId,
+                unit_id: unitId
+            },
+            success: function (response) {
+                journalDataTable.ajax.reload()
+                journalDataTable.draw()
+                console.log('Единица измерения сохранена', response);
+            },
+            error: function (xhr) {
+                console.error('Ошибка сохранения', xhr.responseText);
+            },
+            complete: function () {
+                $select.prop('disabled', false);
+            }
+        });
+    });
 
     $('.filter, .selected-probe').on('input', function () {
         journalDataTable.ajax.reload()

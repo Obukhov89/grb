@@ -5706,4 +5706,16 @@ class ResultController extends Controller
 
         $this->redirect("/ulab/result/card_oati/{$_POST['deal_id']}");
     }
+
+    public function updateUnitForUgtpAjax()
+    {
+        global $APPLICATION;
+
+        $APPLICATION->RestartBuffer();
+
+        /** @var Result $resultModel */
+        $resultModel = $this->model('Result');
+
+        $resultModel->updateUnitForUgtp($_POST);
+    }
 }

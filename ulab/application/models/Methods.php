@@ -21,10 +21,10 @@ class Methods extends Model
 
         $sqlData = [];
 
-        if ( isset($data['clause']) ) {
+        if (isset($data['clause'])) {
             $data['clause'] = StringHelper::removeSpace($data['clause']);
         }
-        if ( isset($data['name']) ) {
+        if (isset($data['name'])) {
             $data['name'] = StringHelper::removeSpace($data['name']);
         }
 
@@ -102,7 +102,7 @@ class Methods extends Model
      */
     public function get($id)
     {
-        if ( empty($id) ) {
+        if (empty($id)) {
             return [];
         }
 
@@ -128,12 +128,12 @@ class Methods extends Model
         $result = $methodSql->Fetch();
 
 
-        if ( !empty($result) ) {
-        	if ($result['id'] == 2669) {
-				$assignedList = $userMethod->getAllActiveUserId();
-			} else {
-            	$assignedList = $this->getAssigned($result['id']);
-			}
+        if (!empty($result)) {
+            if ($result['id'] == 2669) {
+                $assignedList = $userMethod->getAllActiveUserId();
+            } else {
+                $assignedList = $this->getAssigned($result['id']);
+            }
             foreach ($assignedList as $user) {
                 $result['assigned'][] = $userMethod->getUserShortById($user);
             }
@@ -145,6 +145,22 @@ class Methods extends Model
 
             $result['view_gost'] = "{$result['reg_doc']}{$strYear}{$strClause} | {$result['name']}";
             $result['view_gost_for_protocol'] = "{$result['reg_doc']}{$strYear}{$strClause}";
+        }
+
+        $unitsSql = $this->DB->Query(
+            "select 
+        id,
+        unit_rus,
+        name,
+        fsa_id
+     from ulab_dimension
+     order by unit_rus"
+        );
+
+        $result['units'] = [];
+
+        while ($unit = $unitsSql->Fetch()) {
+            $result['units'][] = $unit;
         }
 
         return $result;
@@ -176,11 +192,11 @@ class Methods extends Model
             $strClause = !empty($row['clause']) ? " {$row['clause']}" : '';
             $row['view_gost'] = "{$row['reg_doc']}{$strYear}{$strClause} | {$row['name']}";
 
-            if ( !$row['is_confirm'] ) {
+            if (!$row['is_confirm']) {
                 $row['date_color'] = '#dfdf11';
             }
 
-            if ( !$row['is_actual'] ) {
+            if (!$row['is_actual']) {
                 $row['date_color'] = '#f00';
             }
 
@@ -356,7 +372,9 @@ class Methods extends Model
      */
     public function getLab($idMethod)
     {
-        if (empty($idMethod)) { return []; }
+        if (empty($idMethod)) {
+            return [];
+        }
 
         $sql = $this->DB->Query("select lab_id from ulab_methods_lab where method_id = {$idMethod}");
 
@@ -425,7 +443,7 @@ class Methods extends Model
         $sql = $this->DB->Query("select * from ulab_methods_assigned where method_id = {$methodId} and user_id = {$userId}");
         $rowCount = $sql->SelectedRowsCount();
 
-        if ( $rowCount > 0 ) {
+        if ($rowCount > 0) {
             $this->DB->Query("delete from ulab_methods_assigned where method_id = {$methodId} and user_id = {$userId}");
         } else {
             $this->DB->Insert('ulab_methods_assigned', ['method_id' => $methodId, 'user_id' => $userId]);
@@ -474,53 +492,53 @@ class Methods extends Model
             // работа с фильтрами
             if (!empty($filter['search'])) {
                 // № ОА
-                if ( isset($filter['search']['num_oa']) ) {
+                if (isset($filter['search']['num_oa'])) {
                     $where .= "m.num_oa LIKE '%{$filter['search']['num_oa']}%' AND ";
                 }
                 // Номер документа
-                if ( isset($filter['search']['reg_doc']) ) {
+                if (isset($filter['search']['reg_doc'])) {
                     $where .= "g.reg_doc LIKE '%{$filter['search']['reg_doc']}%' AND ";
                 }
                 // Наименование документа
-                if ( isset($filter['search']['description']) ) {
+                if (isset($filter['search']['description'])) {
                     $where .= "g.description LIKE '%{$filter['search']['description']}%' AND ";
                 }
                 // Год
-                if ( isset($filter['search']['year']) ) {
+                if (isset($filter['search']['year'])) {
                     $where .= "g.year LIKE '%{$filter['search']['year']}%' AND ";
                 }
                 // Наименование объекта
-                if ( isset($filter['search']['materials']) ) {
+                if (isset($filter['search']['materials'])) {
                     $where .= "g.materials LIKE '%{$filter['search']['materials']}%' AND ";
                 }
                 // Определяемая характеристика / показатель
-                if ( isset($filter['search']['name']) ) {
+                if (isset($filter['search']['name'])) {
                     $where .= "m.name LIKE '%{$filter['search']['name']}%' AND ";
                 }
                 // Метод
-                if ( isset($filter['search']['test_method']) ) {
+                if (isset($filter['search']['test_method'])) {
                     $where .= "tm.name LIKE '%{$filter['search']['test_method']}%' AND ";
                 }
                 // Единица измерения
-                if ( isset($filter['search']['unit_rus']) ) {
+                if (isset($filter['search']['unit_rus'])) {
                     $where .= "d.unit_rus LIKE '%{$filter['search']['unit_rus']}%' AND ";
                 }
                 // Единица измерения
-                if ( isset($filter['search']['in_field']) ) {
+                if (isset($filter['search']['in_field'])) {
                     $where .= "m.in_field = '%{$filter['search']['in_field']}%' AND ";
                 }
                 // Единица измерения
-                if ( isset($filter['search']['is_extended_field']) ) {
+                if (isset($filter['search']['is_extended_field'])) {
                     $where .= "m.is_extended_field = '%{$filter['search']['is_extended_field']}%' AND ";
                 }
                 // Цена
-                if ( isset($filter['search']['price']) ) {
+                if (isset($filter['search']['price'])) {
                     $where .= "m.price = '{$filter['search']['price']}' AND ";
                 }
 
                 // Лаба Комната
-                if ( isset($filter['search']['lab']) ) {
-                    if ( $filter['search']['lab'] < 100 ) {
+                if (isset($filter['search']['lab'])) {
+                    if ($filter['search']['lab'] < 100) {
                         $where .= "l.`lab_id` = {$filter['search']['lab']} AND ";
                     } else if ($filter['search']['lab'] > 100) {
                         $roomId = (int) $filter['search']['lab'] - 100;
@@ -529,26 +547,25 @@ class Methods extends Model
                 }
 
                 // Статус
-                if ( isset($filter['search']['stage']) ) {
-                    if ( $filter['search']['stage'] == 1 ) { // Актуальные
+                if (isset($filter['search']['stage'])) {
+                    if ($filter['search']['stage'] == 1) { // Актуальные
                         $where .= "m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 2 ) { // В ОА
+                    if ($filter['search']['stage'] == 2) { // В ОА
                         $where .= "m.in_field = 1 AND m.is_extended_field = 0 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 3 ) { // РОА
+                    if ($filter['search']['stage'] == 3) { // РОА
                         $where .= "m.is_extended_field = 1 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 5 ) { // Вне ОА
+                    if ($filter['search']['stage'] == 5) { // Вне ОА
                         $where .= "m.in_field = 0 AND m.is_actual = 1 AND m.is_extended_field = 0 AND ";
                     }
-                    if ( $filter['search']['stage'] == 7 ) { // Не актуальные
+                    if ($filter['search']['stage'] == 7) { // Не актуальные
                         $where .= "m.is_actual = 0 AND ";
                     }
                 } else {
                     $where .= "m.is_actual = 1 AND ";
                 }
-
             }
         }
 
@@ -684,19 +701,19 @@ class Methods extends Model
             // работа с фильтрами
             if (!empty($filter['search'])) {
                 // Номер документа
-                if ( isset($filter['search']['reg_doc']) ) {
+                if (isset($filter['search']['reg_doc'])) {
                     $where .= "g.reg_doc LIKE '%{$filter['search']['reg_doc']}%' AND ";
                 }
                 // Наименование документа
-                if ( isset($filter['search']['description']) ) {
+                if (isset($filter['search']['description'])) {
                     $where .= "g.description LIKE '%{$filter['search']['description']}%' AND ";
                 }
                 // Год
-                if ( isset($filter['search']['year']) ) {
+                if (isset($filter['search']['year'])) {
                     $where .= "g.year LIKE '%{$filter['search']['year']}%' AND ";
                 }
                 // Наименование объекта
-                if ( isset($filter['search']['materials']) ) {
+                if (isset($filter['search']['materials'])) {
                     $where .= "g.materials LIKE '%{$filter['search']['materials']}%' AND ";
                 }
             }
@@ -751,7 +768,7 @@ class Methods extends Model
                 ORDER BY  {$order['by']} {$order['dir']} {$limit}
                 "
         );
-		$this->pre( "SELECT 
+        $this->pre("SELECT 
                     g.*, g.id gost_id, count(m.gost_id) as count_method
                 FROM ulab_gost g
                 LEFT JOIN ulab_methods as m ON g.id = m.gost_id 
@@ -807,51 +824,50 @@ class Methods extends Model
 
             // работа с фильтрами
             if (!empty($filter['search'])) {
-                if ( isset($filter['search']['dateStart']) ) {
+                if (isset($filter['search']['dateStart'])) {
                     $where .= "st.updated_at between '{$filter['search']['dateStart']}' AND '{$filter['search']['dateEnd']}' AND ";
                 }
                 // Номер документа
-                if ( isset($filter['search']['reg_doc']) ) {
+                if (isset($filter['search']['reg_doc'])) {
                     $where .= "g.reg_doc LIKE '%{$filter['search']['reg_doc']}%' AND ";
                 }
                 // Наименование документа
-                if ( isset($filter['search']['description']) ) {
+                if (isset($filter['search']['description'])) {
                     $where .= "g.description LIKE '%{$filter['search']['description']}%' AND ";
                 }
                 // Определяемая характеристика / показатель
-                if ( isset($filter['search']['name']) ) {
+                if (isset($filter['search']['name'])) {
                     $where .= "m.name LIKE '%{$filter['search']['name']}%' AND ";
                 }
                 // В области?
-                if ( isset($filter['search']['in_field']) ) {
+                if (isset($filter['search']['in_field'])) {
                     $where .= "m.in_field = '{$filter['search']['in_field']}' AND ";
                 }
                 // Лаба
-                if ( isset($filter['search']['lab']) ) {
+                if (isset($filter['search']['lab'])) {
                     $where .= "l.`lab_id` = {$filter['search']['lab']} AND ";
                 }
 
                 // Статус
-                if ( isset($filter['search']['stage']) ) {
-                    if ( $filter['search']['stage'] == 1 ) { // Актуальные
+                if (isset($filter['search']['stage'])) {
+                    if ($filter['search']['stage'] == 1) { // Актуальные
                         $where .= "m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 2 ) { // В ОА
+                    if ($filter['search']['stage'] == 2) { // В ОА
                         $where .= "m.in_field = 1 AND m.is_extended_field = 0 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 3 ) { // РОА
+                    if ($filter['search']['stage'] == 3) { // РОА
                         $where .= "m.is_extended_field = 1 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 5 ) { // Вне ОА
+                    if ($filter['search']['stage'] == 5) { // Вне ОА
                         $where .= "m.in_field = 0 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 7 ) { // Не актуальные
+                    if ($filter['search']['stage'] == 7) { // Не актуальные
                         $where .= "m.is_actual = 0 AND ";
                     }
                 } else {
                     $where .= "m.is_actual = 1 AND ";
                 }
-
             }
         }
 
@@ -1010,57 +1026,56 @@ class Methods extends Model
             // работа с фильтрами
             if (!empty($filter['search'])) {
                 // № ОА
-                if ( isset($filter['search']['num_oa']) ) {
+                if (isset($filter['search']['num_oa'])) {
                     $where .= "m.num_oa LIKE '%{$filter['search']['num_oa']}%' AND ";
                 }
                 // Номер документа
-                if ( isset($filter['search']['reg_doc']) ) {
+                if (isset($filter['search']['reg_doc'])) {
                     $where .= "g.reg_doc LIKE '%{$filter['search']['reg_doc']}%' AND ";
                 }
                 // Год
-                if ( isset($filter['search']['year']) ) {
+                if (isset($filter['search']['year'])) {
                     $where .= "g.year LIKE '%{$filter['search']['year']}%' AND ";
                 }
 
                 // Определяемая характеристика / показатель
-                if ( isset($filter['search']['name']) ) {
+                if (isset($filter['search']['name'])) {
                     $where .= "m.name LIKE '%{$filter['search']['name']}%' AND ";
                 }
                 // Единица измерения
-                if ( isset($filter['search']['in_field']) ) {
+                if (isset($filter['search']['in_field'])) {
                     $where .= "m.in_field = '%{$filter['search']['in_field']}%' AND ";
                 }
                 // Единица измерения
-                if ( isset($filter['search']['is_extended_field']) ) {
+                if (isset($filter['search']['is_extended_field'])) {
                     $where .= "m.is_extended_field = '%{$filter['search']['is_extended_field']}%' AND ";
                 }
 
                 // Лаба Комната
-                if ( isset($filter['search']['lab']) ) {
+                if (isset($filter['search']['lab'])) {
                     $labId = $filter['search']['lab'];
                 }
 
                 // Статус
-                if ( isset($filter['search']['stage']) ) {
-                    if ( $filter['search']['stage'] == 1 ) { // Актуальные
+                if (isset($filter['search']['stage'])) {
+                    if ($filter['search']['stage'] == 1) { // Актуальные
                         $where .= "m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 2 ) { // В ОА
+                    if ($filter['search']['stage'] == 2) { // В ОА
                         $where .= "m.in_field = 1 AND m.is_extended_field = 0 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 3 ) { // РОА
+                    if ($filter['search']['stage'] == 3) { // РОА
                         $where .= "m.is_extended_field = 1 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 5 ) { // Вне ОА
+                    if ($filter['search']['stage'] == 5) { // Вне ОА
                         $where .= "m.in_field = 0 AND m.is_actual = 1 AND ";
                     }
-                    if ( $filter['search']['stage'] == 7 ) { // Не актуальные
+                    if ($filter['search']['stage'] == 7) { // Не актуальные
                         $where .= "m.is_actual = 0 AND ";
                     }
                 } else {
                     $where .= "m.is_actual = 1 AND ";
                 }
-
             }
         }
 
@@ -1160,7 +1175,7 @@ class Methods extends Model
     {
         $this->DB->Query("delete from `ulab_methods_uncertainty` where method_id = {$idMethod}");
         foreach ($data as $row) {
-            if ( $row['uncertainty_1'] == '' || $row['uncertainty_2'] == '' || $row['uncertainty_3'] == '' ) {
+            if ($row['uncertainty_1'] == '' || $row['uncertainty_2'] == '' || $row['uncertainty_3'] == '') {
                 continue;
             }
 
@@ -1188,7 +1203,7 @@ class Methods extends Model
     {
         $this->DB->Query("delete from `ulab_methods_result` where method_id = {$idMethod}");
         foreach ($data as $row) {
-            if ( empty($row['unit_id']) ) {
+            if (empty($row['unit_id'])) {
                 continue;
             }
 
@@ -1224,7 +1239,8 @@ class Methods extends Model
      * @param $range
      * @return array
      */
-    public function findUncertaintyData($data, $range) {
+    public function findUncertaintyData($data, $range)
+    {
         $response = [];
 
         if (!is_numeric($range)) {
@@ -1254,16 +1270,16 @@ class Methods extends Model
      */
     public function updateOborud($idMethod, $data)
     {
-//        echo "<pre>";
-//        print_r($data);
-//        echo "</pre>";
-//        die();
+        //        echo "<pre>";
+        //        print_r($data);
+        //        echo "</pre>";
+        //        die();
 
         $this->DB->Query("delete from `ulab_methods_oborud` where method_id = {$idMethod}");
         foreach ($data as $row) {
-//            if ( $row['gost'] == '' ) {
-//                continue;
-//            }
+            //            if ( $row['gost'] == '' ) {
+            //                continue;
+            //            }
 
             $row['method_id'] = $idMethod;
             unset($row['id']);
@@ -1412,7 +1428,7 @@ class Methods extends Model
 
             $result[$row['id_oborud1']] = $row;
 
-//            $this->pre($result);
+            //            $this->pre($result);
 
         }
 
@@ -1433,17 +1449,17 @@ class Methods extends Model
                 where mo.method_id = {$idMethod} and o.ID = mo.id_oborud"
         );
 
-//        $withInterResponse = $this->DB->Query(
-//            "
-//            SELECT umo.id, umo.method_id, umo.gost, ba.ID as 'id_oborud', umo.usage_time, umo.comment, ba.IDENT, ba.IN_AREA, ba.IN_STOCK, ba.CHECKED, ba.REG_NUM
-//            FROM ulab_methods_oborud umo
-//            INNER JOIN ba_oborud o ON o.ID = umo.id_oborud
-//            INNER JOIN ba_oborud_interchangeable boi ON boi.oborud_id = o.ID
-//            INNER JOIN ba_oborud ba ON ba.ID = boi.inter_oborud_id
-//            WHERE umo.method_id = {$idMethod}
-//            GROUP BY ba.ID
-//            "
-//        );
+        //        $withInterResponse = $this->DB->Query(
+        //            "
+        //            SELECT umo.id, umo.method_id, umo.gost, ba.ID as 'id_oborud', umo.usage_time, umo.comment, ba.IDENT, ba.IN_AREA, ba.IN_STOCK, ba.CHECKED, ba.REG_NUM
+        //            FROM ulab_methods_oborud umo
+        //            INNER JOIN ba_oborud o ON o.ID = umo.id_oborud
+        //            INNER JOIN ba_oborud_interchangeable boi ON boi.oborud_id = o.ID
+        //            INNER JOIN ba_oborud ba ON ba.ID = boi.inter_oborud_id
+        //            WHERE umo.method_id = {$idMethod}
+        //            GROUP BY ba.ID
+        //            "
+        //        );
 
 
 
@@ -1482,38 +1498,38 @@ class Methods extends Model
             $result[$row['id_oborud']] = $row;
         }
 
-//        while ($row = $withInterResponse->Fetch()) {
-//
-//            switch ($row['IDENT']) {
-//                case 'SI':
-//                    $ident = "СИ";
-//                    break;
-//                case 'IO':
-//                    $ident = "ИО";
-//                    break;
-//                case 'VO':
-//                    $ident = "ВО";
-//                    break;
-//                case 'TS':
-//                    $ident = "ТС";
-//                    break;
-//                case 'SO':
-//                    $ident = "ТС";
-//                    break;
-//                case 'REACT':
-//                    $ident = "Реактивы";
-//                    break;
-//                case 'OOPP':
-//                    $ident = "ООПП";
-//                    break;
-//                default:
-//                    $ident = "";
-//            }
-//
-//            $row['ident'] = $ident;
-//
-//            $result[$row['id_oborud']] = $row;
-//        }
+        //        while ($row = $withInterResponse->Fetch()) {
+        //
+        //            switch ($row['IDENT']) {
+        //                case 'SI':
+        //                    $ident = "СИ";
+        //                    break;
+        //                case 'IO':
+        //                    $ident = "ИО";
+        //                    break;
+        //                case 'VO':
+        //                    $ident = "ВО";
+        //                    break;
+        //                case 'TS':
+        //                    $ident = "ТС";
+        //                    break;
+        //                case 'SO':
+        //                    $ident = "ТС";
+        //                    break;
+        //                case 'REACT':
+        //                    $ident = "Реактивы";
+        //                    break;
+        //                case 'OOPP':
+        //                    $ident = "ООПП";
+        //                    break;
+        //                default:
+        //                    $ident = "";
+        //            }
+        //
+        //            $row['ident'] = $ident;
+        //
+        //            $result[$row['id_oborud']] = $row;
+        //        }
 
         return $result;
     }
@@ -1527,21 +1543,21 @@ class Methods extends Model
     {
         $dataSource = $this->get($methodId);
 
-        if ( empty($dataSource) ) {
+        if (empty($dataSource)) {
             return false;
         }
 
-        if ( !empty($newGostId) ) {
+        if (!empty($newGostId)) {
             $dataSource['gost_id'] = $newGostId;
         }
 
         unset($dataSource['id']);
-//        $dataSource['name'] = 'КОПИЯ ' . $dataSource['name'];
+        //        $dataSource['name'] = 'КОПИЯ ' . $dataSource['name'];
         $dataSource['is_confirm'] = 0;
 
         $idNewMethod = $this->add($dataSource);
 
-        if ( empty($idNewMethod) ) {
+        if (empty($idNewMethod)) {
             return false;
         }
 
@@ -1629,7 +1645,7 @@ class Methods extends Model
 
         $result2 = $this->DB->Update('ba_gost', ['PRICE' => (float)$newPrice], "WHERE ulab_method_id = {$methodId}");
 
-        if ( empty($result1)/* || empty($result2) */) {
+        if (empty($result1)/* || empty($result2) */) {
             return ['success' => false, 'error' => 'Не удалось обновить данные'];
         }
 
@@ -1648,7 +1664,7 @@ class Methods extends Model
 
         $result = [];
 
-        if ( empty($ugtpIds) ) {
+        if (empty($ugtpIds)) {
             return $result;
         }
 
@@ -1677,7 +1693,7 @@ class Methods extends Model
             //находим даты для которых не были заполнены условия окружающей среды
             $periodsDB = $labModel->getDatesByPeriodsForRoom($roomId, $dateStart, $dateEnd);
             $periodsDiff = array_diff($periods, $periodsDB);
-            $result[$row['id']]['no_conditions'][] = implode(',' , $periodsDiff);
+            $result[$row['id']]['no_conditions'][] = implode(',', $periodsDiff);
         }
 
         return $result;
@@ -1703,7 +1719,13 @@ class Methods extends Model
         12 июня — День России
         4 ноября — День народного единства*/
         $holidays = [
-            "{$year}-01-01", "{$year}-01-02", "{$year}-01-03", "{$year}-01-04", "{$year}-01-05", "{$year}-01-06", "{$year}-01-08",
+            "{$year}-01-01",
+            "{$year}-01-02",
+            "{$year}-01-03",
+            "{$year}-01-04",
+            "{$year}-01-05",
+            "{$year}-01-06",
+            "{$year}-01-08",
             "{$year}-01-07",
             "{$year}-02-23",
             "{$year}-03-08",
@@ -1716,15 +1738,15 @@ class Methods extends Model
 
         $interval = new DateInterval('P1D');
 
-        if ( empty($start) && empty($end) ) {
+        if (empty($start) && empty($end)) {
             return $array;
         }
 
-        if ( empty($start) ) {
+        if (empty($start)) {
             $start = $end;
         }
 
-        if ( empty($end) ) {
+        if (empty($end)) {
             $end = $start;
         }
 
@@ -1733,10 +1755,10 @@ class Methods extends Model
 
         $period = new DatePeriod(new DateTime($start), $interval, $realEnd);
 
-        foreach($period as $date) {
+        foreach ($period as $date) {
             $curr = $date->format('D');
             $d = $date->format('Y-m-d');
-            
+
             // Не учитывать если суббота, воскресенье и праздники
             if ($curr == 'Sat' || $curr == 'Sun' || in_array($d, HOLIDAYS)) {
                 continue;
@@ -1757,7 +1779,7 @@ class Methods extends Model
      */
     public function validateMethods($ugtpIds, $dateStart, $dateEnd, $protocolId)
     {
-        if ( $protocolId == 6714 ) {
+        if ($protocolId == 6714) {
             return [
                 'success' => true,
             ];
@@ -1769,7 +1791,7 @@ class Methods extends Model
 
         $isSuccess = true;
         $errors = []; // тексты сообщений ошибок
-        $conditionList = "<a href='".URI."/lab/conditionList'>Журнал условий</a>";
+        $conditionList = "<a href='" . URI . "/lab/conditionList'>Журнал условий</a>";
         $dateStartRu = $dateStart ? date('d.m.Y', strtotime($dateStart)) : '';
         $dateEndRu = $dateEnd ? date('d.m.Y', strtotime($dateEnd)) : '';
 
@@ -1789,23 +1811,23 @@ class Methods extends Model
 
 
         // Текущий диапазон проверки
-        if ( empty($dateEnd) ) {
+        if (empty($dateEnd)) {
             $range = $dateStartRu;
-        } elseif ( empty($dateStart) ) {
+        } elseif (empty($dateStart)) {
             $range = $dateEndRu;
         } else {
             $range = "$dateStartRu - $dateEndRu";
         }
-        
+
         // Проверка привязки оборудования к протоколу
-        if ( !empty($protocolId) && empty($oborudProtocol) ) {
+        if (!empty($protocolId) && empty($oborudProtocol)) {
             $protocolNumber = $protocol['NUMBER'] ?: 'Номер не присвоен';
-            $protocolAnchor = "<a href='".URI."/result/resultCard/{$protocol['DEAL_ID']}?protocol_id={$protocol['ID']}'>{$protocolNumber}</a>";
+            $protocolAnchor = "<a href='" . URI . "/result/resultCard/{$protocol['DEAL_ID']}?protocol_id={$protocol['ID']}'>{$protocolNumber}</a>";
             $errors[] =
                 "Внимание! Не выбрано оборудование или не сохранили данные для испытания в протоколе {$protocolAnchor}. Выберите оборудование и сохраните данные";
         }
 
-        if ( !empty($dateStart) && !empty($dateEnd) && ($dateStart > $dateEnd)  ) {
+        if (!empty($dateStart) && !empty($dateEnd) && ($dateStart > $dateEnd)) {
             //$errors[] =
             //    "Внимание! Дата начала испытания {$dateStartRu} , больше даты окончания испытания {$dateEndRu}!";
         }
@@ -1819,7 +1841,7 @@ class Methods extends Model
                 continue;
             }
 
-            $anchor = "<a href='".URI."/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
+            $anchor = "<a href='" . URI . "/gost/method/{$method['id']}'>{$method['view_gost_for_protocol']}</a>";
 
             // Проверка соответствия текущих условий и условий методик
             foreach ($gost['conditions'] as $key => $condition) {
@@ -1865,13 +1887,13 @@ class Methods extends Model
                 }
 
                 // Актуальность методики
-                if ( !$method['is_actual'] ) {
+                if (!$method['is_actual']) {
                     $errors[] =
                         "Внимание! Методика {$anchor} неактуальна!";
                 }
 
                 // Подтвержденность
-                if ( !$method['is_confirm'] ) {
+                if (!$method['is_confirm']) {
                     $errors[] =
                         "Внимание! Методика {$anchor} не проверена отделом метрологии!";
                 }
@@ -1880,7 +1902,7 @@ class Methods extends Model
 
 
         // Проверка на условия оборудования
-		foreach ($conditionsForOboruds as $data) {
+        foreach ($conditionsForOboruds as $data) {
             foreach ($data['oborud'] as $key => $oborud) {
                 $roomName = $data['rooms'][$key]['name'] ?? '';
                 $condition = $data['conditions'][$key] ?: [];
@@ -1888,7 +1910,7 @@ class Methods extends Model
                 $anchor = "<a href='/ulab/oborud/edit/{$oborud['bo_id']}'>{$oborud['OBJECT']} {$oborud['TYPE_OBORUD']} {$oborud['REG_NUM']}</a>";
 
                 // Если переосное оборудование то не проверять
-				$this->pre($data);
+                $this->pre($data);
                 if (!$oborud['is_portable']) {
                     // Если не для всех дат были заполнены условия окружающей среды
                     if (!empty($data['no_conditions'][$key])) {
@@ -1940,16 +1962,15 @@ class Methods extends Model
 
                 // TODO: Сертификаты??
                 if ($oborud['IDENT'] != "VO" && $oborud['IDENT'] != "TS" && $oborud['IDENT'] != "REACT") {
-
                 }
             }
         }
 
         // Сравниваем выбранное оборудование в протоколах $idsOborudsForProtocols  с оборудованием у методик $idsOborudForMethods
         $oborudsDiff = array_diff($oborudsForProtocolsIds, $oborudsForMethodsIds);
-        if ( !empty($oborudsDiff) ) {
+        if (!empty($oborudsDiff)) {
             foreach ($oborudsForProtocols as $oborud) {
-                if ( !in_array($oborud['bo_id'], $oborudsDiff) ) {
+                if (!in_array($oborud['bo_id'], $oborudsDiff)) {
                     continue;
                 }
 
@@ -1966,7 +1987,7 @@ class Methods extends Model
         $errors = array_unique($errors);
 
 
-        if ( !empty($errors)) {
+        if (!empty($errors)) {
             $isSuccess = false;
         }
 
@@ -1979,7 +2000,6 @@ class Methods extends Model
             'errors' => $errors,
             'data' => '',
         ];
-
     }
 
     /**
@@ -1988,7 +2008,7 @@ class Methods extends Model
      */
     public function getMethodByUgtpId($ugtpId)
     {
-        if ( empty($ugtpId) ) {
+        if (empty($ugtpId)) {
             return [];
         }
 
@@ -2010,7 +2030,7 @@ class Methods extends Model
 
         $result = $methodSql->Fetch();
 
-        if ( !empty($result) ) {
+        if (!empty($result)) {
             $strYear = !empty($result['year']) ? "-{$result['year']}" : '';
             $strClause = !empty($result['clause']) ? " {$result['clause']}" : '';
             $result['laba'] = $this->getLab($result['id']);
@@ -2023,93 +2043,93 @@ class Methods extends Model
     }
 
     public function statsUsedTests()
-	{
-		$lab = new Lab();
-		$where = "";
-		$limit = "";
-		$order = [
-			'by' => 'cmi',
-			'dir' => 'DESC'
-		];
-		if ( !empty($filter) ) {
-			// из $filter собирать строку $where тут
-			// формат такой: $where .= "что-то = чему-то AND ";
-			// или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
-			// слева без пробела, справа всегда AND пробел
+    {
+        $lab = new Lab();
+        $where = "";
+        $limit = "";
+        $order = [
+            'by' => 'cmi',
+            'dir' => 'DESC'
+        ];
+        if (!empty($filter)) {
+            // из $filter собирать строку $where тут
+            // формат такой: $where .= "что-то = чему-то AND ";
+            // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
+            // слева без пробела, справа всегда AND пробел
 
-			// работа с фильтрами
-			if ( !empty($filter['search']) ) {
-				// Номер
-				if ( isset($filter['search']['NUMBER']) ) {
-					$where .= "d.NUMBER LIKE '%{$filter['search']['NUMBER']}%' AND ";
-				}
-				// Дата
-				if ( isset($filter['search']['DATE']) ) {
-					$where .= "LOCATE('{$filter['search']['DATE']}', DATE_FORMAT(d.DATE, '%d.%m.%Y')) > 0 AND ";
-				}
-				if ( isset($filter['search']['dateStart']) ) {
-					$where .= "(d.DATE >= '{$filter['search']['dateStart']}' AND d.DATE <= '{$filter['search']['dateEnd']}') AND ";
-				}
-				// Клиент
-				if ( isset($filter['search']['COMPANY_TITLE']) ) {
-					$where .= "b.COMPANY_TITLE LIKE '%{$filter['search']['COMPANY_TITLE']}%' AND ";
-				}
-				// Клиент
-				if ( isset($filter['search']['linkName2']) ) {
-					if ($filter['search']['linkName2'] == 1) {
-						$where .= "d.PDF is not null AND ";
-					} elseif ($filter['search']['linkName2'] == 2) {
-						$where .= "d.PDF is null AND ";
-					}
-				}
-				// везде
-				if ( isset($filter['search']['everywhere']) ) {
-					$where .=
-						"(
+            // работа с фильтрами
+            if (!empty($filter['search'])) {
+                // Номер
+                if (isset($filter['search']['NUMBER'])) {
+                    $where .= "d.NUMBER LIKE '%{$filter['search']['NUMBER']}%' AND ";
+                }
+                // Дата
+                if (isset($filter['search']['DATE'])) {
+                    $where .= "LOCATE('{$filter['search']['DATE']}', DATE_FORMAT(d.DATE, '%d.%m.%Y')) > 0 AND ";
+                }
+                if (isset($filter['search']['dateStart'])) {
+                    $where .= "(d.DATE >= '{$filter['search']['dateStart']}' AND d.DATE <= '{$filter['search']['dateEnd']}') AND ";
+                }
+                // Клиент
+                if (isset($filter['search']['COMPANY_TITLE'])) {
+                    $where .= "b.COMPANY_TITLE LIKE '%{$filter['search']['COMPANY_TITLE']}%' AND ";
+                }
+                // Клиент
+                if (isset($filter['search']['linkName2'])) {
+                    if ($filter['search']['linkName2'] == 1) {
+                        $where .= "d.PDF is not null AND ";
+                    } elseif ($filter['search']['linkName2'] == 2) {
+                        $where .= "d.PDF is null AND ";
+                    }
+                }
+                // везде
+                if (isset($filter['search']['everywhere'])) {
+                    $where .=
+                        "(
                         d.NUMBER LIKE '%{$filter['search']['everywhere']}%' 
                         OR d.DATE LIKE '%{$filter['search']['everywhere']}%' 
                         OR b.COMPANY_TITLE LIKE '%{$filter['search']['everywhere']}%' 
                         ) AND ";
-				}
-			}
+                }
+            }
 
-			// работа с сортировкой
-			if ( !empty($filter['order']) ) {
-				if ( $filter['order']['dir'] === 'asc' ) {
-					$order['dir'] = 'ASC';
-				}
+            // работа с сортировкой
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
+                    $order['dir'] = 'ASC';
+                }
 
-				switch ($filter['order']['by']) {
-					case 'number':
-						$order['by'] = 'd.NUMBER';
-						break;
-					case 'DATE':
-						$order['by'] = 'd.DATE';
-						break;
-					case 'COMPANY_TITLE':
-						$order['by'] = 'b.COMPANY_TITLE';
-						break;
-				}
-			}
+                switch ($filter['order']['by']) {
+                    case 'number':
+                        $order['by'] = 'd.NUMBER';
+                        break;
+                    case 'DATE':
+                        $order['by'] = 'd.DATE';
+                        break;
+                    case 'COMPANY_TITLE':
+                        $order['by'] = 'b.COMPANY_TITLE';
+                        break;
+                }
+            }
 
-			// работа с пагинацией
-			if ( isset($filter['paginate']) ) {
-				$offset = 0;
-				// количество строк на страницу
-				if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
-					$length = $filter['paginate']['length'];
+            // работа с пагинацией
+            if (isset($filter['paginate'])) {
+                $offset = 0;
+                // количество строк на страницу
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
+                    $length = $filter['paginate']['length'];
 
-					if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
-						$offset = $filter['paginate']['start'];
-					}
-					$limit = "LIMIT {$offset}, {$length}";
-				}
-			}
-		}
-		$where .= "1 ";
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
+                        $offset = $filter['paginate']['start'];
+                    }
+                    $limit = "LIMIT {$offset}, {$length}";
+                }
+            }
+        }
+        $where .= "1 ";
 
-		$data = $this->DB->Query(
-			"select ugtp.method_id, count(ugtp.method_id) as cmi
+        $data = $this->DB->Query(
+            "select ugtp.method_id, count(ugtp.method_id) as cmi
  							from ulab_material_to_request as umtr
 							left join ba_tz as bt on bt.ID_Z = umtr.deal_id
 							left join ulab_gost_to_probe as ugtp on umtr.id = ugtp.material_to_request_id
@@ -2118,10 +2138,10 @@ class Methods extends Model
 							AND IF(bt.ACT_NUM, TRUE, FALSE) = TRUE AND {$where}
 							group by ugtp.method_id
                     ORDER BY {$order['by']} {$order['dir']} {$limit}"
-		);
+        );
 
-		$dataTotal = $this->DB->Query(
-			"select ugtp.method_id, count(ugtp.method_id) as cmi
+        $dataTotal = $this->DB->Query(
+            "select ugtp.method_id, count(ugtp.method_id) as cmi
  							from ulab_material_to_request as umtr
 							left join ba_tz as bt on bt.ID_Z = umtr.deal_id
 							left join ulab_gost_to_probe as ugtp on umtr.id = ugtp.material_to_request_id
@@ -2129,10 +2149,10 @@ class Methods extends Model
 							and bt.STAGE_ID IN ('NEW', 'PREPARATION', 'PREPAYMENT_INVOICE', 'EXECUTING', 'FINAL_INVOICE', '1', '2', '3', '4', 'WON') 
 							AND IF(bt.ACT_NUM, TRUE, FALSE) = TRUE AND  {$where}
 							group by ugtp.method_id"
-		)->Fetch();
+        )->Fetch();
 
-		$dataFiltered = $this->DB->Query(
-			"select ugtp.method_id, count(ugtp.method_id) as cmi
+        $dataFiltered = $this->DB->Query(
+            "select ugtp.method_id, count(ugtp.method_id) as cmi
  							from ulab_material_to_request as umtr
 							left join ba_tz as bt on bt.ID_Z = umtr.deal_id
 							left join ulab_gost_to_probe as ugtp on umtr.id = ugtp.material_to_request_id
@@ -2140,104 +2160,107 @@ class Methods extends Model
 							and bt.STAGE_ID IN ('NEW', 'PREPARATION', 'PREPAYMENT_INVOICE', 'EXECUTING', 'FINAL_INVOICE', '1', '2', '3', '4', 'WON') 
 							AND IF(bt.ACT_NUM, TRUE, FALSE) = TRUE AND  {$where}
 							group by ugtp.method_id"
-		)->Fetch();
+        )->Fetch();
 
-		$result = [];
-		$row = [];
+        $result = [];
+        $row = [];
 
-		while ($row = $data->Fetch()) {
+        while ($row = $data->Fetch()) {
 
-			$gost = $this->get($row['method_id']);
-			$row['name_gost'] = $gost['view_gost_for_protocol'];
-			$row['specification'] = $gost['name'];
-			$labs = $this->getLab($row['method_id']);
-			if (empty($labs)) {$row['lab'] = [];}
-			foreach ($labs as $itemLab) {
-				if (empty($itemLab)) {$row['lab'] = [];}
-				$row['lab'][] = $lab->getLabaById($itemLab);
-			}
+            $gost = $this->get($row['method_id']);
+            $row['name_gost'] = $gost['view_gost_for_protocol'];
+            $row['specification'] = $gost['name'];
+            $labs = $this->getLab($row['method_id']);
+            if (empty($labs)) {
+                $row['lab'] = [];
+            }
+            foreach ($labs as $itemLab) {
+                if (empty($itemLab)) {
+                    $row['lab'] = [];
+                }
+                $row['lab'][] = $lab->getLabaById($itemLab);
+            }
 
-			$result[] = $row;
-		}
+            $result[] = $row;
+        }
 
-		$result['recordsTotal'] = $dataTotal['val'];
-		$result['recordsFiltered'] = $dataFiltered['val'];
+        $result['recordsTotal'] = $dataTotal['val'];
+        $result['recordsFiltered'] = $dataFiltered['val'];
 
-		return $result;
+        return $result;
+    }
 
-	}
+    public function methodsJournal($filter)
+    {
+        $where = "";
+        $limit = "";
+        $order = [
+            'by' => 'm.id',
+            'dir' => 'DESC'
+        ];
+        if (!empty($filter)) {
+            // из $filter собирать строку $where тут
+            // формат такой: $where .= "что-то = чему-то AND ";
+            // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
+            // слева без пробела, справа всегда AND пробел
 
-	public function methodsJournal($filter)
-	{
-		$where = "";
-		$limit = "";
-		$order = [
-			'by' => 'm.id',
-			'dir' => 'DESC'
-		];
-		if ( !empty($filter) ) {
-			// из $filter собирать строку $where тут
-			// формат такой: $where .= "что-то = чему-то AND ";
-			// или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
-			// слева без пробела, справа всегда AND пробел
+            // работа с фильтрами
+            if (!empty($filter['search'])) {
+                // ид
+                if (isset($filter['search']['id'])) {
+                    $where .= "m.`gost_id` =  '{$filter['search']['id']}' AND ";
+                }
+                // Определяемая характеристика
+                if (isset($filter['search']['name'])) {
+                    $where .= "m.name LIKE '%{$filter['search']['name']}%' AND ";
+                }
+                // Пункт
+                if (isset($filter['search']['clause'])) {
+                    $where .= "m.clause LIKE '%{$filter['search']['clause']}%' AND ";
+                }
+                // Метод
+                if (isset($filter['search']['test_method_name'])) {
+                    $where .= "m.test_method_name LIKE '%{$filter['search']['test_method_name']}%' AND ";
+                }
+            }
 
-			// работа с фильтрами
-			if ( !empty($filter['search']) ) {
-				// ид
-				if ( isset($filter['search']['id']) ) {
-					$where .= "m.`gost_id` =  '{$filter['search']['id']}' AND ";
-				}
-				// Определяемая характеристика
-				if ( isset($filter['search']['name']) ) {
-					$where .= "m.name LIKE '%{$filter['search']['name']}%' AND ";
-				}
-				// Пункт
-				if ( isset($filter['search']['clause']) ) {
-					$where .= "m.clause LIKE '%{$filter['search']['clause']}%' AND ";
-				}
-				// Метод
-				if ( isset($filter['search']['test_method_name']) ) {
-					$where .= "m.test_method_name LIKE '%{$filter['search']['test_method_name']}%' AND ";
-				}
-			}
+            // работа с сортировкой
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
+                    $order['dir'] = 'ASC';
+                }
 
-			// работа с сортировкой
-			if ( !empty($filter['order']) ) {
-				if ( $filter['order']['dir'] === 'asc' ) {
-					$order['dir'] = 'ASC';
-				}
+                switch ($filter['order']['by']) {
+                    case 'is_confirm':
+                        $order['by'] = 'm.is_confirm';
+                        break;
+                    case 'in_field':
+                        $order['by'] = 'm.in_field';
+                        break;
+                    case 'is_extended_field':
+                        $order['by'] = 'm.is_extended_field';
+                        break;
+                }
+            }
 
-				switch ($filter['order']['by']) {
-					case 'is_confirm':
-						$order['by'] = 'm.is_confirm';
-						break;
-					case 'in_field':
-						$order['by'] = 'm.in_field';
-						break;
-					case 'is_extended_field':
-						$order['by'] = 'm.is_extended_field';
-						break;
-				}
-			}
+            // работа с пагинацией
+            if (isset($filter['paginate'])) {
+                $offset = 0;
+                // количество строк на страницу
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
+                    $length = $filter['paginate']['length'];
 
-			// работа с пагинацией
-			if ( isset($filter['paginate']) ) {
-				$offset = 0;
-				// количество строк на страницу
-				if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
-					$length = $filter['paginate']['length'];
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
+                        $offset = $filter['paginate']['start'];
+                    }
+                    $limit = "LIMIT {$offset}, {$length}";
+                }
+            }
+        }
+        $where .= "1 ";
 
-					if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
-						$offset = $filter['paginate']['start'];
-					}
-					$limit = "LIMIT {$offset}, {$length}";
-				}
-			}
-		}
-		$where .= "1 ";
-
-		$data = $this->DB->Query(
-			"select m.*,
+        $data = $this->DB->Query(
+            "select m.*,
                         d.id unit_id, d.unit_rus, d.name unit_name, 
                         t.name test_method_name,
                         p.name mp_name
@@ -2247,50 +2270,53 @@ class Methods extends Model
                     left join `ulab_measured_properties` as p on p.id = m.measured_properties_id 
                     where m.`is_actual` = 1 and {$where} 
                     ORDER BY {$order['by']} {$order['dir']} {$limit}"
-		);
+        );
 
-		$dataTotal = $this->DB->Query(
-			"select count(*) val
+        $dataTotal = $this->DB->Query(
+            "select count(*) val
                     from `ulab_methods` as m
                     left join `ulab_dimension` as d on d.id = m.unit_id
                     left join `ulab_test_method` as t on t.id = m.test_method_id 
                     left join `ulab_measured_properties` as p on p.id = m.measured_properties_id 
                     where m.`is_actual` = 1 and m.`gost_id` =  {$filter['search']['id']}"
-		)->Fetch();
+        )->Fetch();
 
-		$dataFiltered = $this->DB->Query(
-			"select count(*) val
+        $dataFiltered = $this->DB->Query(
+            "select count(*) val
                     from `ulab_methods` as m
                     left join `ulab_dimension` as d on d.id = m.unit_id
                     left join `ulab_test_method` as t on t.id = m.test_method_id 
                     left join `ulab_measured_properties` as p on p.id = m.measured_properties_id 
                     where m.`is_actual` = 1 and {$where} "
-		)->Fetch();
+        )->Fetch();
 
-		$result = [];
-		$row = [];
+        $result = [];
+        $row = [];
 
-		while ($row = $data->Fetch()) {
+        while ($row = $data->Fetch()) {
 
-			$gost = $this->get($row['method_id']);
-			$row['name_gost'] = $gost['view_gost_for_protocol'];
-			$row['specification'] = $gost['name'];
-			$labs = $this->getLab($row['method_id']);
-			if (empty($labs)) {$row['lab'] = [];}
-			foreach ($labs as $itemLab) {
-				if (empty($itemLab)) {$row['lab'] = [];}
-				$row['lab'][] = $lab->getLabaById($itemLab);
-			}
+            $gost = $this->get($row['method_id']);
+            $row['name_gost'] = $gost['view_gost_for_protocol'];
+            $row['specification'] = $gost['name'];
+            $labs = $this->getLab($row['method_id']);
+            if (empty($labs)) {
+                $row['lab'] = [];
+            }
+            foreach ($labs as $itemLab) {
+                if (empty($itemLab)) {
+                    $row['lab'] = [];
+                }
+                $row['lab'][] = $lab->getLabaById($itemLab);
+            }
 
-			$result[] = $row;
-		}
+            $result[] = $row;
+        }
 
-		$result['recordsTotal'] = $dataTotal['val'];
-		$result['recordsFiltered'] = $dataFiltered['val'];
+        $result['recordsTotal'] = $dataTotal['val'];
+        $result['recordsFiltered'] = $dataFiltered['val'];
 
-		return $result;
-
-	}
+        return $result;
+    }
 
 
     /**
@@ -2298,7 +2324,7 @@ class Methods extends Model
      * @param $oborudId
      * @return array
      */
-	public function getMethodListByOborudId($oborudId)
+    public function getMethodListByOborudId($oborudId)
     {
         $methodsArray = [];
 
@@ -2315,11 +2341,11 @@ class Methods extends Model
 
         $result = [];
         while ($row = $sql->Fetch()) {
-//            $result[] = $this->get($row['method_id']);
+            //            $result[] = $this->get($row['method_id']);
             $methodsArray[] = $row['method_id'];
         }
 
-        while($row = $interchangeableResponse->Fetch()) {
+        while ($row = $interchangeableResponse->Fetch()) {
             $methodsArray[] = $row['method_id'];
         }
 
@@ -2338,93 +2364,94 @@ class Methods extends Model
     }
 
 
-	public function setPriceList($urlFile)
-	{
-		$reader = new Xlsx();
-		$file = $urlFile;
-		$spreadsheet = $reader->load($file); // тут наш файл с таблицей Excel
-		$worksheet = $spreadsheet->setActiveSheetIndex(0);
-		$highestRow = $worksheet->getHighestRow();
-//		$highestCol = $worksheet->getHighestColumn();
-		$highestCol = 'I';
+    public function setPriceList($urlFile)
+    {
+        $reader = new Xlsx();
+        $file = $urlFile;
+        $spreadsheet = $reader->load($file); // тут наш файл с таблицей Excel
+        $worksheet = $spreadsheet->setActiveSheetIndex(0);
+        $highestRow = $worksheet->getHighestRow();
+        //		$highestCol = $worksheet->getHighestColumn();
+        $highestCol = 'I';
 
-		$infoByTableReviews = $worksheet->rangeToArray("A2:$highestCol$highestRow", null, true, false, false);
-		$count = 0;
-		$countAll = 0;
-		foreach ($infoByTableReviews as $method) {
-			if (!empty($method[8]) || $method[8] == '0') {
-				$id = $method[0];
-				$data = [
-					'price' => $method[8]
-				];
-				$this->DB->Update('ulab_methods', $data, "where id = {$id}");
-				$count++;
-			}
-			$countAll++;
-		}
-		$responce['count'] = $count;
-		$responce['countAll'] = $countAll;
+        $infoByTableReviews = $worksheet->rangeToArray("A2:$highestCol$highestRow", null, true, false, false);
+        $count = 0;
+        $countAll = 0;
+        foreach ($infoByTableReviews as $method) {
+            if (!empty($method[8]) || $method[8] == '0') {
+                $id = $method[0];
+                $data = [
+                    'price' => $method[8]
+                ];
+                $this->DB->Update('ulab_methods', $data, "where id = {$id}");
+                $count++;
+            }
+            $countAll++;
+        }
+        $responce['count'] = $count;
+        $responce['countAll'] = $countAll;
 
-		return $responce;
-	}
+        return $responce;
+    }
 
 
-	public function setMesList()
-	{
-//		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//			$this->handleFormSubmission($_POST);
-//		}
+    public function setMesList()
+    {
+        //		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        //			$this->handleFormSubmission($_POST);
+        //		}
 
-		// Загружаем файл Excel
-		$filePath = '/home/bitrix/www/ulab/HW.xlsx'; // Путь к вашему файлу Excel
-		$reader = new Xlsx();
-		$spreadsheet = $reader->load($filePath);
+        // Загружаем файл Excel
+        $filePath = '/home/bitrix/www/ulab/HW.xlsx'; // Путь к вашему файлу Excel
+        $reader = new Xlsx();
+        $spreadsheet = $reader->load($filePath);
 
-		// Получаем первый лист
-		$worksheet = $spreadsheet->getActiveSheet();
+        // Получаем первый лист
+        $worksheet = $spreadsheet->getActiveSheet();
 
-		// Генерируем HTML-форму
-		$html = $this->generateHtmlForm($worksheet);
+        // Генерируем HTML-форму
+        $html = $this->generateHtmlForm($worksheet);
 
-		// Выводим HTML-форму
-		return $html;
-	}
+        // Выводим HTML-форму
+        return $html;
+    }
 
-	public function generateHtmlForm($worksheet) {
-		$html = '';
-		$highestRow = $worksheet->getHighestRow(); // Максимальная строка
-		$highestColumn = $worksheet->getHighestColumn(); // Максимальная колонка
+    public function generateHtmlForm($worksheet)
+    {
+        $html = '';
+        $highestRow = $worksheet->getHighestRow(); // Максимальная строка
+        $highestColumn = $worksheet->getHighestColumn(); // Максимальная колонка
 
-		foreach ($worksheet->getRowIterator() as $rowIndex => $row) {
-			$cellIterator = $row->getCellIterator();
-			$cellIterator->setIterateOnlyExistingCells(false);
-			$html .= '<tr>';
-			foreach ($cellIterator as $columnIndex => $cell) {
-				$cellAddress = $cell->getCoordinate();
-				$cellValue = $cell->getValue();
-				$abc = 'class="variable"';
-				$value = $cellValue;
-				$readonly = '';
-				if ($cell->isFormula()) {
-					$abc = 'class="isFormula"';
-					$cellValue = str_replace('=', '', $cellValue);
-					$cellValue = str_replace('$', '', $cellValue);
-					$cellValue = str_replace('!', '', $cellValue);
-					$value = '';
-					$readonly = 'readonly';
-				}
+        foreach ($worksheet->getRowIterator() as $rowIndex => $row) {
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+            $html .= '<tr>';
+            foreach ($cellIterator as $columnIndex => $cell) {
+                $cellAddress = $cell->getCoordinate();
+                $cellValue = $cell->getValue();
+                $abc = 'class="variable"';
+                $value = $cellValue;
+                $readonly = '';
+                if ($cell->isFormula()) {
+                    $abc = 'class="isFormula"';
+                    $cellValue = str_replace('=', '', $cellValue);
+                    $cellValue = str_replace('$', '', $cellValue);
+                    $cellValue = str_replace('!', '', $cellValue);
+                    $value = '';
+                    $readonly = 'readonly';
+                }
 
-				if ($cellValue != '') {
-					$html .= "<td><input type='text' {$abc} id='{$cellAddress}' name='{$cellAddress}' data-formula='{$cellValue}' value='{$value}' {$readonly}></td>";
-				} else {
-					$html .= "<td><input type='text' {$abc} id='{$cellAddress}' name='{$cellAddress}' data-formula='{$cellValue}' value='{$value}' {$readonly}></td>";
-				}
-			}
-			$html .= '</tr>';
-		}
+                if ($cellValue != '') {
+                    $html .= "<td><input type='text' {$abc} id='{$cellAddress}' name='{$cellAddress}' data-formula='{$cellValue}' value='{$value}' {$readonly}></td>";
+                } else {
+                    $html .= "<td><input type='text' {$abc} id='{$cellAddress}' name='{$cellAddress}' data-formula='{$cellValue}' value='{$value}' {$readonly}></td>";
+                }
+            }
+            $html .= '</tr>';
+        }
 
-		return $html;
-	}
+        return $html;
+    }
 
     /**
      * @param $umtrId
@@ -2475,41 +2502,40 @@ class Methods extends Model
         return $result;
     }
 
-	public function setProbeListTest()
-	{
-		$reader = new Xlsx();
-		$file = '/home/bitrix/www/rsr.xlsx';
-		$spreadsheet = $reader->load($file); // тут наш файл с таблицей Excel
-		$worksheet = $spreadsheet->setActiveSheetIndex(0);
-		$highestRow = $worksheet->getHighestRow();
-		$highestCol = $worksheet->getHighestColumn();
-		$highestCol = 'I';
+    public function setProbeListTest()
+    {
+        $reader = new Xlsx();
+        $file = '/home/bitrix/www/rsr.xlsx';
+        $spreadsheet = $reader->load($file); // тут наш файл с таблицей Excel
+        $worksheet = $spreadsheet->setActiveSheetIndex(0);
+        $highestRow = $worksheet->getHighestRow();
+        $highestCol = $worksheet->getHighestColumn();
+        $highestCol = 'I';
 
-//		$infoByTableReviews = $worksheet->rangeToArray("A4:$highestCol$highestRow", null, true, false, false);
-		$infoByTableReviews = $worksheet->rangeToArray("A1:D937", null, true, false, false);
-		$count = 0;
-		$countAll = 0;
-		$data = [];
-		foreach ($infoByTableReviews as $method) {
-            if(!$method[0] || $count == 0){
+        //		$infoByTableReviews = $worksheet->rangeToArray("A4:$highestCol$highestRow", null, true, false, false);
+        $infoByTableReviews = $worksheet->rangeToArray("A1:D937", null, true, false, false);
+        $count = 0;
+        $countAll = 0;
+        $data = [];
+        foreach ($infoByTableReviews as $method) {
+            if (!$method[0] || $count == 0) {
                 $count++;
                 continue;
             }
 
-			$data[] = [
-					'cipher' => $method[0],
-					'from' => $method[1],
-					'to' => $method[2],
-                    'name_for_protocol' => $method[3],
-				];
-		}
+            $data[] = [
+                'cipher' => $method[0],
+                'from' => $method[1],
+                'to' => $method[2],
+                'name_for_protocol' => $method[3],
+            ];
+        }
 
-		$probe = $this->DB->Query("SELECT *
+        $probe = $this->DB->Query("SELECT *
 				FROM `ulab_material_to_request`
 				WHERE id = 93616")->Fetch();
 
-        foreach ($data as $key => $value)
-        {
+        foreach ($data as $key => $value) {
             $nameForProtocol = $value['cipher'] . " интервал {$value['from']} - {$value['to']}, длина пробы - {$value['name_for_protocol']}";
 
             $this->DB->Query("INSERT INTO ulab_material_to_request(deal_id, material_id, material_number, name_for_protocol) VALUES('{$probe['deal_id']}', '{$probe['material_id']}', '{$probe['material_number']}', '{$nameForProtocol}')");
@@ -2524,8 +2550,7 @@ class Methods extends Model
                 , '{$currentProbe['id']}', '{$ugtp['gost_number']}', '{$ugtp['assigned_id']}')");
             }
         }
-
-	}
+    }
 
     /**
      * Получить все уникальные методики, связанные с заданными пробами
@@ -2569,18 +2594,18 @@ class Methods extends Model
         $this->DB->Query("DELETE FROM ba_oborud_interchangeable WHERE id = '{$id}'");
     }
 
-//	public function handleFormSubmission($data)
-//	{
-//		$values = [];
-//		foreach ($data as $item) {
-//			$values[$item['name']] = $item['value'];
-//		}
-//
-//		$output = '';
-//		foreach ($values as $key => $value) {
-//			$output .= "$key: $value<br>";
-//		}
-//
-//		echo $output;
-//	}
+    //	public function handleFormSubmission($data)
+    //	{
+    //		$values = [];
+    //		foreach ($data as $item) {
+    //			$values[$item['name']] = $item['value'];
+    //		}
+    //
+    //		$output = '';
+    //		foreach ($values as $key => $value) {
+    //			$output .= "$key: $value<br>";
+    //		}
+    //
+    //		echo $output;
+    //	}
 }

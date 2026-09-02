@@ -113,7 +113,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <label class="col-sm-2 col-form-label">
                                 Испытания проводятся
                             </label>
@@ -192,7 +192,7 @@
                                     <p><?= $this->data['tz_data']['location'] ?></p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <!--./wrapper-info-header-->
                 </div>
@@ -737,7 +737,7 @@
                                             <th scope="col">Испытание</th>
                                             <th scope="col">Лист<br> измерения</th>
                                             <th scope="col">Ед. изм.</th>
-                                            <th scope="col">ТУ</th>
+                                            <!-- <th scope="col">ТУ</th> -->
                                             <th scope="col">Нормативное значение</th>
                                             <th scope="col">Фактическое значение</th>
                                             <th scope="col">Неопределенность / Погрешность</th>
