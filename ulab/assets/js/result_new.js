@@ -7,6 +7,8 @@ $(function ($) {
     let $btnStart = $('.btn_start')
     let $btnPause = $('.btn_pause')
     let $btnStop = $('.btn_stop')
+    let $btnApprove = $('.btn_approve')
+    let $btnReject = $('.btn_reject')
     let $btnCreateProtocol = $('.btn_create_protocol')
     let $btnMeasurementSheet = $('.btn_group_measurement_sheet')
     let $btnUnboundProtocol = $('.btn_unbound_protocol')
@@ -124,7 +126,9 @@ $(function ($) {
 
         let measurementIdList = $journalMethods.find(".probe-check:checked").map(function () {
             let tmp = $(this).data('measurement_id')
-            if (tmp === `undefined`) { return }
+            if (tmp === `undefined`) {
+                return
+            }
             return $(this).data('measurement_id')
         }).get()
 
@@ -134,12 +138,16 @@ $(function ($) {
             $btnStop.removeClass('disabled')
             $btnCreateProtocol.removeClass('disabled')
             $btnUnboundProtocol.removeClass('disabled')
+            $btnApprove.removeClass('disabled')
+            $btnReject.removeClass('disabled')
         } else {
             $btnStart.addClass('disabled')
             $btnPause.addClass('disabled')
             $btnStop.addClass('disabled')
             $btnCreateProtocol.addClass('disabled')
             $btnUnboundProtocol.addClass('disabled')
+            $btnApprove.addClass('disabled')
+            $btnReject.addClass('disabled')
         }
 
         if (measurementIdList.length > 0) {
@@ -149,7 +157,7 @@ $(function ($) {
         }
     }
 
-    let stickyEl2 = new Sticksy('.js-sticky-widget2', { topSpacing: 20, listen: true, })
+    let stickyEl2 = new Sticksy('.js-sticky-widget2', {topSpacing: 20, listen: true,})
     stickyEl2.onStateChanged = function (state) {
         if (state === 'fixed') {
             stickyEl2.nodeRef.classList.add('widget--sticky')
@@ -469,10 +477,10 @@ $(function ($) {
                 }
             },
         ],
-        columnDefs: [{ visible: false, targets: 0 }],
+        columnDefs: [{visible: false, targets: 0}],
         drawCallback: function (settings) {
             let api = this.api();
-            let rows = api.rows({ page: 'current' }).nodes();
+            let rows = api.rows({page: 'current'}).nodes();
             let last = null;
             let data = rows.data()
             let disableMs = ''
@@ -488,7 +496,7 @@ $(function ($) {
 
             });
 
-            api.column(0, { page: 'current' })
+            api.column(0, {page: 'current'})
                 .data()
                 .each(function (group, i) {
                     if (last !== group) {
@@ -552,7 +560,7 @@ $(function ($) {
         $btnStop.addClass('disabled')
         $btnCreateProtocol.addClass('disabled')
         $btnMeasurementSheet.addClass('disabled')
-        $body.find('.all-check').prop({ indeterminate: false, checked: false })
+        $body.find('.all-check').prop({indeterminate: false, checked: false})
     })
 
     journalDataTable.on('change', '.method-unit-select', function () {
@@ -605,6 +613,81 @@ $(function ($) {
     setFilterFromCookie($('#filter-material'), 'filter_material')
     setFilterFromCookie($('#filter-probe'), 'filter_probe')
 
+    $body.on('click', '.btn_approve', function (e) {
+        e.preventDefault();
+        let tz_id = $('input[name="tz_id"]').val();
+        let deal_id = $('input[name="deal_id"]').val();
+        $.ajax({
+            method: "POST",
+            url: "/ulab/result/approveResultsAjax",
+            data: {
+                deal_id: deal_id,
+                tz_id: tz_id
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                // Если успех - перезагружаем страницу
+                if (data.success === true) {
+                    location.reload();
+                } else {
+                    // Если ошибка - показываем сообщение
+                    alert(data.message || 'Произошла ошибка');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка при отправке запроса');
+            }
+        });
+    });
+
+    $body.on('click', '.btn_reject', function (e) {
+        e.preventDefault();
+
+        let $btn = $(this);
+        let probeIdList = $(".probe-check:checked").map(function () {
+            return $(this).val();
+        }).get();
+        let tz_id = $('input[name="tz_id"]').val();
+        let deal_id = $('input[name="deal_id"]').val();
+
+        if (probeIdList.length === 0) {
+            alert('Выберите хотя бы одну запись для отклонения');
+            return;
+        }
+
+        if (!confirm('Вы уверены, что хотите отправить выбранные результаты на доработку?')) {
+            return;
+        }
+
+        $btn.prop('disabled', true).text('Отклонение...');
+
+        $.ajax({
+            method: "POST",
+            url: "/ulab/result/rejectResultsAjax",
+            data: {
+                deal_id: deal_id,
+                tz_id: tz_id,
+                ugtp_arr: probeIdList
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                if (data.success === true) {
+                    location.reload();
+                } else {
+                    $btn.prop('disabled', false).text('Отклонить');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Ошибка:', error);
+                $btn.prop('disabled', false).text('Отклонить');
+            }
+        });
+
+        console.log(probeIdList);
+    });
 
     $body.on('click', '.btn_start', function () {
         let probeIdList = $(".probe-check:checked").map(function () {
@@ -640,12 +723,16 @@ $(function ($) {
                             } else {
                                 $.each(json, function (i, probe) {
 
-                                    if (probe[0].rooms.length === 0) { return true }
+                                    if (probe[0].rooms.length === 0) {
+                                        return true
+                                    }
 
                                     html += `<div class="text-center mb-2"><strong>${probe[0].material_name} | ${probe[0].cipher}</strong></div>`
 
                                     $.each(probe, function (j, method) {
-                                        if (method.rooms.length === 0) { return true }
+                                        if (method.rooms.length === 0) {
+                                            return true
+                                        }
 
                                         let roomHtml = ``
                                         $.each(method.rooms, function (k, room) {
@@ -841,7 +928,7 @@ $(function ($) {
             methodId = $(this).data('method');
 
         let measurementObject = []
-        measurementObject.push({ ugtpId: ugtpId, measurement_id: measurementId, methodId: methodId })
+        measurementObject.push({ugtpId: ugtpId, measurement_id: measurementId, methodId: methodId})
 
         btn.find('i').addClass('spinner-animation');
         btn.addClass('disabled');
@@ -921,14 +1008,18 @@ $(function ($) {
 
         let measurementObject = $journalMethods.find(".probe-check:checked").map(function () {
             let measurementId = $(this).data('measurement_id')
-            if (measurementId === `undefined`) { return }
+            if (measurementId === `undefined`) {
+                return
+            }
             let ugtpId = $(this).val()
             let methodId = $(this).data('method_id')
 
-            return { ugtpId: ugtpId, measurement_id: measurementId, methodId: methodId }
+            return {ugtpId: ugtpId, measurement_id: measurementId, methodId: methodId}
         }).get()
 
-        if (measurementObject.length === 0) { return false }
+        if (measurementObject.length === 0) {
+            return false
+        }
 
         let btnHtml = $btn.html()
         $btn.html(`<i class="fa-solid fa-arrows-rotate spinner-animation"></i>`)
@@ -1028,7 +1119,9 @@ $(function ($) {
         let ids = [];
         try {
             ids = JSON.parse($root.find('#equipmentIds').val() || '[]');
-        } catch (e) { ids = []; }
+        } catch (e) {
+            ids = [];
+        }
         if (!ids.includes(selectedId)) {
             ids.push(selectedId);
             $root.find('#equipmentIds').val(JSON.stringify(ids));
@@ -1196,6 +1289,7 @@ $(function ($) {
 
         $list.toggle($select.find('option').length > 0);
     }
+
     $body.on('click', '.remove-used-eq', function (e) {
         e.preventDefault();
 
@@ -1206,7 +1300,8 @@ $(function ($) {
         let arr = [];
         try {
             arr = JSON.parse($root.find('#equipmentIds').val() || '[]');
-        } catch (e) { }
+        } catch (e) {
+        }
 
         arr = arr.filter(x => Number(x) !== id);
         $root.find('#equipmentIds').val(JSON.stringify(arr));

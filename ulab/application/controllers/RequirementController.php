@@ -1112,18 +1112,21 @@
             $requirementModel = $this->model('Requirement');
             /** @var Requirement $requirementModel */
             $request = $this->model('Request');
+            $resultModel = $this->model('Result');
             $dealId = $requirementModel->getDealIdByTzId($_POST['tz_id']);
             $requestData = $request->getTzByDealId($dealId);
             $this->data['is_end_test'] = $requestData['STAGE_ID'] == 2 || $requestData['STAGE_ID'] == 4 || $requestData['STAGE_ID'] == 'WON';
-            if ($this->data['is_end_test'] && $_SESSION['SESS_AUTH']['USER_ID'] != 222 && $_SESSION['SESS_AUTH']['USER_ID'] != 212) {
-                $this->showErrorMessage("Запрещено");
-                $this->redirect("/requirement/card_new/{$_POST['tz_id']}");
-            }
+            // if ($this->data['is_end_test'] && $_SESSION['SESS_AUTH']['USER_ID'] != 222 && $_SESSION['SESS_AUTH']['USER_ID'] != 212) {
+            //     $this->showErrorMessage("Запрещено");
+            //     $this->redirect("/requirement/card_new/{$_POST['tz_id']}");
+            // }
             // добавляем методики
             $requirementModel->addMethodsToProbe($probeIdList, $_POST['form']);
 
             // заполняем подтверждение методики
             $requirementModel->checkHaveLeader($_POST['deal_id'], $_POST['form']);
+
+            $resultModel->setInfoToApprove($_POST['form'], $_POST['tz_id']);
 
             // обновляем цены у заявки
             $requirementModel->updatePrice($_POST['deal_id']);

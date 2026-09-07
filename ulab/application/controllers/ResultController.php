@@ -10,7 +10,7 @@ class ResultController extends Controller
 {
     const USERS_ADDS_CERTIFICATE = [1, 10, 9, 61]; //пользователи могут добавить аттестат акредитации
     const PROTOCOL_TYPE_SIMPLIFIED = [33, 34, 35, 36, 37, 38, 39]; //тип протокола упрощенный
-    const USERS_ACCESS_OLD_DESIGN = [1, 7,  61, 75, 58]; //пользователи у которых есть доступ к старому дизайну
+    const USERS_ACCESS_OLD_DESIGN = [1, 7, 61, 75, 58]; //пользователи у которых есть доступ к старому дизайну
     const USERS_CAN_UNLOCK = [1, 7, 61, 9, 75, 58, 11, 12]; //пользователи могут разблокировать
 
     const ADMIN_PERMISSION_ID = 2; // id роли "Админ"
@@ -150,16 +150,16 @@ class ResultController extends Controller
         }
 
         // Проверка на доступ к разблокированию протокола
-        $this->data['is_may_unlock'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
+        $this->data['is_may_unlock'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
         // Проверка на доступ к признанию протокола недействительным
-        $this->data['is_may_invalid'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
+        $this->data['is_may_invalid'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
         // Проверка на доступ редактирования данных условий окружающей среды(помещения)
-        $this->data['may_edit_conditions'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
+        $this->data['may_edit_conditions'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
         // Проверка на доступ выдачи протокола с аттестатом аккредитации
         $this->data['is_adds_certificate'] = !empty($protocol['probe_count']) && !empty($protocol['IN_ATTESTAT_DIAPASON']) &&
-            in_array($permissionInfo['id'],  [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
+            in_array($permissionInfo['id'], [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
         // Проверка на доступ подтверждения значения в ОА
-        $this->data['may_confirm_oa'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
+        $this->data['may_confirm_oa'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
 
         // Добавить доступ к функционалу созданных протоколов
         $this->data['protocols'] = $resultModel::addConditionsToProtocols(
@@ -256,6 +256,8 @@ class ResultController extends Controller
 
         $this->data['user_id'] = $_SESSION['SESS_AUTH']['USER_ID'];
 
+        $this->data['info_status'] = $resultModel->checkApproveStatus($tz['ID']);
+
         $actBase = $requirementModel->getActBase($dealId);
         $permissionInfo = $permissionModel->getUserPermission($_SESSION['SESS_AUTH']['USER_ID']);
         $protocol = $resultModel->getProtocolById($selectedProtocol);
@@ -267,18 +269,18 @@ class ResultController extends Controller
         }
 
         // Проверка на доступ к разблокированию протокола
-        $this->data['is_may_unlock'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]) || in_array($_SESSION['SESS_AUTH']['USER_ID'], [86, 63, 277, 291]);
+        $this->data['is_may_unlock'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]) || in_array($_SESSION['SESS_AUTH']['USER_ID'], [86, 63, 277, 291]);
         // Проверка на доступ к признанию протокола недействительным
-        $this->data['is_may_invalid'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
+        $this->data['is_may_invalid'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]);
         // Проверка на доступ редактирования данных условий окружающей среды(помещения)
-        $this->data['may_edit_conditions'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]) || in_array($_SESSION['SESS_AUTH']['USER_ID'], [86, 63, 277, 272]);
+        $this->data['may_edit_conditions'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, HEAD_IC_PERMISSION, HEAD_LAB_PERMISSION]) || in_array($_SESSION['SESS_AUTH']['USER_ID'], [86, 63, 277, 272]);
         // Проверка на доступ выдачи протокола с аттестатом аккредитации
         $this->data['is_adds_certificate'] = true;
         $this->data['is_adds_certificate'] = !empty($protocol['probe_count']) && !empty($protocol['IN_ATTESTAT_DIAPASON']) &&
-            in_array($permissionInfo['id'],  [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
+            in_array($permissionInfo['id'], [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
 
         // Проверка на доступ подтверждения значения в ОА
-        $this->data['may_confirm_oa'] = in_array($permissionInfo['id'],  [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
+        $this->data['may_confirm_oa'] = in_array($permissionInfo['id'], [ADMIN_PERMISSION, SMK_PERMISSION, HEAD_LAB_PERMISSION]);
 
         // Добавить доступ к функционалу созданных протоколов
         $this->data['protocols'] = $resultModel::addConditionsToProtocols(
@@ -393,10 +395,10 @@ class ResultController extends Controller
 
 
     /**
+     * @param $dealId - id сделки
      * @deprecated
      * route /result/resultCard/{$dealId}
      * Карточка листа измерений
-     * @param $dealId - id сделки
      */
     public function resultCard($dealId)
     {
@@ -565,9 +567,11 @@ class ResultController extends Controller
                     empty($protocol['PROTOCOL_OUTSIDE_LIS']);
 
                 $this->data['protocols'][$key]['add_protocol_number'] = !empty($protocol['NUMBER']) ||/*
-                    in_array($deal['STAGE_ID'], ['4', 'WON']) ||*/ empty($this->data['selected_protocol_id']) ||
+                    in_array($deal['STAGE_ID'], ['4', 'WON']) ||*/
+                    empty($this->data['selected_protocol_id']) ||
                     !empty($this->data['selected_protocol_id']) && $this->data['selected_protocol_id'] !== $protocol['ID'] ||
-                    !empty($protocol['upi_action']) /*|| !$isGoodCompany && !empty($tz['PRICE']) && empty($tz['OPLATA'])*/;
+                    !empty($protocol['upi_action']) /*|| !$isGoodCompany && !empty($tz['PRICE']) && empty($tz['OPLATA'])*/
+                ;
 
                 $this->data['protocols'][$key]['delete_protocol'] = !empty($this->data['selected_protocol_id']) &&
                     $this->data['selected_protocol_id'] === $protocol['ID'] && empty($protocol['NUMBER']) &&
@@ -590,15 +594,15 @@ class ResultController extends Controller
 
                 foreach ($data as $ugtp_id => $val) {
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['probe_selected'] = !empty($val['protocol_id']) &&
-                        $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] &&
-                        !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
-                        in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
-                        empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
+                    $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] &&
+                    !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
+                    in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
+                    empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['table_green'] = !empty($this->data['selected_protocol_id']) &&
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['is_save_info'] =
                         empty($val['p_number']) || !empty($val['p_edit_results']);
@@ -634,7 +638,7 @@ class ResultController extends Controller
 
         $this->data['is_may_view'] = in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_ACCESS_OLD_DESIGN);;
         // Проверка на доступ редактирования данных условий окружающей среды(помещения)
-        $this->data['may_edit_conditions'] = in_array($permissionInfo['id'],  [self::ADMIN_PERMISSION_ID, self::HEAD_IC_PERMISSION_ID]);
+        $this->data['may_edit_conditions'] = in_array($permissionInfo['id'], [self::ADMIN_PERMISSION_ID, self::HEAD_IC_PERMISSION_ID]);
 
 
         if (isset($_SESSION['result_post'])) {
@@ -869,10 +873,10 @@ class ResultController extends Controller
     }
 
     /**
+     * @param $dealId - id сделки
      * @deprecated
      * route /result/card/{$dealId}
      * Карточка листа измерений
-     * @param $dealId - id сделки
      */
     public function card($dealId)
     {
@@ -1016,9 +1020,11 @@ class ResultController extends Controller
                     empty($protocol['PROTOCOL_OUTSIDE_LIS']);
 
                 $this->data['protocols'][$key]['add_protocol_number'] = !empty($protocol['NUMBER']) ||/*
-                    in_array($deal['STAGE_ID'], ['4', 'WON']) ||*/ empty($this->data['selected_protocol_id']) ||
+                    in_array($deal['STAGE_ID'], ['4', 'WON']) ||*/
+                    empty($this->data['selected_protocol_id']) ||
                     !empty($this->data['selected_protocol_id']) && $this->data['selected_protocol_id'] !== $protocol['ID'] ||
-                    !empty($protocol['upi_action']) /*|| !$isGoodCompany && !empty($tz['PRICE']) && empty($tz['OPLATA'])*/;
+                    !empty($protocol['upi_action']) /*|| !$isGoodCompany && !empty($tz['PRICE']) && empty($tz['OPLATA'])*/
+                ;
 
                 $this->data['protocols'][$key]['delete_protocol'] = !empty($this->data['selected_protocol_id']) &&
                     $this->data['selected_protocol_id'] === $protocol['ID'] && empty($protocol['NUMBER']) &&
@@ -1041,15 +1047,15 @@ class ResultController extends Controller
 
                 foreach ($data as $ugtp_id => $val) {
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['probe_selected'] = !empty($val['protocol_id']) &&
-                        $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] &&
-                        !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
-                        in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
-                        empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
+                    $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] &&
+                    !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
+                    in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
+                    empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['table_green'] = !empty($this->data['selected_protocol_id']) &&
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['is_save_info'] =
                         empty($val['p_number']) || !empty($val['p_edit_results']);
@@ -1868,7 +1874,8 @@ class ResultController extends Controller
         $protocolOutsideLis = !empty($_POST['PROTOCOL_OUTSIDE_LIS']) ? 1 : 0;
         $inAttestatDiapason = empty($noOA[$protocolId]) ? 1 : 0;
         //TODO: Нужно ли для аттестата чтобы все было в дапазоне
-        $attestatInProtocol = /*$inAttestatDiapason &&*/ !empty($_POST['ATTESTAT_IN_PROTOCOL']) ? 1 : 0;
+        $attestatInProtocol = /*$inAttestatDiapason &&*/
+            !empty($_POST['ATTESTAT_IN_PROTOCOL']) ? 1 : 0;
 
 
         //TODO: Добавить новое место хранения протокола после рефакторинга формирования протоколов
@@ -1938,7 +1945,7 @@ class ResultController extends Controller
 
             // Изменить условия испытаний
             // Проверка на доступ редактирования данных условий окружающей среды(помещения)
-            if (in_array($permissionInfo['id'],  [self::ADMIN_PERMISSION_ID, self::HEAD_IC_PERMISSION_ID])) {
+            if (in_array($permissionInfo['id'], [self::ADMIN_PERMISSION_ID, self::HEAD_IC_PERMISSION_ID])) {
                 $protocolData['CHANGE_TRIALS_CONDITIONS'] = $_POST['CHANGE_TRIALS_CONDITIONS'] ? 1 : 0;
             }
 
@@ -2487,7 +2494,6 @@ class ResultController extends Controller
                 }
 
 
-
                 $trialResult = $result->getTrialResult($ugtp_id);
 
                 $data = [
@@ -2701,7 +2707,8 @@ class ResultController extends Controller
         $inAttestatDiapason = empty($noOA[$protocolId]) ? 1 : 0;
         //TODO: проверить логичность проверки на диапазон
 
-        $attestatInProtocol = /*$inAttestatDiapason &&*/ !empty($_POST['ATTESTAT_IN_PROTOCOL']) ? 1 : 0;
+        $attestatInProtocol = /*$inAttestatDiapason &&*/
+            !empty($_POST['ATTESTAT_IN_PROTOCOL']) ? 1 : 0;
 
 
         //TODO: Добавить новое место хранения протокола после рефакторинга формирования протоколов
@@ -3036,7 +3043,6 @@ class ResultController extends Controller
         $protocol = $resultModel->updateProtocol($protocolId, $_POST['protocol']);
         $resultModel->updateSertsProtocol($_POST['oborud'], $_POST['certs']);
         $protocolModel->unlinkProtocolPdf($protocolId, $tz['ID']);
-
 
 
         //Обновление данных "начало/окончание" испытаний
@@ -3578,7 +3584,7 @@ class ResultController extends Controller
 
 
             $historyType[] = 'Присвоен номер протоколу';
-            if (!empty($protocolData['NUMBER']) && !empty($protocolNumber)  && $protocolData['NUMBER'] !== $protocolNumber) {
+            if (!empty($protocolData['NUMBER']) && !empty($protocolNumber) && $protocolData['NUMBER'] !== $protocolNumber) {
                 $historyType[] = 'Изменён номер протокола';
             }
 
@@ -3913,10 +3919,10 @@ class ResultController extends Controller
     }
 
     /**
+     * @param $dealId - id сделки
      * @deprecated
      * route /result/resultCard/{$dealId}
      * Карточка листа измерений
-     * @param $dealId - id сделки
      */
     public function resultCard_tester($dealId)
     {
@@ -4064,7 +4070,7 @@ class ResultController extends Controller
                 $this->data['file'][$protocol['ID']]['file'] = end($files);
 
                 // "Только выбранные пробы" (радио кнопка checked если выбрана и соответствует протоколу)
-                $this->data['protocols'][$key]['selected_probe'] = $selected === $protocol['ID']  ? 'checked' : '';
+                $this->data['protocols'][$key]['selected_probe'] = $selected === $protocol['ID'] ? 'checked' : '';
 
                 // Отображение выбранного протокола и прикреплённых проб в "Таблице созданных протоколов" и "Таблице результатов испытаний"
                 $this->data['protocols'][$key]['table_green'] = $this->data['selected_protocol_id'] === $protocol['ID'] ? 'table-gradient-green' : '';
@@ -4112,15 +4118,15 @@ class ResultController extends Controller
 
                 foreach ($data as $ugtp_id => $val) {
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['probe_selected'] = !empty($val['protocol_id']) &&
-                        $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] &&
-                        !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
-                        in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
-                        empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
+                    $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] &&
+                    !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
+                    in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
+                    empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['table_green'] = !empty($this->data['selected_protocol_id']) &&
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['is_save_info'] =
                         empty($val['p_number']) || !empty($val['p_edit_results']);
@@ -4552,9 +4558,11 @@ class ResultController extends Controller
                     empty($protocol['PROTOCOL_OUTSIDE_LIS']);
 
                 $this->data['protocols'][$key]['add_protocol_number'] = !empty($protocol['NUMBER']) ||/*
-                    in_array($deal['STAGE_ID'], ['4', 'WON']) ||*/ empty($this->data['selected_protocol_id']) ||
+                    in_array($deal['STAGE_ID'], ['4', 'WON']) ||*/
+                    empty($this->data['selected_protocol_id']) ||
                     !empty($this->data['selected_protocol_id']) && $this->data['selected_protocol_id'] !== $protocol['ID'] ||
-                    !empty($protocol['upi_action']) /*|| !$isGoodCompany && !empty($tz['PRICE']) && empty($tz['OPLATA'])*/;
+                    !empty($protocol['upi_action']) /*|| !$isGoodCompany && !empty($tz['PRICE']) && empty($tz['OPLATA'])*/
+                ;
 
                 $this->data['protocols'][$key]['delete_protocol'] = !empty($this->data['selected_protocol_id']) &&
                     $this->data['selected_protocol_id'] === $protocol['ID'] && empty($protocol['NUMBER']) &&
@@ -4577,15 +4585,15 @@ class ResultController extends Controller
 
                 foreach ($data as $ugtp_id => $val) {
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['probe_selected'] = !empty($val['protocol_id']) &&
-                        $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] &&
-                        !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
-                        in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
-                        empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
+                    $val['protocol_id'] !== $this->data['selected_protocol_id'] ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] &&
+                    !empty($val['p_number']) && !in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) ||
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] && !empty($val['p_number']) &&
+                    in_array($_SESSION['SESS_AUTH']['USER_ID'], self::USERS_CAN_UNLOCK) &&
+                    empty($val['p_edit_results']) ? 'checkbox-disabled' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['table_green'] = !empty($this->data['selected_protocol_id']) &&
-                        $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
+                    $val['protocol_id'] === $this->data['selected_protocol_id'] ? 'table-gradient-green' : '';
 
                     $this->data['material_gost'][$umtr_id][$ugtp_id]['is_save_info'] =
                         empty($val['p_number']) || !empty($val['p_edit_results']);
@@ -5213,7 +5221,7 @@ class ResultController extends Controller
             $dateEnd = $val['date_end'];
 
             //Цдалить это условие!!!
-            if (/*$_SESSION['SESS_AUTH']['USER_ID'] == 61 || */!in_array($_POST['protocol_id'], EXCEPTION_PROTOCOLS)) {
+            if (/*$_SESSION['SESS_AUTH']['USER_ID'] == 61 || */ !in_array($_POST['protocol_id'], EXCEPTION_PROTOCOLS)) {
 
                 // Валидация
                 $validate = $methodsModel->validateMethods($ugtpIds, $dateStart, $dateEnd, $protocolId);
@@ -5265,8 +5273,8 @@ class ResultController extends Controller
 
         $filter = [
             'paginate' => [
-                'length'    => $_POST['length'],  // кол-во строк на страницу
-                'start'      => $_POST['start'],  // текущая страница
+                'length' => $_POST['length'],  // кол-во строк на страницу
+                'start' => $_POST['start'],  // текущая страница
             ],
             'search' => [],
             'order' => []
@@ -5279,7 +5287,7 @@ class ResultController extends Controller
         }
 
         if (isset($_POST['order']) && !empty($_POST['columns'])) {
-            $filter['order']['by']  = $_POST['columns'][$_POST['order'][0]['column']]['data'];
+            $filter['order']['by'] = $_POST['columns'][$_POST['order'][0]['column']]['data'];
             $filter['order']['dir'] = $_POST['order'][0]['dir'];
         }
 
@@ -5316,8 +5324,8 @@ class ResultController extends Controller
 
         $filter = [
             'paginate' => [
-                'length'    => $_POST['length'],  // кол-во строк на страницу
-                'start'      => $_POST['start'],  // текущая страница
+                'length' => $_POST['length'],  // кол-во строк на страницу
+                'start' => $_POST['start'],  // текущая страница
             ],
             'search' => [],
             'order' => []
@@ -5330,7 +5338,7 @@ class ResultController extends Controller
         }
 
         if (isset($_POST['order']) && !empty($_POST['columns'])) {
-            $filter['order']['by']  = $_POST['columns'][$_POST['order'][0]['column']]['data'];
+            $filter['order']['by'] = $_POST['columns'][$_POST['order'][0]['column']]['data'];
             $filter['order']['dir'] = $_POST['order'][0]['dir'];
         }
 
@@ -5440,6 +5448,7 @@ class ResultController extends Controller
 
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
+
     public function getProtocolInfoCertificateAjax()
     {
         global $APPLICATION;
@@ -5662,7 +5671,6 @@ class ResultController extends Controller
     }
 
 
-
     public function getSaveCellDataAjax()
     {
         global $APPLICATION;
@@ -5717,5 +5725,34 @@ class ResultController extends Controller
         $resultModel = $this->model('Result');
 
         $resultModel->updateUnitForUgtp($_POST);
+    }
+
+    public function approveResultsAjax()
+    {
+
+        global $APPLICATION;
+        $APPLICATION->RestartBuffer();
+        $dealId = $_POST['deal_id'];
+
+        /** @var Result $resultModel */
+        $resultModel = $this->model('Result');
+
+        $response = $resultModel->approveResults($_POST);
+
+        echo json_encode($response);
+    }
+
+    public function rejectResultsAjax()
+    {
+        global $APPLICATION;
+        $APPLICATION->RestartBuffer();
+
+        $dealId = $_POST['deal_id'];
+        /** @var Result $resultModel */
+        $resultModel = $this->model('Result');
+
+        $response = $resultModel->rejectResults($_POST);
+
+        echo json_encode($response);
     }
 }

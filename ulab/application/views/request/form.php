@@ -399,9 +399,6 @@
                             <?php foreach ($this->data['clients_main'] as $client): ?>
                                 <option data-value="<?=$client['ID']?>"><?=$client['LAST_NAME']?> <?=$client['NAME']?></option>
                             <?php endforeach; ?>
-                            <option data-value="263">Ширлянова Алена</option>
-                            <option data-value="266">Панарин Евгений</option>
-                            <option data-value="272">Трусов Сергей</option>
                         <?php endif; ?>
                     </datalist>
                     <datalist id="assigneds">

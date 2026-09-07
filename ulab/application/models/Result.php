@@ -292,10 +292,8 @@ class Result extends Model
             $protocols[$key]['file']['file'] = $files[0];
 
 
-
-
             // "Только выбранные пробы" (радио кнопка checked если выбрана и соответствует протоколу)
-            $protocols[$key]['selected_probe'] = $checked === $protocol['ID']  ? 'checked' : '';
+            $protocols[$key]['selected_probe'] = $checked === $protocol['ID'] ? 'checked' : '';
 
             // Отображение выбранного протокола и прикреплённых проб в "Таблице созданных протоколов" и "Таблице результатов испытаний"
             $protocols[$key]['table_green'] = $selected === $protocol['ID'] ? 'table-gradient-green' : '';
@@ -537,10 +535,10 @@ class Result extends Model
     }
 
     /**
-     * @deprecated
-     * записываем данные результатов испытаний
      * @param array $data
      * @return int
+     * @deprecated
+     * записываем данные результатов испытаний
      */
     public function addTrialResults(array $data): int
     {
@@ -550,11 +548,11 @@ class Result extends Model
     }
 
     /**
-     * @deprecated
-     * обновляем данные результатов испытаний
      * @param int $ugtp_id - id ulab_gost_to_probe
      * @param array $data
      * @return mixed
+     * @deprecated
+     * обновляем данные результатов испытаний
      */
     public function updateTrialResults(int $ugtp_id, array $data)
     {
@@ -571,11 +569,12 @@ class Result extends Model
      * @return array
      */
     public function materialGostList(
-        int $dealId,
+        int  $dealId,
         bool $isCheck = true,
         ?int $protocolId = null,
         ?int $selectedProtocol = null
-    ): array {
+    ): array
+    {
         $resultModel = new Result;
         $methodsModel = new Methods;
         $labModel = new Lab;
@@ -653,7 +652,6 @@ class Result extends Model
                 'от ' . ($row['um_definition_range_1'] ?? '-') . ' до ' . ($row['um_definition_range_2'] ?? '-') : ($row['um_definition_range_type'] == 2 ? 'до ' . ($row['um_definition_range_1'] ?? '-') . ' и от ' . ($row['um_definition_range_2'] ?? '-') : '');
 
 
-
             // "Выбранные пробы" (если к пробе привязан протокол и протокол не выбран ИЛИ
             // если к пробе привязан протокол с номером и протокол не разблокирован,
             // то открепить пробы нельзя)
@@ -729,6 +727,7 @@ class Result extends Model
         $tuModel = new TechCondition();
         $protocolModel = new Protocol();
         $userModel = new User();
+        $labModel = new Lab();
         $permissionModel = new Permission();
 
         $where = "";
@@ -823,8 +822,26 @@ class Result extends Model
             }
         }
 
+        $methodFilter = '';
         $currUser = $userModel->getCurrentUser();
         $permUser = $permissionModel->getUserPermission($currUser['ID']);
+        $labUser = $labModel->getLabByUserId($currUser['ID']);
+
+        if ($labUser['HEAD_ID'] == $currUser['ID']) {
+            // Проверяем, что LAB_ID существует и не пустой
+            if (!empty($labUser['ID'])) {
+                $methodFilter = " AND method.id IN (
+            SELECT method_id 
+            FROM ulab_methods_lab 
+            WHERE lab_id = " . intval($labUser['ID']) . "
+        )";
+            } else {
+
+                $methodFilter = "";
+            }
+        } else {
+            $methodFilter = "";
+        }
 
         if ($permUser['id'] == 6) {
             $where .= "gtp.assigned_id = " . $currUser['ID'] . " AND ";
@@ -834,20 +851,21 @@ class Result extends Model
 
         $data = $this->DB->Query(
             "SELECT 
-                        gtp.*, gtp.id as ugtp_id, gtp.protocol_id as gtp_protocol_id, gtp.assigned_id, 
-                        mtr.*, mtr.id as mtr_id, mtr.id as umtr_id, 
-                        m.ID as material_id, m.NAME as material_name,
-                        mtr.deal_id, tz.REQUEST_TITLE, mg.name as material_group_name
-                    FROM ulab_material_to_request as mtr
-                    inner join MATERIALS as m ON m.ID = mtr.material_id
-                    left join materials_groups as mg ON mtr.group = mg.id
-                    inner join ulab_gost_to_probe as gtp on gtp.material_to_request_id = mtr.id
-                    inner join ba_tz as tz on tz.ID_Z = mtr.deal_id
-                    inner join ulab_methods as method on method.id = gtp.method_id
-                    left join ulab_methods_lab as uml on uml.method_id = method.id
-                    WHERE method.is_selection = 0 and {$whereDealId} and {$where}
-                    group by gtp.id, mtr.id
-                    ORDER BY {$order[$filter['order']]} {$limit}"
+                gtp.*, gtp.id as ugtp_id, gtp.protocol_id as gtp_protocol_id, gtp.assigned_id, 
+                mtr.*, mtr.id as mtr_id, mtr.id as umtr_id, 
+                m.ID as material_id, m.NAME as material_name,
+                mtr.deal_id, tz.REQUEST_TITLE, mg.name as material_group_name
+            FROM ulab_material_to_request as mtr
+            inner join MATERIALS as m ON m.ID = mtr.material_id
+            left join materials_groups as mg ON mtr.group = mg.id
+            inner join ulab_gost_to_probe as gtp on gtp.material_to_request_id = mtr.id
+            inner join ba_tz as tz on tz.ID_Z = mtr.deal_id
+            inner join ulab_methods as method on method.id = gtp.method_id
+            left join ulab_methods_lab as uml on uml.method_id = method.id
+            WHERE method.is_selection = 0 and {$whereDealId} and {$where}
+            {$methodFilter}
+            group by gtp.id, mtr.id
+            ORDER BY {$order[$filter['order']]} {$limit}"
         );
 
         $dataTotal = $this->DB->Query(
@@ -992,12 +1010,11 @@ class Result extends Model
     }
 
 
-
     /**
-     * @deprecated
-     * получает данные материалов, методик и тех.условий
      * @param int $dealId
      * @return array
+     * @deprecated
+     * получает данные материалов, методик и тех.условий
      */
     public function materialGostDataByDealId(int $dealId): array
     {
@@ -1461,9 +1478,9 @@ class Result extends Model
     }
 
     /**
-     * @deprecated
      * @param int $dealId
      * @return array
+     * @deprecated
      */
     public function getCountTrialResults(int $dealId): array
     {
@@ -1755,7 +1772,6 @@ class Result extends Model
         $response['anchor_disabled'] = $ugtp['measuring_sheet']['scheme'] ? '' : 'icon-disabled';
 
 
-
         return $response;
     }
 
@@ -1804,7 +1820,6 @@ class Result extends Model
         }
 
         $response['anchor_disabled'] = $ugtp['measuring_sheet']['scheme'] ? '' : 'icon-disabled';
-
 
 
         return $response;
@@ -3539,5 +3554,257 @@ class Result extends Model
             $arrUpdate,
             $where
         );
+    }
+
+    public function setInfoToApprove($form, $tz_id)
+    {
+
+        $labModel = new Lab();
+        $arrData = [];
+
+        foreach ($form as $item) {
+
+            $queryCheck = $this->DB->Query(
+                "SELECT lab_id 
+                    FROM results_approve 
+                    WHERE id_tz = {$tz_id} 
+                    AND lab_id IN (
+                        SELECT bl.ID 
+                        FROM ulab_methods_lab uml   
+                        INNER JOIN ba_laba bl ON bl.ID = uml.lab_id
+                        WHERE uml.method_id = '{$item['new_method_id']}'
+         )"
+            )->Fetch();
+
+            if ($queryCheck) {
+                continue;
+            }
+
+            $leadersResponse = $this->DB->Query(
+                "SELECT bl.ID, bl.HEAD_ID
+                    FROM ulab_methods_lab uml   
+                    INNER JOIN ba_laba bl ON bl.ID = uml.lab_id
+                    WHERE uml.method_id = '{$item['new_method_id']}'"
+            )->Fetch();
+
+            if (!$leadersResponse) {
+                continue;
+            }
+
+            $labInfo = $labModel->getLabByUserId($leadersResponse['HEAD_ID']);
+
+            if (!$labInfo) {
+                continue;
+            }
+
+            $arrData[] = [
+                'lab_id' => $labInfo['ID'],
+                'id_tz' => $tz_id,
+                'status' => "'not_approve'"
+            ];
+        }
+
+        if (!empty($arrData)) {
+            foreach ($arrData as $data) {
+                $this->DB->Insert('results_approve', $data);
+            }
+        }
+    }
+
+    public function checkApproveStatus($tz_id)
+    {
+        $results = [];
+
+        $queryCheck = $this->DB->Query("SELECT * FROM results_approve WHERE id_tz = {$tz_id} ");
+
+        while ($row = $queryCheck->Fetch()) {
+            $labNameQuery = $this->DB->Query("select NAME from ba_laba where ID = {$row['lab_id']}")->Fetch();
+
+            $labShortName = $this->strToUpper($labNameQuery['NAME']);
+
+            $status = '';
+            $color = ''; // Добавляем переменную для цвета
+
+            switch ($row['status']) {
+                case 'not_approve':
+                    $status = 'результаты не подтверждены';
+                    $color = '#FF6B6B'; // Красный
+                    break;
+                case 'approve':
+                    $status = 'результаты подтверждены';
+                    $color = '#51CF66'; // Зеленый
+                    break;
+                case 'rejected':
+                    $status = 'результаты отправлены на доработку';
+                    $color = '#FFD43B'; // Желтый
+                    break;
+                default:
+                    $status = "нет данных о подтверждении";
+                    $color = '#868E96'; // Серый
+                    break;
+            }
+
+            $results[] = [
+                'name_lab' => $labShortName,
+                'status' => $status,
+                'color' => $color
+            ];
+        }
+
+        return $results;
+    }
+
+
+    public function strToUpper($str)
+    {
+        return mb_strtoupper(implode('', array_map(function ($word) {
+            return mb_substr($word, 0, 1);
+        }, explode(" ", $str))));
+    }
+
+    public function approveResultsOld($data)
+    {
+        // Валидация входных данных
+        if (!isset($data['tz_id']) || empty($data['tz_id'])) {
+            return [
+                'success' => false,
+                'message' => 'Не передан ID заявки',
+                'code' => 400
+            ];
+        }
+
+        $labModel = new Lab();
+        $userModel = new User();
+
+        $tz_id = $data['tz_id'];
+        $currUser = $userModel->getCurrentUser();
+        $labUser = $labModel->getLabByUserId($currUser['ID']);
+
+        // Проверка прав
+        if (!$labUser || $labUser['HEAD_ID'] != $currUser['ID']) {
+            return [
+                'success' => false,
+                'message' => 'У вас нет прав для подтверждения результатов',
+                'code' => 403
+            ];
+        }
+
+        // Проверяем, есть ли записи для обновления
+        $checkExists = $this->DB->Query(
+            "SELECT COUNT(*) as count FROM results_approve 
+         WHERE id_tz = {$tz_id} AND lab_id = {$labUser['ID']}"
+        )->Fetch();
+
+        if ($checkExists['count'] == 0) {
+            return [
+                'success' => false,
+                'message' => 'Записи для подтверждения не найдены',
+                'code' => 404
+            ];
+        }
+
+        // Выполняем обновление
+        $arrUpdate = ['status' => "'approve'"];
+        $where = "WHERE id_tz = {$tz_id} AND lab_id = {$labUser['ID']}";
+
+        $result = $this->DB->Update('results_approve', $arrUpdate, $where);
+
+        if ($result !== false) {
+            return [
+                'success' => true,
+                'message' => 'Результаты успешно подтверждены',
+                'code' => 200,
+                'data' => [
+                    'tz_id' => $tz_id,
+                    'lab_id' => $labUser['ID'],
+                    'updated_rows' => $result // если Update возвращает количество затронутых строк
+                ]
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Ошибка при подтверждении результатов',
+                'code' => 500,
+                'error' => $this->DB->getLastError() // если есть метод получения ошибки
+            ];
+        }
+    }
+
+    public function approveResults($data)
+    {
+        $labModel = new Lab();
+        $userModel = new User();
+
+        $tz_id = $data['tz_id'];
+
+        $currUser = $userModel->getCurrentUser();
+        $labUser = $labModel->getLabByUserId($currUser['ID']);
+
+        if ($labUser['HEAD_ID'] == $currUser['ID']) {
+            $arrUpdate = ['status' => "'approve'"];
+            $where = "where id_tz = " . $tz_id . " and lab_id = " . $labUser['ID'];
+
+            $result = $this->DB->Update('results_approve', $arrUpdate, $where);
+
+            if ($result !== false) {
+                return [
+                    'success' => true,
+                    'message' => 'Результаты успешно подтверждены',
+                    'code' => 200
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Ошибка при подтверждении результатов',
+                    'code' => 500
+                ];
+            }
+        }
+
+        return [
+            'success' => false,
+            'message' => 'У вас нет прав для подтверждения результатов',
+            'code' => 403
+        ];
+    }
+
+    public function rejectResults($arrProbes)
+    {
+        $labModel = new Lab();
+        $userModel = new User();
+
+        $currUser = $userModel->getCurrentUser();
+        $labUser = $labModel->getLabByUserId($currUser['ID']);
+
+        if ($labUser['HEAD_ID'] != $currUser['ID']) {
+            return [
+                'success' => false,
+                'message' => 'У вас нет прав для отклонения результатов',
+                'code' => 403
+            ];
+        }
+
+        $arrUpdate = ['status' => "'rejected'"];
+        $where = "where id_tz = " . $arrProbes['tz_id'] . " and lab_id = " . $labUser['ID'];
+
+        foreach ($arrProbes['ugtp_arr'] as $probe) {
+            $this->DB->Query("delete from ulab_start_trials where ugtp_id = {$probe} and state = 'complete'");
+        }
+
+        $result = $this->DB->Update('results_approve', $arrUpdate, $where);
+
+        if ($result !== false) {
+            return [
+                'success' => true,
+                'message' => 'Результаты отклонены и отправлены на доработку',
+                'code' => 200
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Ошибка при отклонении результатов',
+                'code' => 500
+            ];
+        }
     }
 }

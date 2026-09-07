@@ -1624,7 +1624,7 @@ class Requirement extends Model
             $labs = $methodModel->getLab($row['method_id']);
             foreach ($labs as $lab) {
                 $user = $userModel->checkHeader($labModel->getDepartmentIdByLabId($lab));
-                if (empty($user) || in_array($lab, [5])) {
+                if (empty($user)) {
                     continue;
                 }
 
@@ -2899,8 +2899,8 @@ class Requirement extends Model
                     'material_to_request_id' => $probeId,
                     'method_id' => $item['new_method_id'],
                     'new_method_id' => $item['new_method_id'],
-                    'conditions_id' => $item['tech_condition_id'],
-                    'tech_condition_id' => $item['tech_condition_id'],
+                    'conditions_id' => 0,
+                    'tech_condition_id' => 0,
                     'price' => $item['price'],
                     'assigned_id' => $item['assigned_id'],
                     'gost_number' => ++$gostNumber,
@@ -2920,16 +2920,17 @@ class Requirement extends Model
      */
     public function checkHaveLeader($dealId, $probesArray): void
     {
+        $resultModel = new Result();
         $idTz = $this->getTzIdByDealId($dealId);
 
         $checkRows = $this->DB->Query("SELECT id FROM CHECK_TZ WHERE tz_id = '{$idTz}'")->Fetch();
 
-        if (!$checkRows) return;
+        if ($checkRows === false) return;
 
         foreach ($probesArray as $value) {
             $leadersResponse = $this->DB->Query(
                 "
-                SELECT bl.HEAD_ID
+                SELECT bl.HEAD_ID, bl.ID
                 FROM ulab_methods_lab uml   
                 INNER JOIN ba_laba bl ON bl.ID = uml.lab_id
                 WHERE uml.method_id = '{$value['new_method_id']}'
@@ -2940,7 +2941,6 @@ class Requirement extends Model
                 $checkLeader = $this->DB->Query("SELECT id FROM CHECK_TZ WHERE tz_id = '{$idTz}' AND leader = '{$row['HEAD_ID']}'")->Fetch();
 
                 if ($checkLeader) continue;
-
                 $currentDate = date('Y-m-d H:i:s');
 
                 $this->DB->Query("INSERT INTO CHECK_TZ (tz_id, user_sent_id, date_submission, leader, confirm) 
