@@ -227,7 +227,7 @@ class Requirement extends Model
         ")->Fetch();
 
         if (isset($sql['price'])) {
-            return (float) $sql['price'];
+            return (float)$sql['price'];
         } else {
             return 0;
         }
@@ -535,7 +535,6 @@ class Requirement extends Model
         );
 
 
-
         $dataTotal = $this->DB->Query(
             "SELECT 
                         gtp.id
@@ -704,8 +703,8 @@ class Requirement extends Model
     }
 
     /**
+     * @return array
      * @deprecated
-     *@return array
      */
     public function getQuarry(): array
     {
@@ -825,11 +824,11 @@ class Requirement extends Model
 
 
     /**
-     * @deprecated
      * @param int $dealId
      * @param array $materialDataList
      * @param array $probeDataList
      * @return bool[]|string[]
+     * @deprecated
      */
     public function setMaterialProbeGostToRequest(int $dealId, array $materialDataList, array $probeDataList): array
     {
@@ -1050,11 +1049,11 @@ class Requirement extends Model
 
     /**
      * Удаляет материал из заявки
-     * @deprecated
      * @param $dealId
      * @param $materialId
      * @param $mtrId
      * @param $number
+     * @deprecated
      */
     public function deleteMaterial($dealId, $materialId, $mtrId, $number)
     {
@@ -1777,7 +1776,6 @@ class Requirement extends Model
         }
 
 
-
         if (array_search(CHECK_TZ_NOT_APPROVE, $stateList) !== false) {
             $state = CHECK_TZ_NOT_APPROVE;
         } else if (array_search(CHECK_TZ_WAIT, $stateList) !== false) {
@@ -2340,6 +2338,7 @@ class Requirement extends Model
 
         return date('Y-m-d', $currentDate);
     }
+
     private function calculateWorkingDaysBetween($startDate, $endDate)
     {
         $holidays = [
@@ -2481,10 +2480,10 @@ class Requirement extends Model
     }
 
     /**
-     * @deprecated
      * @param string $gostName
      * @param int $dealId
      * @return array
+     * @deprecated
      */
     public function getGostsByName(string $gostName, int $dealId): array
     {
@@ -2528,9 +2527,9 @@ class Requirement extends Model
 
 
     /**
-     * @deprecated
      * @param int $gostId
      * @return array
+     * @deprecated
      */
     public function getGostById(int $gostId): array
     {
@@ -2554,9 +2553,9 @@ class Requirement extends Model
 
 
     /**
-     * @deprecated
      * @param int $probeId
      * @return array
+     * @deprecated
      */
     public function getGostsToProbe(int $probeId): array
     {
@@ -2597,9 +2596,9 @@ class Requirement extends Model
 
 
     /**
-     * @deprecated
      * @param int $probeId
      * @return array
+     * @deprecated
      */
     public function getUlabGostsToProbe(int $probeId): array
     {
@@ -2899,8 +2898,8 @@ class Requirement extends Model
                     'material_to_request_id' => $probeId,
                     'method_id' => $item['new_method_id'],
                     'new_method_id' => $item['new_method_id'],
-                    'conditions_id' => 0,
-                    'tech_condition_id' => 0,
+                    'conditions_id' => "'{$item['name_nd']}'",
+                    'tech_condition_id' => "'{$item['name_nd']}'",
                     'price' => $item['price'],
                     'assigned_id' => $item['assigned_id'],
                     'gost_number' => ++$gostNumber,
@@ -3073,8 +3072,8 @@ class Requirement extends Model
 
         while ($row = $sql->Fetch()) {
             $result[] = [
-                'id' =>   $row['ID_Z'],
-                'title' =>   $row['REQUEST_TITLE'],
+                'id' => $row['ID_Z'],
+                'title' => $row['REQUEST_TITLE'],
             ];
         }
 
@@ -3099,9 +3098,9 @@ class Requirement extends Model
         while ($row = $gosts->Fetch()) {
             if ($row['LFHI']) $response[$row['ID']][] = self::LABS['LFHI'];
             if ($row['LFMI']) $response[$row['ID']][] = self::LABS['LFMI'];
-            if ($row['DSL'])  $response[$row['ID']][] = self::LABS['DSL'];
-            if ($row['LSM'])  $response[$row['ID']][] = self::LABS['LSM'];
-            if ($row['OSK'])  $response[$row['ID']][] = self::LABS['OSK'];
+            if ($row['DSL']) $response[$row['ID']][] = self::LABS['DSL'];
+            if ($row['LSM']) $response[$row['ID']][] = self::LABS['LSM'];
+            if ($row['OSK']) $response[$row['ID']][] = self::LABS['OSK'];
 
             if (empty($row['LFHI']) && empty($row['LFMI']) && empty($row['DSL']) && empty($row['LSM']) && empty($row['OSK'])) {
                 $response[$row['ID']] = [];
@@ -3622,7 +3621,6 @@ class Requirement extends Model
         $dealId = (int)$dealId;
 
 
-
         // 2. Выбрана опция "Нет методики" - удаляем все методики у этой пробы
         if ($methodId === 0) {
             $this->DB->Query("DELETE FROM ulab_gost_to_probe WHERE material_to_request_id = {$probeId}");
@@ -3646,13 +3644,13 @@ class Requirement extends Model
 
         $sqlData = [
             'material_to_request_id' => $probeId,
-            'method_id'             => $methodId,
-            'new_method_id'         => $methodId,
-            'conditions_id'         => $formData['tech_condition_id'] ?? null,
-            'tech_condition_id'     => $formData['tech_condition_id'] ?? null,
-            'price'                 => $formData['price'] ?? null,
-            'assigned_id'           => $formData['assigned_id'] ?? null,
-            'gost_number'           => ++$gostNumber,
+            'method_id' => $methodId,
+            'new_method_id' => $methodId,
+            'conditions_id' => $formData['tech_condition_id'] ?? null,
+            'tech_condition_id' => $formData['tech_condition_id'] ?? null,
+            'price' => $formData['price'] ?? null,
+            'assigned_id' => $formData['assigned_id'] ?? null,
+            'gost_number' => ++$gostNumber,
         ];
 
         $this->DB->Insert('ulab_gost_to_probe', $sqlData);
@@ -3683,8 +3681,6 @@ class Requirement extends Model
             $this->DB->Update('ulab_material_to_request', ['group' => $groupId], "where material_id = {$materialId} and id = {$umtrId}");
         }
     }
-
-
 
 
     /**
@@ -3838,9 +3834,9 @@ class Requirement extends Model
      */
     public function replaceMethodForProbe($probeId, $oldMethodId, $newMethodData)
     {
-        $probeId = (int) $probeId;
-        $oldMethodId = (int) $oldMethodId;
-        $newMethodId = (int) $newMethodData['id'];
+        $probeId = (int)$probeId;
+        $oldMethodId = (int)$oldMethodId;
+        $newMethodId = (int)$newMethodData['id'];
 
         // Получаем все записи с этой пробой и старой методикой
         $ugtpRes = $this->DB->Query(
@@ -3882,10 +3878,10 @@ class Requirement extends Model
             // Если новая методика совпадает со старой — обновить параметры
             if ($newMethodId === $oldMethodId) {
                 $updateData = [
-                    'conditions_id'         => $newMethodData['tech_condition_id'] ?? null,
-                    'tech_condition_id'     => $newMethodData['tech_condition_id'] ?? null,
-                    'price'                 => $newMethodData['price'] ?? null,
-                    'assigned_id'           => $newMethodData['assigned_id'] ?? null,
+                    'conditions_id' => $newMethodData['tech_condition_id'] ?? null,
+                    'tech_condition_id' => $newMethodData['tech_condition_id'] ?? null,
+                    'price' => $newMethodData['price'] ?? null,
+                    'assigned_id' => $newMethodData['assigned_id'] ?? null,
                 ];
 
                 $this->DB->Update('ulab_gost_to_probe', $updateData, "where id = {$ugtp['id']}");
@@ -3895,12 +3891,12 @@ class Requirement extends Model
 
             // Если новая методика отличается — заменить method_id, new_method_id и параметры
             $updateData = [
-                'method_id'             => $newMethodId,
-                'new_method_id'         => $newMethodId,
-                'conditions_id'         => $newMethodData['tech_condition_id'] ?? null,
-                'tech_condition_id'     => $newMethodData['tech_condition_id'] ?? null,
-                'price'                 => $newMethodData['price'] ?? null,
-                'assigned_id'           => $newMethodData['assigned_id'] ?? null,
+                'method_id' => $newMethodId,
+                'new_method_id' => $newMethodId,
+                'conditions_id' => $newMethodData['tech_condition_id'] ?? null,
+                'tech_condition_id' => $newMethodData['tech_condition_id'] ?? null,
+                'price' => $newMethodData['price'] ?? null,
+                'assigned_id' => $newMethodData['assigned_id'] ?? null,
             ];
 
             $this->DB->Update('ulab_gost_to_probe', $updateData, "where id = {$ugtp['id']}");
@@ -4095,7 +4091,6 @@ class Requirement extends Model
         }
 
 
-
         foreach ($data['ugtpId'] as $key => $value) {
             $this->DB->Query("UPDATE ulab_material_to_request SET name_for_protocol = '{$dataArray[$key]}' WHERE id = '{$value}'");
         }
@@ -4177,5 +4172,96 @@ class Requirement extends Model
             ];
 
         return $result;
+    }
+
+    public function setDopInfo($data)
+    {
+        $fields = [
+            'nd_list' => 'nd',
+            'manufacturer' => 'manufacturer',
+            'manufacture_date' => 'manufacturing_date',
+            'batch_mass' => 'batch_mass',
+            'batch_size' => 'batch_size',
+            'batch_number' => 'batch_number',
+            'packing_name' => 'packing_name',
+            'packaging_integrity' => 'packaging_integrity',
+            'expiration_date' => 'expiration_date',
+            'storage_conditions' => 'storage_conditions',
+            'label_description' => 'label_description',
+            'delivery_method' => 'delivery_method',
+        ];
+
+        if (
+            empty($data['id_tz']) ||
+            empty($data['field_name']) ||
+            !array_key_exists($data['field_name'], $fields)
+        ) {
+            return false;
+        }
+
+        $idTz = (int)$data['id_tz'];
+        $fieldName = $fields[$data['field_name']];
+        $value = $data['value'] ?? '';
+
+        // Обработка дат
+        if (
+            in_array($data['field_name'], ['manufacture_date', 'expiration_date'], true)
+            && !empty($value)
+        ) {
+            $date = DateTime::createFromFormat('Y-m-d', $value);
+
+            if (!$date || $date->format('Y-m-d') !== $value) {
+                return false;
+            }
+
+            $value = $date->format('Y-m-d');
+        }
+
+        $value = $this->DB->ForSql($value);
+
+        // Проверяем, существует ли запись для данного ТЗ
+        $query = $this->DB->Query("
+        SELECT id
+        FROM dop_info_requirement
+        WHERE id_tz = {$idTz}
+        LIMIT 1
+    ");
+
+        $row = $query->Fetch();
+
+        if ($row) {
+            // Запись уже существует — обновляем нужное поле
+            $result = $this->DB->Query("
+            UPDATE dop_info_requirement
+            SET {$fieldName} = '{$value}'
+            WHERE id = " . (int)$row['id']
+            );
+        } else {
+            // Записи ещё нет — создаём
+            $result = $this->DB->Query("
+            INSERT INTO dop_info_requirement (
+                id_tz,
+                {$fieldName}
+            )
+            VALUES (
+                {$idTz},
+                '{$value}'
+            )
+        ");
+        }
+
+        return $result;
+    }
+
+    public function getNDList($id_tz)
+    {
+        $result = [];
+        $ndQuery = $this->DB->Query("select nd from dop_info_requirement where id_tz = {$id_tz}")->Fetch();
+        return explode(';', $ndQuery['nd']);
+    }
+
+    public function getDopInfoByTzId($id_tz)
+    {
+        return $this->DB->Query("select * from dop_info_requirement where id_tz = {$id_tz}")->Fetch();
     }
 }

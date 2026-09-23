@@ -12,7 +12,8 @@
                 </a>
             </li>
             <li class="nav-item me-2">
-                <a class="nav-link" href="<?= URI ?>/request/card/<?= $this->data['deal_id'] ?>" title="Вернуться в карточку">
+                <a class="nav-link" href="<?= URI ?>/request/card/<?= $this->data['deal_id'] ?>"
+                   title="Вернуться в карточку">
                     <i class="fa-solid fa-arrow-left-long"></i>
                 </a>
             </li>
@@ -20,7 +21,7 @@
             <!--                <a class="nav-link link-card" href="#">-->
             <!--                    <svg class="icon" width="25" height="25">-->
             <!--                        <use xlink:href="--><? //=URI
-                                                            ?><!--/assets/images/icons.svg#card"/>-->
+            ?><!--/assets/images/icons.svg#card"/>-->
             <!--                    </svg>-->
             <!--                </a>-->
             <!--            </li>-->
@@ -28,7 +29,7 @@
             <!--                <a class="nav-link link-docs" href="#">-->
             <!--                    <svg class="icon" width="25" height="25">-->
             <!--                        <use xlink:href="--><? //=URI
-                                                            ?><!--/assets/images/icons.svg#docs"/>-->
+            ?><!--/assets/images/icons.svg#docs"/>-->
             <!--                    </svg>-->
             <!--                </a>-->
             <!--            </li>-->
@@ -36,12 +37,13 @@
             <!--                <a class="nav-link link-doc-edit" href="#">-->
             <!--                    <svg class="icon" width="25" height="25">-->
             <!--                        <use xlink:href="--><? //=URI
-                                                            ?><!--/assets/images/icons.svg#doc-edit"/>-->
+            ?><!--/assets/images/icons.svg#doc-edit"/>-->
             <!--                    </svg>-->
             <!--                </a>-->
             <!--            </li>-->
             <li class="nav-item me-2">
-                <a class="nav-link popup-help" href="/ulab/help/LIMS_Manual_Stand/Technical_spec_int/Tec_spec_int.html" title="Техническая поддержка">
+                <a class="nav-link popup-help" href="/ulab/help/LIMS_Manual_Stand/Technical_spec_int/Tec_spec_int.html"
+                   title="Техническая поддержка">
                     <i class="fa-solid fa-question"></i>
                 </a>
             </li>
@@ -307,240 +309,303 @@
         </div>
 
 
-
-        <div class="panel panel-default" style="display: none;">
+        <div class="panel panel-default">
             <header class="panel-heading">
-                Дополнительная информация
+                Сведения об образце
                 <span class="tools float-end">
                     <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
                     <a href="#" class="fa fa-chevron-up"></a>
                 </span>
             </header>
             <div class="panel-body">
-                <div class="wrapper-add-info mt-2 flex-column">
-                    <div class="row">
-                        <!-- <div class="form-group col-sm-6">
-                            <label class="form-label mb-1" for="infoObject">Объект строительства</label>
-                            <textarea class="form-control mw-100" name="tz[OBJECT]"><?= $this->data['tz']['OBJECT'] ?></textarea>
-                        </div> -->
-
-
-                        <!-- <div class="form-group col-sm-6">
-                            <!-- <?php if ($this->data['requirement']['creation_stage'] !== 'new'): ?>
-                                <div class="col-sm-9">
-                                    <label class="form-label mb-1">Заявка учтена</label>
-                                    <select class="form-control select2" name="tz[TAKEN_ID_DEAL]">
-                                        <option value="">Нет</option>
-                                        <?php foreach ($this->data['requests_to_company'] as $request): ?>
-                                            <option value="<?= $request['ID_Z'] ?>" <?= $this->data['tz']['TAKEN_ID_DEAL'] == $request['ID_Z'] ? 'selected' : '' ?>>
-                                                Заявка <?= $request['REQUEST_TITLE'] ?>, <?= $request['COMPANY_TITLE'] ?>, от <?= $request['DATE_CREATE'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            <?php endif; ?> -->
-                        <!--                            <div class="col-sm-3">-->
-                        <!--                                <label class="form-label mb-1">Серт. испытания</label>-->
-                        <!--                                <div class="d-flex align-items-center taken-request-wrapper">-->
-                        <!--                                    <div>-->
-                        <!--                                        <label class="switch">-->
-                        <!--                                            <input class="form-check-input clear_confirm_change" name="tz[TAKEN_SERT_ISP]" type="checkbox" value="1"-->
-                        <!--                                                <? //= $this->data['tz']['TAKEN_SERT_ISP'] == 1 ? 'checked' : '' 
-                                                                            ?>>-->
-                        <!--                                            <span class="slider"></span>-->
-                        <!--                                        </label>-->
-                        <!--                                    </div>-->
-                        <!--                                    <input type="hidden" class="hidden-taken">-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-
-                    </div>
-
-                    <!--                        <div class="form-group col-sm-6">-->
-                    <!--                            <label class="form-label mb-1" for="commentKp">Комментарий к КП</label>-->
-                    <!--                            <textarea class="form-control mw-100 comment-kp" id="commentKp" name="tz[COMMENT_KP]" placeholder="Введите текст">--><? //= $this->data['tz']['COMMENT_KP'] 
-                                                                                                                                                                            ?><!--</textarea>-->
-                    <!--                        </div>-->
-                </div>
-                <!---->
-                <!--                    <div class="row">-->
-                <!--                        <div class="form-group col-sm-6">-->
-                <!--                            <label class="form-label mb-1" for="commentTz">Комментарий к ТЗ</label>-->
-                <!--                            <textarea class="form-control mw-100 comment-requirement" id="commentTz" name="tz[COMMENT_TZ]" placeholder="Введите текст">--><? //= $this->data['tz']['COMMENT_TZ'] 
-                                                                                                                                                                                ?><!--</textarea>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-
-                <!-- <div class="row mb-2">
-                        <div class="form-group col-sm-6">
-                            <label class="form-label mb-1">Местоположение карьера/месторождения</label>
-                            <textarea class="form-control mw-100" type="text" name="tz[location]" id="inlineRadio54" style="min-width: 500px !important;"><?= $this->data['tz']['location'] ?></textarea>
+                <div class="wrapper-add-info mt-3 flex-column">
+                    <div class="row mb-4">
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">НД (ТД) на продукцию</label>
+                            <div>
+                                <textarea style="min-width: 100%"
+                                          name="nd_list" class="form-control nd_list"
+                                          placeholder="НД (ТД)"
+                                          required><?= $this->data['dop_info_tz']['nd'] ?? '' ?></textarea>
+                            </div>
                         </div>
-                    </div> -->
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Изготовитель</label>
+                            <div class="formation-protocol-reason">
+                                <input type="text" class="form-control manufacturer"
+                                       value="<?= $this->data['dop_info_tz']['manufacturer'] ?? '' ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Дата изготовления</label>
+                            <div class="formation-protocol-reason">
+                                <input type="date"
+                                       class="form-control manufacture_date"
+                                       value="<?= $this->data['dop_info_tz']['manufacturing_date'] ?? '' ?>"
+                                       required min="<?= date('Y-m-d') ?>">
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wrapper-add-info mt-3 flex-column">
+                    <div class="row mb-4">
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Масса партии</label>
+                            <div>
+                                <input type="text" class="form-control batch_mass" value="<?= $this->data['dop_info_tz']['batch_mass'] ?? '' ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Размер партии</label>
+                            <div class="formation-protocol-reason">
+                                <input type="text" class="form-control batch_size" value="<?= $this->data['dop_info_tz']['batch_size'] ?? '' ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Номер партии</label>
+                            <div class="formation-protocol-reason">
+                                <input type="text" class="form-control batch_number" value="<?= $this->data['dop_info_tz']['batch_number'] ?? '' ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wrapper-add-info mt-3 flex-column">
+                    <div class="row mb-4">
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Наименование упаковки</label>
+                            <div>
+                                <input type="text" class="form-control packing_name" value="<?= $this->data['dop_info_tz']['packing_name'] ?? '' ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Целостность упаковки</label>
+                            <div class="formation-protocol-reason">
+                                <input type="text" class="form-control packaging_integrity" value="<?= $this->data['dop_info_tz']['packaging_integrity'] ?? '' ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Срок годности</label>
+                            <div class="formation-protocol-reason">
+                                <input type="date"
+                                       class="form-control manufacture_date"
+                                       value="<?= $this->data['dop_info_tz']['manufacturing_date'] ?? '' ?>"
+                                       required min="<?= date('Y-m-d') ?>">
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wrapper-add-info mt-3 flex-column">
+                    <div class="row mb-4">
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Условия хранения</label>
+                            <div>
+                                <input type="text" class="form-control storage_conditions" value="<?= $this->data['dop_info_tz']['storage_conditions'] ?? '' ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Описание этикетки (состав)</label>
+                            <div class="formation-protocol-reason">
+                                <input type="text" class="form-control label_description" value="<?= $this->data['dop_info_tz']['label_description'] ?? '' ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label mb-1">Спсосб доставки образца</label>
+                            <div class="formation-protocol-reason">
+                                <input type="text" class="form-control delivery_method" value="<?= $this->data['dop_info_tz']['delivery_method'] ?? '' ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!--./wrapper-add-info-->
         </div>
-        <!--./panel-body-->
-</div>
 
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        Объект испытаний
-        <span class="tools float-end">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Объект испытаний
+                <span class="tools float-end">
             <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
             <a href="javascript:;" class="fa fa-chevron-up"></a>
         </span>
-    </div>
-    <div class="panel-body">
-        <div class="row flex-nowrap">
-
-            <div class="col-auto">
-                <div class="js-sticky-widget2">
-                    <div class="col-auto mb-3">
-                        <a href="#add-material-modal-form" class="popup-with-form btn btn-success w125 btn-sm">
-                            <i class="fa-solid fa-plus icon-fix"></i> Объект
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="#add-probe-modal-form" class="popup-with-form btn btn-success w125 btn-sm">
-                            <i class="fa-solid fa-plus icon-fix"></i> Пробу
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="#edit-group-probe-modal-form" class="btn-group-edit popup-with-form btn btn-success w125 btn-sm disabled">
-                            <i class="fa-solid fa-pencil"></i> Группы
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="#replace-method-modal-form" class="btn-replace-method popup-with-form btn btn-success w125 btn-sm disabled">
-                            <i class="fa-solid fa-right-left"></i> Методики
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="#import-probes-from-xlsx" class="btn-import-probes popup-with-form btn btn-success w125 btn-sm disabled">
-                            <svg width="17px" height="17px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V9C21 9.55228 20.5523 10 20 10C19.4477 10 19 9.55228 19 9V4C19 3.44772 18.5523 3 18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H7C7.55228 21 8 21.4477 8 22C8 22.5523 7.55228 23 7 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM6.41421 7H9V4.41421L6.41421 7ZM19 12C19.5523 12 20 12.4477 20 13V19H23C23.5523 19 24 19.4477 24 20C24 20.5523 23.5523 21 23 21H19C18.4477 21 18 20.5523 18 20V13C18 12.4477 18.4477 12 19 12ZM11.8137 12.4188C11.4927 11.9693 10.8682 11.8653 10.4188 12.1863C9.96935 12.5073 9.86526 13.1318 10.1863 13.5812L12.2711 16.5L10.1863 19.4188C9.86526 19.8682 9.96935 20.4927 10.4188 20.8137C10.8682 21.1347 11.4927 21.0307 11.8137 20.5812L13.5 18.2205L15.1863 20.5812C15.5073 21.0307 16.1318 21.1347 16.5812 20.8137C17.0307 20.4927 17.1347 19.8682 16.8137 19.4188L14.7289 16.5L16.8137 13.5812C17.1347 13.1318 17.0307 12.5073 16.5812 12.1863C16.1318 11.8653 15.5073 11.9693 15.1863 12.4188L13.5 14.7795L11.8137 12.4188Z" fill="#ffffff"></path>
-                                </g>
-                            </svg> Импорт
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="#delete-method-modal-form" class="btn-delete-method popup-with-form btn btn-danger w125 btn-sm disabled">
-                            <i class="fa-solid fa-trash"></i> Методики
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="" class="btn-delete-probes popup-with-form btn btn-danger w125 btn-sm disabled">
-                            <i class="fa-solid fa-trash"></i> Пробы
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="#add-methods-modal-form" class="btn-add-methods popup-with-form btn btn-primary w125 btn-sm disabled">
-                            <i class="fa-solid fa-plus icon-fix"></i> Испытания
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <a href="#add-to-link-deal-form" class="btn-link-deal popup-with-form btn btn-primary w125 btn-sm disabled">
-                            <i class="fa-solid fa-arrow-right-to-bracket"></i> Передать в
-                        </a>
-                    </div>
-
-                    <div class="col-auto mb-3">
-                        <select id="group-type" class="form-control" style="width: 125px">
-                            <option value="1" <?= $this->data['group_type'] == 1 ? 'selected' : '' ?>>Группировка по материалу</option>
-                            <option value="2" <?= $this->data['group_type'] == 2 ? 'selected' : '' ?>>Группировка по маркировке заказчика</option>
-                            <option value="3" <?= $this->data['group_type'] == 3 ? 'selected' : '' ?>>Группировка по материалу + маркировке заказчика</option>
-                            <option value="4" <?= $this->data['group_type'] == 4 ? 'selected' : '' ?>>Группировка по группе материала</option>
-                            <option value="5" <?= $this->data['group_type'] == 5 ? 'selected' : '' ?>>Группировка по материалу + группе + маркировке заказчика</option>
-                        </select>
-                    </div>
-                </div>
             </div>
+            <div class="panel-body">
+                <div class="row flex-nowrap">
 
-            <div class="col">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="input-group mb-2">
-                            <span class="input-group-text">Показать: </span>
-                            <select id="filter-material" class="form-control select2 filter">
-                                <option value="">Все объекты испытаний</option>
-                                <?php foreach ($this->data['tz_material_list'] as $id => $materialName): ?>
-                                    <option value="<?= $materialName['id'] ?>"><?= $materialName['name'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                    <div class="col-auto">
+                        <div class="js-sticky-widget2">
+                            <div class="col-auto mb-3">
+                                <a href="#add-material-modal-form" class="popup-with-form btn btn-success w125 btn-sm">
+                                    <i class="fa-solid fa-plus icon-fix"></i> Объект
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href="#add-probe-modal-form" class="popup-with-form btn btn-success w125 btn-sm">
+                                    <i class="fa-solid fa-plus icon-fix"></i> Пробу
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href="#edit-group-probe-modal-form"
+                                   class="btn-group-edit popup-with-form btn btn-success w125 btn-sm disabled">
+                                    <i class="fa-solid fa-pencil"></i> Группы
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href="#replace-method-modal-form"
+                                   class="btn-replace-method popup-with-form btn btn-success w125 btn-sm disabled">
+                                    <i class="fa-solid fa-right-left"></i> Методики
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href="#import-probes-from-xlsx"
+                                   class="btn-import-probes popup-with-form btn btn-success w125 btn-sm disabled">
+                                    <svg width="17px" height="17px" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg" stroke="#000000">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                           stroke-linejoin="round"></g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                  d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V9C21 9.55228 20.5523 10 20 10C19.4477 10 19 9.55228 19 9V4C19 3.44772 18.5523 3 18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H7C7.55228 21 8 21.4477 8 22C8 22.5523 7.55228 23 7 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM6.41421 7H9V4.41421L6.41421 7ZM19 12C19.5523 12 20 12.4477 20 13V19H23C23.5523 19 24 19.4477 24 20C24 20.5523 23.5523 21 23 21H19C18.4477 21 18 20.5523 18 20V13C18 12.4477 18.4477 12 19 12ZM11.8137 12.4188C11.4927 11.9693 10.8682 11.8653 10.4188 12.1863C9.96935 12.5073 9.86526 13.1318 10.1863 13.5812L12.2711 16.5L10.1863 19.4188C9.86526 19.8682 9.96935 20.4927 10.4188 20.8137C10.8682 21.1347 11.4927 21.0307 11.8137 20.5812L13.5 18.2205L15.1863 20.5812C15.5073 21.0307 16.1318 21.1347 16.5812 20.8137C17.0307 20.4927 17.1347 19.8682 16.8137 19.4188L14.7289 16.5L16.8137 13.5812C17.1347 13.1318 17.0307 12.5073 16.5812 12.1863C16.1318 11.8653 15.5073 11.9693 15.1863 12.4188L13.5 14.7795L11.8137 12.4188Z"
+                                                  fill="#ffffff"></path>
+                                        </g>
+                                    </svg>
+                                    Импорт
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href="#delete-method-modal-form"
+                                   class="btn-delete-method popup-with-form btn btn-danger w125 btn-sm disabled">
+                                    <i class="fa-solid fa-trash"></i> Методики
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href=""
+                                   class="btn-delete-probes popup-with-form btn btn-danger w125 btn-sm disabled">
+                                    <i class="fa-solid fa-trash"></i> Пробы
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href="#add-methods-modal-form"
+                                   class="btn-add-methods popup-with-form btn btn-primary w125 btn-sm disabled">
+                                    <i class="fa-solid fa-plus icon-fix"></i> Испытания
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <a href="#add-to-link-deal-form"
+                                   class="btn-link-deal popup-with-form btn btn-primary w125 btn-sm disabled">
+                                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Передать в
+                                </a>
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <select id="group-type" class="form-control" style="width: 125px">
+                                    <option value="1" <?= $this->data['group_type'] == 1 ? 'selected' : '' ?>>
+                                        Группировка по материалу
+                                    </option>
+                                    <option value="2" <?= $this->data['group_type'] == 2 ? 'selected' : '' ?>>
+                                        Группировка по маркировке заказчика
+                                    </option>
+                                    <option value="3" <?= $this->data['group_type'] == 3 ? 'selected' : '' ?>>
+                                        Группировка по материалу + маркировке заказчика
+                                    </option>
+                                    <option value="4" <?= $this->data['group_type'] == 4 ? 'selected' : '' ?>>
+                                        Группировка по группе материала
+                                    </option>
+                                    <option value="5" <?= $this->data['group_type'] == 5 ? 'selected' : '' ?>>
+                                        Группировка по материалу + группе + маркировке заказчика
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="input-group mb-2">
-                            <label for="filter-group" class="input-group-text">Группы: </label>
-                            <select id="filter-group" class="form-control select2 filter">
-                                <option value="">Все группы</option>
-                            </select>
+
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">Показать: </span>
+                                    <select id="filter-material" class="form-control select2 filter">
+                                        <option value="">Все объекты испытаний</option>
+                                        <?php foreach ($this->data['tz_material_list'] as $id => $materialName): ?>
+                                            <option value="<?= $materialName['id'] ?>"><?= $materialName['name'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group mb-2">
+                                    <label for="filter-group" class="input-group-text">Группы: </label>
+                                    <select id="filter-group" class="form-control select2 filter">
+                                        <option value="">Все группы</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+
+                        <table id="journal_material_2"
+                               class="table table-striped journal table-hover table-sm table-light">
+                            <thead>
+                            <tr>
+                                <th scope="col">Объект испытаний</th>
+                                <th scope="col"></th>
+                                <th scope="col">Проба</th>
+                                <th scope="col">Группа</th>
+                                <th scope="col">Маркировка заказчика (информация об объекте испытания)</th>
+                                <th scope="col">Кол-во методик</th>
+                                <th scope="col"></th>
+                            </tr>
+                            <tr class="header-search">
+                                <th scope="col"></th>
+                                <th scope="col" colspan="6">
+                                    <input id="filter-cipher" type="text" class="form-control search filter"
+                                           placeholder="Фильтр по шифру">
+                                </th>
+                            </tr>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <table id="journal_material_2" class="table table-striped journal table-hover table-sm table-light">
-                    <thead>
-                        <tr>
-                            <th scope="col">Объект испытаний</th>
-                            <th scope="col"></th>
-                            <th scope="col">Проба</th>
-                            <th scope="col">Группа</th>
-                            <th scope="col">Маркировка заказчика (информация об объекте испытания)</th>
-                            <th scope="col">Кол-во методик</th>
-                            <th scope="col"></th>
-                        </tr>
-                        <tr class="header-search">
-                            <th scope="col"></th>
-                            <th scope="col" colspan="6">
-                                <input id="filter-cipher" type="text" class="form-control search filter" placeholder="Фильтр по шифру">
-                            </th>
-                        </tr>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                <div class="line-dashed"></div>
 
-        <div class="line-dashed"></div>
-
-        <div class="wrapper-discount bg-light-secondary p-2">
-            <div class="row justify-content-end">
-                <div class="col-auto d-flex flex-column">
-                    <div>
-                        <label class="form-label">Итого</label>
-                    </div>
-                    <div>
+                <div class="wrapper-discount bg-light-secondary p-2">
+                    <div class="row justify-content-end">
+                        <div class="col-auto d-flex flex-column">
+                            <div>
+                                <label class="form-label">Итого</label>
+                            </div>
+                            <div>
                         <span id="str_total" class="total">
                             <?= $this->data['tz']['price_discount'] ?> руб.
                         </span>
-                    </div>
-                    <input id="price-total" type="hidden" name="tz[PRICE]" value="<?= $this->data['tz']['PRICE'] ?>">
-                    <input id="price_discount" type="hidden" name="tz[price_discount]" value="<?= $this->data['tz']['price_discount'] ?? $this->data['tz']['PRICE'] ?>">
-                    <!-- Новое поле для хранения базовой цены БЕЗ НДС -->
-                    <input id="base-price-without-nds" type="hidden" value="<?= $this->data['tz']['PRICE'] ?>">
-                    <input type="hidden" name="tz[is_nds]" value="<?= $this->data['tz']['is_nds'] ?? '0' ?>">
-                    <input type="hidden" name="tz[is_nds_7]" value="<?= $this->data['tz']['is_nds_7'] ?? '0' ?>">
-                </div>
+                            </div>
+                            <input id="price-total" type="hidden" name="tz[PRICE]"
+                                   value="<?= $this->data['tz']['PRICE'] ?>">
+                            <input id="price_discount" type="hidden" name="tz[price_discount]"
+                                   value="<?= $this->data['tz']['price_discount'] ?? $this->data['tz']['PRICE'] ?>">
+                            <!-- Новое поле для хранения базовой цены БЕЗ НДС -->
+                            <input id="base-price-without-nds" type="hidden" value="<?= $this->data['tz']['PRICE'] ?>">
+                            <input type="hidden" name="tz[is_nds]" value="<?= $this->data['tz']['is_nds'] ?? '0' ?>">
+                            <input type="hidden" name="tz[is_nds_7]"
+                                   value="<?= $this->data['tz']['is_nds_7'] ?? '0' ?>">
+                        </div>
 
-                <div class="col-auto flex-column is_nds_block <?= ($this->data['tz']['is_nds'] || $this->data['tz']['is_nds'] == '') ? 'd-flex' : 'd-none' ?>">
-                    <div>
-                        <label class="form-label">НДС</label>
-                    </div>
-                    <div class="is_nds_block">
+                        <div class="col-auto flex-column is_nds_block <?= ($this->data['tz']['is_nds'] || $this->data['tz']['is_nds'] == '') ? 'd-flex' : 'd-none' ?>">
+                            <div>
+                                <label class="form-label">НДС</label>
+                            </div>
+                            <div class="is_nds_block">
                         <span id="str_total_nds" class="total">
                             <?php
                             $ndsMultiplier = 0;
@@ -552,314 +617,345 @@
                             echo number_format((float)$this->data['tz']['price_discount'] * $ndsMultiplier, 2, ',', '');
                             ?> руб.
                         </span>
-                    </div>
-                </div>
-
-                <div class="col-auto d-flex flex-column is_nds_block">
-                    <div>
-                        <label class="form-label mb-1">%</label>
-                    </div>
-                    <div>
-                        <div class="d-flex align-items-center taken-request-wrapper">
-                            <div>
-                                <select class="form-control nds-percent-select w100" name="">
-                                    <option value="7" <?= (($this->data['tz']['is_nds'] ?? 0) && ($this->data['tz']['is_nds_7'] ?? 0)) ? 'selected' : '' ?>>7%</option>
-                                    <option value="5" <?= (($this->data['tz']['is_nds'] ?? 0) && !($this->data['tz']['is_nds_7'] ?? 0)) ? 'selected' : '' ?>>5%</option>
-                                </select>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="col-auto d-flex flex-column">
-                    <div>
-                        <label class="form-label mb-1">НДС</label>
-                    </div>
-                    <div>
-                        <div class="d-flex align-items-center taken-request-wrapper">
+                        <div class="col-auto d-flex flex-column is_nds_block">
                             <div>
-                                <label class="switch">
-                                    <input class="form-check-input nds" name="tz[is_nds]"
-                                        type="checkbox" <?= ($this->data['tz']['is_nds'] || $this->data['tz']['is_nds'] == '') ? 'checked' : '' ?> />
-                                    <span class="slider"></span>
-                                </label>
+                                <label class="form-label mb-1">%</label>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group col-auto d-flex flex-column">
-                    <div>
-                        <label class="form-label" for="input_discount">Скидка</label>
-                    </div>
-                    <div>
-                        <div class="input-group">
-                            <input name="tz[DISCOUNT]" type="number" class="form-control bg-white discount-input" min="0" step="0.01" value="<?= $this->data['tz']['DISCOUNT'] ?? '0' ?>">
-                            <select name="tz[discount_type]" class="form-control bg-white discount-type">
-                                <option value="percent" <?= $this->data['tz']['discount_type'] == 'percent' ? 'selected' : '' ?>>%</option>
-                                <option value="rub" <?= $this->data['tz']['discount_type'] == 'rub' ? 'selected' : '' ?>>₽</option>
-                            </select>
-                            <button type="button" class="btn btn-primary discount-apply">Применить</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        Подтверждение ТЗ
-        <span class="tools float-end">
-            <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
-            <a href="javascript:;" class="fa fa-chevron-up"></a>
-        </span>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col">
-                <?php if (!empty($this->data['lab_head']['user'])): ?>
-                    <?php foreach ($this->data['lab_head']['user'] as $user): ?>
-                        <div class="head-user-block <?= $user['user_id'] == $this->data['curr_user'] ? 'curr_user' : '' ?>">
-                            <?php if ($user['is_confirm'] == CHECK_TZ_NOT_SENT && $this->data['check_state'] != CHECK_TZ_NOT_SENT): ?>
-                                <span class="icon" title="ТЗ не отправлено">
-                                    <i class="fa-solid fa-minus"></i>
-                                </span>
-                            <?php elseif ($user['is_confirm'] == CHECK_TZ_NOT_SENT): ?>
-                                <span class="icon" title="ТЗ не отправлено">
-                                    <i class="fa-regular fa-paper-plane"></i>
-                                </span>
-                            <?php elseif ($user['is_confirm'] == CHECK_TZ_APPROVE): ?>
-                                <span class="text-green icon" title="ТЗ потверждено">
-                                    <i class="fa-regular fa-circle-check"></i>
-                                </span>
-                            <?php elseif ($user['is_confirm'] == CHECK_TZ_NOT_APPROVE): ?>
-                                <span class="text-red icon" title="ТЗ не потверждено">
-                                    <i class="fa-regular fa-circle-xmark"></i>
-                                </span>
-                            <?php else: ?>
-                                <span class="icon" title="Ожидание проверки">
-                                    <i class="fa-solid fa-hourglass-half"></i>
-                                </span>
-                            <?php endif; ?>
-
-                            <span class="<?= $user['user_id'] == $this->data['curr_user'] ? 'fw-bold' : '' ?>"><?= $user['short_name'] ?></span>
-                            <span><i><?= $user['duration_str']; ?></i></span>
-
-                            <?php if ($user['is_confirm'] == CHECK_TZ_NOT_APPROVE): ?>
-                                <span>
-                                    <button type="button" class="btn btn-danger delete-canceled-lab" data-user-id="<?= $user['user_id'] ?>">Удалить</button>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
-
-
-                    <?php if (!empty($this->data['lab_head']['user']) && $this->data['check_state'] == CHECK_TZ_APPROVE): ?>
-                        <div class="mt-1">
-                            <label class="form-label text-green fw-bold">Техническое задание утверждено.</label>
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="mt-3">
-                        <?php if ($this->data['lab_head']['is_curr_user']): ?>
-                            <?php if ($this->data['check_state'] == CHECK_TZ_NOT_SENT): ?>
-                                <button type="button"
-                                    class="aa btn btn-primary sent_approve_tz <?= $this->data['lab_head']['check_state'] == CHECK_TZ_NOT_SENT ? 'disable' : '' ?>"><i class="fa-regular fa-paper-plane"></i> Утвердить</button>
-                            <?php else: ?>
-                                <button type="button"
-                                    class="bb btn btn-success me-3 approve_tz
-                                                <?= ($this->data['check_state'] == CHECK_TZ_WAIT || $this->data['check_state'] == CHECK_TZ_NOT_APPROVE) && $this->data['lab_head']['curr_user_status'] != 1 ? '' : 'disable' ?>"><i class="fa-regular fa-circle-check"></i> Утвердить</button>
-                                <a href="#return-modal-form"
-                                    class="btn btn-danger me-3 not_approve_tz popup-with-form
-                                                <?= ($this->data['check_state'] == CHECK_TZ_WAIT || $this->data['check_state'] == CHECK_TZ_NOT_APPROVE) && $this->data['lab_head']['curr_user_status'] != 1 ? '' : 'disable' ?>"><i class="fa-regular fa-circle-xmark"></i> Вернуть</a>
-                            <?php endif; ?>
-                        <?php else: ?>
-                            <a href="#send-modal-form"
-                                class="btn btn-primary popup-with-form <?= ($this->data['check_state'] == CHECK_TZ_NOT_SENT || !empty($this->data['cancel_lab_head'])) ? '' : 'disable' ?>"><i class="fa-regular fa-paper-plane"></i> Передать</a>
-                        <?php endif; ?>
-                    </div>
-
-                <?php else: ?>
-                    <span class="fw-bold">Сохраните техническое задание</span>
-                <?php endif; ?>
-            </div>
-            <?php if (in_array($this->data['curr_user'], array_column($this->data['lab_head']['user'], 'user_id'))): ?>
-                <div class="col">
-                    <div class="mb-3">
-                        <label class="form-label">Ориентировочная дата начала <span class="redStars">*</span></label>
-
-                        <input type="date" id="date-start-leader" name="form_leader[date_start]" class="form-control" value="<?= $this->data['form_leader']['date_start'] ?? '' ?>" onkeydown="return false" required min="<?= date('Y-m-d') ?>">
-                    </div>
-
-                    <div class="">
-                        <label class="form-label">Количество рабочих дней <span class="redStars">*</span></label>
-
-                        <input type="hidden" id="leader-id" name="form_leader[user_id]" value="<?= $this->data['curr_user'] ?>">
-                        <input type="number" id="days-leader" name="form_leader[days]" class="form-control" min="0" step="1" value="<?= $this->data['form_leader']['days'] ?? '1' ?>" required>
-                    </div>
-                </div>
-            <?php endif; ?>
-            <?php if (!empty($this->data['confirm_not_approve_history'])): ?>
-                <div class="col">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-center" scope="col" colspan="3">Не одобренное подтверждение</th>
-                                <th class="text-center" scope="col">Исправлено</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center">
-                                    Дата
-                                </th>
-                                <th class="text-center">
-                                    Руководитель
-                                </th>
-                                <th class="text-center">
-                                    Комментарий
-                                </th>
-                                <th>
-
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <?php foreach ($this->data['confirm_not_approve_history'] as $item): ?>
-                                <tr>
-                                    <td>
-                                        <?= $item['date_return'] ?>
-                                    </td>
-                                    <td>
-                                        <?= $item['user_return_name'] ?>
-                                    </td>
-                                    <td>
-                                        <?= $item['desc_return'] ?>
-                                    </td>
-                                    <td class="text-center check_fix_container">
-                                        <?php if ($item['is_fixed']): ?>
-                                            <?= $item['date_fixed'] ?> <?= $item['user_fix_name'] ?>
-                                        <?php else: ?>
-                                            <!--                                                    <a href="#" class="check_fix" data-id="--><? //=$item['id']
-                                                                                                                                                ?><!--" data-tz_id="--><? //=$item['tz_id']
-                                                                                                                                                                        ?><!--" data-leader="--><? //=$item['user_return']
-                                                                                                                                                                                                ?><!--">Отправить на согласование</a>-->
-                                            --
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-    <!--./panel-body-->
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-10">
-                <textarea style="min-width: 100%" form="createComment" name="comment" class="form-control" placeholder="Комментарий" required><?= $this->data['comment'] ?></textarea>
-                <input type="hidden" form="createComment" name="oldComment" value="<?= $this->data['comment'] ?>">
-                <input name="tz_id" form="createComment" value="<?= $this->data['tz_id'] ?>" type="hidden">
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-primary m-0" form="createComment" type="submit" id="button-addon2">Добавить</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        История изменений сроков
-        <span class="tools float-end">
-            <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
-            <a href="javascript:;" class="fa fa-chevron-up"></a>
-        </span>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col">
-                <?php if (!empty($this->data['changes_history_duration'])): ?>
-                    <div class="changes-list">
-                        <?php foreach ($this->data['changes_history_duration'] as $change2): ?>
-                            <div class="change-item mb-2 pb-2 border-bottom">
-                                <div class="row">
-                                    <div class="col" style="min-width: 100px;">
-                                        <?= date('d.m.Y', strtotime($change2['date_start'])) ?>
-                                    </div>
-                                    <div class="col" style="min-width: 150px;">
-                                        <?= $change2['user_short'] ?>
-                                    </div>
-                                    <div class="col">
-                                        <?= $change2['days'] . ' д.' ?>
+                            <div>
+                                <div class="d-flex align-items-center taken-request-wrapper">
+                                    <div>
+                                        <select class="form-control nds-percent-select w100" name="">
+                                            <option value="7" <?= (($this->data['tz']['is_nds'] ?? 0) && ($this->data['tz']['is_nds_7'] ?? 0)) ? 'selected' : '' ?>>
+                                                7%
+                                            </option>
+                                            <option value="5" <?= (($this->data['tz']['is_nds'] ?? 0) && !($this->data['tz']['is_nds_7'] ?? 0)) ? 'selected' : '' ?>>
+                                                5%
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
+
+                        <div class="col-auto d-flex flex-column">
+                            <div>
+                                <label class="form-label mb-1">НДС</label>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center taken-request-wrapper">
+                                    <div>
+                                        <label class="switch">
+                                            <input class="form-check-input nds" name="tz[is_nds]"
+                                                   type="checkbox" <?= ($this->data['tz']['is_nds'] || $this->data['tz']['is_nds'] == '') ? 'checked' : '' ?> />
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-auto d-flex flex-column">
+                            <div>
+                                <label class="form-label" for="input_discount">Скидка</label>
+                            </div>
+                            <div>
+                                <div class="input-group">
+                                    <input name="tz[DISCOUNT]" type="number"
+                                           class="form-control bg-white discount-input" min="0" step="0.01"
+                                           value="<?= $this->data['tz']['DISCOUNT'] ?? '0' ?>">
+                                    <select name="tz[discount_type]" class="form-control bg-white discount-type">
+                                        <option value="percent" <?= $this->data['tz']['discount_type'] == 'percent' ? 'selected' : '' ?>>
+                                            %
+                                        </option>
+                                        <option value="rub" <?= $this->data['tz']['discount_type'] == 'rub' ? 'selected' : '' ?>>
+                                            ₽
+                                        </option>
+                                    </select>
+                                    <button type="button" class="btn btn-primary discount-apply">Применить</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                <?php else: ?>
-                    <p>История изменений отсутствует</p>
-                <?php endif; ?>
+                </div>
+
             </div>
         </div>
-    </div>
-    <!--./panel-body-->
-</div>
-<div class="panel panel-default">
-    <header class="panel-heading">
-        История изменений комментариев
-        <span class="tools float-end">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Подтверждение ТЗ
+                <span class="tools float-end">
             <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
             <a href="javascript:;" class="fa fa-chevron-up"></a>
         </span>
-    </header>
-    <div class="panel-body">
-        <div class="row mb-2">
-            <div class="col" style="font-weight: bold">Старый комментарий</div>
-            <div class="col" style="font-weight: bold">Новый комментарий</div>
-            <div class="col" style="font-weight: bold">Пользователь</div>
-            <div class="col" style="font-weight: bold">Дата изменения</div>
-        </div>
-        <?php foreach ($this->data['comment_history'] as $value): ?>
-            <div class="row mb-2 <?= $value['bg'] ?>">
-                <div class="col"><?= $value['old_comment'] ?></div>
-                <div class="col"><?= $value['new_comment'] ?></div>
-                <div class="col"><?= $value['user_short'] ?></div>
-                <div class="col"><?= $value['date'] ?></div>
             </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col">
+                        <?php if (!empty($this->data['lab_head']['user'])): ?>
+                            <?php foreach ($this->data['lab_head']['user'] as $user): ?>
+                                <div class="head-user-block <?= $user['user_id'] == $this->data['curr_user'] ? 'curr_user' : '' ?>">
+                                    <?php if ($user['is_confirm'] == CHECK_TZ_NOT_SENT && $this->data['check_state'] != CHECK_TZ_NOT_SENT): ?>
+                                        <span class="icon" title="ТЗ не отправлено">
+                                    <i class="fa-solid fa-minus"></i>
+                                </span>
+                                    <?php elseif ($user['is_confirm'] == CHECK_TZ_NOT_SENT): ?>
+                                        <span class="icon" title="ТЗ не отправлено">
+                                    <i class="fa-regular fa-paper-plane"></i>
+                                </span>
+                                    <?php elseif ($user['is_confirm'] == CHECK_TZ_APPROVE): ?>
+                                        <span class="text-green icon" title="ТЗ потверждено">
+                                    <i class="fa-regular fa-circle-check"></i>
+                                </span>
+                                    <?php elseif ($user['is_confirm'] == CHECK_TZ_NOT_APPROVE): ?>
+                                        <span class="text-red icon" title="ТЗ не потверждено">
+                                    <i class="fa-regular fa-circle-xmark"></i>
+                                </span>
+                                    <?php else: ?>
+                                        <span class="icon" title="Ожидание проверки">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                </span>
+                                    <?php endif; ?>
 
-<?php if ($this->data['is_disable_save']): ?>
-    <button class="form-control btn btn-primary mw-100 disabled" type="button">Сохранить</button>
-<?php else: ?>
-    <!--            --><?php //if (!empty($this->data['lab_head']['user']) && $this->data['check_state'] != CHECK_TZ_NOT_SENT): 
-                        ?>
-    <!--                <label class="form-label text-red">Техническое задание на проверке. При нажатии "Сохранить" отзовет проверку</label>-->
-    <!--                <button class="form-control btn btn-primary mw-100 save" id="save" name="save" onclick="return confirm('Техническое задание на проверке. При нажатии Сохранить отзовет проверку! Продолжить?')" type="submit">Сохранить</button>-->
-    <!--            --><?php //else: 
-                        ?>
-    <button class="form-control btn btn-primary mw-100 save" id="save" name="save" type="submit">Сохранить</button>
-    <!--            --><?php //endif;
-                        ?>
-<?php endif; ?>
+                                    <span class="<?= $user['user_id'] == $this->data['curr_user'] ? 'fw-bold' : '' ?>"><?= $user['short_name'] ?></span>
+                                    <span><i><?= $user['duration_str']; ?></i></span>
 
-</form>
-<!--./form-requirement-->
+                                    <?php if ($user['is_confirm'] == CHECK_TZ_NOT_APPROVE): ?>
+                                        <span>
+                                    <button type="button" class="btn btn-danger delete-canceled-lab"
+                                            data-user-id="<?= $user['user_id'] ?>">Удалить</button>
+                                </span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+
+
+                            <?php if (!empty($this->data['lab_head']['user']) && $this->data['check_state'] == CHECK_TZ_APPROVE): ?>
+                                <div class="mt-1">
+                                    <label class="form-label text-green fw-bold">Техническое задание утверждено.</label>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="mt-3">
+                                <?php if ($this->data['lab_head']['is_curr_user']): ?>
+                                    <?php if ($this->data['check_state'] == CHECK_TZ_NOT_SENT): ?>
+                                        <button type="button"
+                                                class="aa btn btn-primary sent_approve_tz <?= $this->data['lab_head']['check_state'] == CHECK_TZ_NOT_SENT ? 'disable' : '' ?>">
+                                            <i class="fa-regular fa-paper-plane"></i> Утвердить
+                                        </button>
+                                    <?php else: ?>
+                                        <button type="button"
+                                                class="bb btn btn-success me-3 approve_tz
+                                                <?= ($this->data['check_state'] == CHECK_TZ_WAIT || $this->data['check_state'] == CHECK_TZ_NOT_APPROVE) && $this->data['lab_head']['curr_user_status'] != 1 ? '' : 'disable' ?>">
+                                            <i class="fa-regular fa-circle-check"></i> Утвердить
+                                        </button>
+                                        <a href="#return-modal-form"
+                                           class="btn btn-danger me-3 not_approve_tz popup-with-form
+                                                <?= ($this->data['check_state'] == CHECK_TZ_WAIT || $this->data['check_state'] == CHECK_TZ_NOT_APPROVE) && $this->data['lab_head']['curr_user_status'] != 1 ? '' : 'disable' ?>"><i
+                                                    class="fa-regular fa-circle-xmark"></i> Вернуть</a>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <a href="#send-modal-form"
+                                       class="btn btn-primary popup-with-form <?= ($this->data['check_state'] == CHECK_TZ_NOT_SENT || !empty($this->data['cancel_lab_head'])) ? '' : 'disable' ?>"><i
+                                                class="fa-regular fa-paper-plane"></i> Передать</a>
+                                <?php endif; ?>
+                            </div>
+
+                        <?php else: ?>
+                            <span class="fw-bold">Сохраните техническое задание</span>
+                        <?php endif; ?>
+                    </div>
+                    <?php if (in_array($this->data['curr_user'], array_column($this->data['lab_head']['user'], 'user_id'))): ?>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label class="form-label">Ориентировочная дата начала <span
+                                            class="redStars">*</span></label>
+
+                                <input type="date" id="date-start-leader" name="form_leader[date_start]"
+                                       class="form-control"
+                                       value="<?= $this->data['form_leader']['date_start'] ?? '' ?>"
+                                       onkeydown="return false" required min="<?= date('Y-m-d') ?>">
+                            </div>
+
+                            <div class="">
+                                <label class="form-label">Количество рабочих дней <span
+                                            class="redStars">*</span></label>
+
+                                <input type="hidden" id="leader-id" name="form_leader[user_id]"
+                                       value="<?= $this->data['curr_user'] ?>">
+                                <input type="number" id="days-leader" name="form_leader[days]" class="form-control"
+                                       min="0" step="1" value="<?= $this->data['form_leader']['days'] ?? '1' ?>"
+                                       required>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($this->data['confirm_not_approve_history'])): ?>
+                        <div class="col">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-center" scope="col" colspan="3">Не одобренное подтверждение</th>
+                                    <th class="text-center" scope="col">Исправлено</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center">
+                                        Дата
+                                    </th>
+                                    <th class="text-center">
+                                        Руководитель
+                                    </th>
+                                    <th class="text-center">
+                                        Комментарий
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <?php foreach ($this->data['confirm_not_approve_history'] as $item): ?>
+                                    <tr>
+                                        <td>
+                                            <?= $item['date_return'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $item['user_return_name'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $item['desc_return'] ?>
+                                        </td>
+                                        <td class="text-center check_fix_container">
+                                            <?php if ($item['is_fixed']): ?>
+                                                <?= $item['date_fixed'] ?> <?= $item['user_fix_name'] ?>
+                                            <?php else: ?>
+                                                <!--                                                    <a href="#" class="check_fix" data-id="--><? //=$item['id']
+                                                ?><!--" data-tz_id="--><? //=$item['tz_id']
+                                                ?><!--" data-leader="--><? //=$item['user_return']
+                                                ?><!--">Отправить на согласование</a>-->
+                                                --
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <!--./panel-body-->
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-10">
+                        <textarea style="min-width: 100%" form="createComment" name="comment" class="form-control"
+                                  placeholder="Комментарий" required><?= $this->data['comment'] ?></textarea>
+                        <input type="hidden" form="createComment" name="oldComment"
+                               value="<?= $this->data['comment'] ?>">
+                        <input name="tz_id" form="createComment" value="<?= $this->data['tz_id'] ?>" type="hidden">
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary m-0" form="createComment" type="submit" id="button-addon2">
+                            Добавить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                История изменений сроков
+                <span class="tools float-end">
+            <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
+            <a href="javascript:;" class="fa fa-chevron-up"></a>
+        </span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col">
+                        <?php if (!empty($this->data['changes_history_duration'])): ?>
+                            <div class="changes-list">
+                                <?php foreach ($this->data['changes_history_duration'] as $change2): ?>
+                                    <div class="change-item mb-2 pb-2 border-bottom">
+                                        <div class="row">
+                                            <div class="col" style="min-width: 100px;">
+                                                <?= date('d.m.Y', strtotime($change2['date_start'])) ?>
+                                            </div>
+                                            <div class="col" style="min-width: 150px;">
+                                                <?= $change2['user_short'] ?>
+                                            </div>
+                                            <div class="col">
+                                                <?= $change2['days'] . ' д.' ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <p>История изменений отсутствует</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <!--./panel-body-->
+        </div>
+        <div class="panel panel-default">
+            <header class="panel-heading">
+                История изменений комментариев
+                <span class="tools float-end">
+            <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
+            <a href="javascript:;" class="fa fa-chevron-up"></a>
+        </span>
+            </header>
+            <div class="panel-body">
+                <div class="row mb-2">
+                    <div class="col" style="font-weight: bold">Старый комментарий</div>
+                    <div class="col" style="font-weight: bold">Новый комментарий</div>
+                    <div class="col" style="font-weight: bold">Пользователь</div>
+                    <div class="col" style="font-weight: bold">Дата изменения</div>
+                </div>
+                <?php foreach ($this->data['comment_history'] as $value): ?>
+                    <div class="row mb-2 <?= $value['bg'] ?>">
+                        <div class="col"><?= $value['old_comment'] ?></div>
+                        <div class="col"><?= $value['new_comment'] ?></div>
+                        <div class="col"><?= $value['user_short'] ?></div>
+                        <div class="col"><?= $value['date'] ?></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <?php if ($this->data['is_disable_save']): ?>
+            <button class="form-control btn btn-primary mw-100 disabled" type="button">Сохранить</button>
+        <?php else: ?>
+            <!--            --><?php //if (!empty($this->data['lab_head']['user']) && $this->data['check_state'] != CHECK_TZ_NOT_SENT):
+            ?>
+            <!--                <label class="form-label text-red">Техническое задание на проверке. При нажатии "Сохранить" отзовет проверку</label>-->
+            <!--                <button class="form-control btn btn-primary mw-100 save" id="save" name="save" onclick="return confirm('Техническое задание на проверке. При нажатии Сохранить отзовет проверку! Продолжить?')" type="submit">Сохранить</button>-->
+            <!--            --><?php //else:
+            ?>
+            <button class="form-control btn btn-primary mw-100 save" id="save" name="save" type="submit">Сохранить
+            </button>
+            <!--            --><?php //endif;
+            ?>
+        <?php endif; ?>
+
+    </form>
+    <!--./form-requirement-->
 </div>
 <!--./wrapper-requirement-->
 
 <form id="createComment" action="<?= URI ?>/request/addCommentFromTz/<?= $this->data['deal_id'] ?>" method="post">
 </form>
 
-<form id="edit-group-probe-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/editProbe/">
+<form id="edit-group-probe-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/editProbe/">
     <div class="title mb-3 h-2">
         Групповое редактирование проб
     </div>
@@ -871,7 +967,8 @@
     <input class="probe-id-list" name="probe_id" value="" type="hidden">
 
     <div class="row mb-3">
-        <label for="inputEmail3" class="col col-form-label">Выбрано проб: <span class="count-selected-probe"></span></label>
+        <label for="inputEmail3" class="col col-form-label">Выбрано проб: <span
+                    class="count-selected-probe"></span></label>
     </div>
 
     <div class="mb-3">
@@ -886,7 +983,8 @@
     </div>
 
     <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input is_only_name_for_protocol" id="is_only_name_for_protocol" value="1" name="form[is_only_name_for_protocol]">
+        <input type="checkbox" class="form-check-input is_only_name_for_protocol" id="is_only_name_for_protocol"
+               value="1" name="form[is_only_name_for_protocol]">
 
         <label class="form-check-label" for="is_only_name_for_protocol">Выводить только маркировку заказчика</label>
     </div>
@@ -939,7 +1037,8 @@
 </form>
 
 
-<form id="edit-probe-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/editProbe">
+<form id="edit-probe-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/editProbe">
     <div class="title mb-3 h-2">
         Редактирование пробы
     </div>
@@ -957,7 +1056,8 @@
     </div>
 
     <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input is_only_name_for_protocol" id="is_only_name_for_protocol2" value="1" name="form[is_only_name_for_protocol]">
+        <input type="checkbox" class="form-check-input is_only_name_for_protocol" id="is_only_name_for_protocol2"
+               value="1" name="form[is_only_name_for_protocol]">
 
         <label class="form-check-label" for="is_only_name_for_protocol2">Выводить только маркировку заказчика</label>
     </div>
@@ -991,7 +1091,8 @@
 </form>
 
 
-<form id="edit-material-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/editMaterial">
+<form id="edit-material-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/editMaterial">
     <div class="title mb-3 h-2">
         Редактирование объекта испытаний
     </div>
@@ -1018,7 +1119,8 @@
 </form>
 
 
-<form id="add-methods-modal-form" class="bg-light mfp-hide col-9 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/addMethodsToProbe/">
+<form id="add-methods-modal-form" class="bg-light mfp-hide col-9 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/addMethodsToProbe/">
     <div class="title mb-3 h-2">
         Добавление методик
     </div>
@@ -1030,7 +1132,8 @@
     <input class="probe-id-list" name="probe_id_list" value="" type="hidden">
 
     <div class="row mb-3">
-        <label for="inputEmail3" class="col col-form-label">Выбрано проб: <span class="count-selected-probe"></span></label>
+        <label for="inputEmail3" class="col col-form-label">Выбрано проб: <span
+                    class="count-selected-probe"></span></label>
     </div>
 
     <div class="mb-3">
@@ -1044,11 +1147,14 @@
     </div>
 
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             <label class="form-label mb-1">Методика испытаний <span class="redStars">*</span></label>
         </div>
-        <div class="col-4">
+        <div class="col-2">
             <label class="form-label mb-1">НД</label>
+        </div>
+        <div class="col-2">
+            <label class="form-label mb-1">Нормы НД</label>
         </div>
         <div class="col-2">
             <label class="form-label mb-1">Исполнитель</label>
@@ -1076,7 +1182,8 @@
 </form>
 
 
-<form id="add-material-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/addMaterialToTz/">
+<form id="add-material-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/addMaterialToTz/">
     <div class="title mb-3 h-2">
         Добавление объекта испытаний
     </div>
@@ -1109,7 +1216,8 @@
 </form>
 
 
-<form id="add-comment-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/setCommentGtp/">
+<form id="add-comment-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/setCommentGtp/">
     <div class="title mb-3 h-2">
         Добавление комментария к испытанию
     </div>
@@ -1138,7 +1246,8 @@
 </form>
 
 
-<form id="add-probe-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/addProbeToMaterial/">
+<form id="add-probe-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/addProbeToMaterial/">
     <div class="title mb-3 h-2">
         Добавление проб
     </div>
@@ -1172,7 +1281,8 @@
 </form>
 
 
-<form id="add-to-link-deal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post" action="<?= URI ?>/requirement/copyProbeToDeal">
+<form id="add-to-link-deal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/copyProbeToDeal">
     <div class="title mb-3 h-2">
         Добавление проб в учтенную заявку
     </div>
@@ -1184,7 +1294,8 @@
     <input class="probe-id-list" name="probe_id_list" value="" type="hidden">
 
     <div class="row mb-3">
-        <label for="inputEmail3" class="col col-form-label">Выбрано проб: <span class="count-selected-probe"></span></label>
+        <label for="inputEmail3" class="col col-form-label">Выбрано проб: <span
+                    class="count-selected-probe"></span></label>
     </div>
 
     <div class="mb-3">
@@ -1224,7 +1335,9 @@
 </div>
 
 
-<form id="send-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" action="/ulab/requirement/<?= (!empty($this->data['lab_head']['user']) && $this->data['check_state'] == CHECK_TZ_NOT_SENT) ? 'confirmTzSent' : 'confirmTzSentForCanceled' ?>/" method="post">
+<form id="send-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative"
+      action="/ulab/requirement/<?= (!empty($this->data['lab_head']['user']) && $this->data['check_state'] == CHECK_TZ_NOT_SENT) ? 'confirmTzSent' : 'confirmTzSentForCanceled' ?>/"
+      method="post">
     <div class="title mb-3 h-2">
         Отправка руководителям на проверку
     </div>
@@ -1234,7 +1347,8 @@
     <?php if (!empty($this->data['lab_head']['user']) && $this->data['check_state'] == CHECK_TZ_NOT_SENT): ?>
         <?php foreach ($this->data['lab_head']['user'] as $user): ?>
             <div class="head-user-block form-check <?= $user['user_id'] == $this->data['curr_user'] ? 'curr_user' : '' ?>">
-                <input id="send_user_<?= $user['user_id'] ?>" type="checkbox" name="users[]" class="form-check-input" value="<?= $user['user_id'] ?>" checked>
+                <input id="send_user_<?= $user['user_id'] ?>" type="checkbox" name="users[]" class="form-check-input"
+                       value="<?= $user['user_id'] ?>" checked>
 
                 <label class="form-check-label" for="send_user_<?= $user['user_id'] ?>">
                     <span class="<?= $user['user_id'] == $this->data['curr_user'] ? 'fw-bold' : '' ?>"><?= $user['short_name']; ?></span>
@@ -1251,7 +1365,8 @@
     <?php elseif (!empty($this->data['cancel_lab_head'])): ?>
         <?php foreach ($this->data['cancel_lab_head'] as $user): ?>
             <div class="head-user-block form-check <?= $user['ID'] == $this->data['curr_user'] ? 'curr_user' : '' ?>">
-                <input id="send_user_<?= $user['ID'] ?>" type="checkbox" name="users[]" class="form-check-input" value="<?= $user['ID'] ?>" checked>
+                <input id="send_user_<?= $user['ID'] ?>" type="checkbox" name="users[]" class="form-check-input"
+                       value="<?= $user['ID'] ?>" checked>
 
                 <label class="form-check-label" for="send_user_<?= $user['user_id'] ?>">
                     <span class="<?= $user['ID'] == $this->data['curr_user'] ? 'fw-bold' : '' ?>"><?= $user['short_name']; ?></span>
@@ -1270,7 +1385,8 @@
     <button type="submit" class="btn btn-primary"><i class="fa-regular fa-paper-plane"></i> Передать</button>
 </form>
 
-<form id="replace-method-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" action="/ulab/requirement/replaceMethodsForProbes/" method="post">
+<form id="replace-method-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative"
+      action="/ulab/requirement/replaceMethodsForProbes/" method="post">
     <div class="title mb-3 h-2">
         Замена методики
     </div>
@@ -1323,7 +1439,8 @@
     <button type="submit" class="btn btn-primary">Заменить</button>
 </form>
 
-<form id="import-probes-from-xlsx" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" action="/ulab/requirement/importProbesFromExcel" enctype="multipart/form-data" method="post">
+<form id="import-probes-from-xlsx" class="bg-light mfp-hide col-6 m-auto p-3 position-relative"
+      action="/ulab/requirement/importProbesFromExcel" enctype="multipart/form-data" method="post">
     <div class="title mb-3 h-2">
         Импортирование маркировки заказчика
     </div>
@@ -1332,32 +1449,41 @@
 
     <div class="col mb-3">
         <label for="excel-file">Excel файл заказчика</label>
-        <input type="file" class="form-control" id="excel-file" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required>
+        <input type="file" class="form-control" id="excel-file" name="file"
+               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+               required>
     </div>
 
     <div class="col mb-3">
-        <label for="from-letter">Интервал импорта (укажите с какой ячейки до какой необходимо импортировать данные)</label>
+        <label for="from-letter">Интервал импорта (укажите с какой ячейки до какой необходимо импортировать
+            данные)</label>
 
         <div class="d-flex flex-column gap-2">
             <div class="input-group">
                 <span style="margin: auto 5px auto 0;">От</span>
-                <input type="text" class="form-control" id="from-letter" value="A" name="from-letter" style="margin-right: 5px" placeholder="Столбец от" required>
+                <input type="text" class="form-control" id="from-letter" value="A" name="from-letter"
+                       style="margin-right: 5px" placeholder="Столбец от" required>
                 <span style="margin: auto">:</span>
-                <input type="number" class="form-control" id="from-digit" value="4" name="from-digit" style="margin-left: 5px" placeholder="Строка от" required>
+                <input type="number" class="form-control" id="from-digit" value="4" name="from-digit"
+                       style="margin-left: 5px" placeholder="Строка от" required>
             </div>
 
             <div class="input-group">
                 <span style="margin: auto 5px auto 0;">До</span>
-                <input type="text" class="form-control" id="to-letter" value="E" name="to-letter" style="margin-right: 5px" placeholder="Столбец до" required>
+                <input type="text" class="form-control" id="to-letter" value="E" name="to-letter"
+                       style="margin-right: 5px" placeholder="Столбец до" required>
                 <span style="margin: auto">:</span>
-                <input type="number" class="form-control" id="to-digit" value="10" name="to-digit" style="margin-left: 5px" placeholder="Строка до" required>
+                <input type="number" class="form-control" id="to-digit" value="10" name="to-digit"
+                       style="margin-left: 5px" placeholder="Строка до" required>
             </div>
         </div>
     </div>
 
     <div class="col mb-3">
-        <label for="format-cipher">Формат маркировки заказчика (укажите как должны присваиваться номера столбцов в фигурных скобках)</label>
-        <input type="text" class="form-control" id="format-cipher" name="format_cipher" value="{1} {2} (от {3} до {4}, длина {5})" required>
+        <label for="format-cipher">Формат маркировки заказчика (укажите как должны присваиваться номера столбцов в
+            фигурных скобках)</label>
+        <input type="text" class="form-control" id="format-cipher" name="format_cipher"
+               value="{1} {2} (от {3} до {4}, длина {5})" required>
     </div>
 
     <input type="hidden" name="tz_id" value="<?= $this->data['tz_id'] ?>">
@@ -1371,8 +1497,8 @@
 </form>
 
 
-
-<form id="delete-method-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" action="/ulab/requirement/deleteMethodsFromProbe/" method="post">
+<form id="delete-method-modal-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative"
+      action="/ulab/requirement/deleteMethodsFromProbe/" method="post">
     <div class="title mb-3 h-2">
         Удаление методики
     </div>
@@ -1393,7 +1519,8 @@
     <button type="submit" class="btn btn-danger">Удалить</button>
 </form>
 
-<form action="/ulab/requirement/copyProbeMassiveAjax/" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post" id="copy-count-modal-form">
+<form action="/ulab/requirement/copyProbeMassiveAjax/" class="bg-light mfp-hide col-6 m-auto p-3 position-relative"
+      method="post" id="copy-count-modal-form">
     <div class="title mb-3 h-2">
         Копирование пробы
     </div>

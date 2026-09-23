@@ -12,6 +12,7 @@ let methodInfo = null
 
 // Все пробы, представленные на странице
 let methodsAlreadySet = false;
+const tz_id = $('#tz_id').val();
 
 $.ajax({
     method: 'POST',
@@ -25,6 +26,7 @@ $.ajax({
 $.ajax({
     method: 'POST',
     url: '/ulab/requirement/getTechCondListAjax',
+    data: {tz_id: tz_id},
     dataType: 'json',
     success: function (data) {
         conditionList = data
@@ -135,7 +137,7 @@ function getHtmlCharForm(dealTypeId = '', userGroups = []) {
  */
 function refreshMethodFilterAfterProbeDelete() {
     // Получаем все данные, которые сейчас отображаются в таблице
-    let allProbes = $('#journal_material_2').DataTable().rows({ search: 'applied' }).data().toArray();
+    let allProbes = $('#journal_material_2').DataTable().rows({search: 'applied'}).data().toArray();
 
     // Собираем id всех проб
     let allProbeIds = allProbes.map(item => item.id);
@@ -149,7 +151,7 @@ function refreshMethodFilterAfterProbeDelete() {
     $.ajax({
         method: 'GET',
         url: '/ulab/requirement/getMethodsByProbeListAjax',
-        data: { probe_id_list: allProbeIds },
+        data: {probe_id_list: allProbeIds},
         dataType: 'json',
         success: function (data) {
             updateMethodFilterSelect(data);
@@ -289,7 +291,7 @@ $(function ($) {
         $.ajax({
             method: 'GET',
             url: '/ulab/requirement/getMethodsByProbeListAjax',
-            data: { probe_id_list: probeIdList }, // Передаём массив id проб
+            data: {probe_id_list: probeIdList}, // Передаём массив id проб
             dataType: 'json',
             success: function (data) {
                 // Очищаем селект перед добавлением новых опций
@@ -339,7 +341,7 @@ $(function ($) {
         $.ajax({
             method: 'GET',
             url: '/ulab/requirement/getMethodsByProbeListAjax',
-            data: { probe_id_list: probeIdList }, // Передаём массив id проб
+            data: {probe_id_list: probeIdList}, // Передаём массив id проб
             dataType: 'json',
             success: function (data) {
                 // Очищаем селект перед добавлением новых опций
@@ -522,7 +524,7 @@ $(function ($) {
         toggleProbe()
     })
 
-    let stickyEl2 = new Sticksy('.js-sticky-widget2', { topSpacing: 20, listen: true, })
+    let stickyEl2 = new Sticksy('.js-sticky-widget2', {topSpacing: 20, listen: true,})
     stickyEl2.onStateChanged = function (state) {
         if (state === 'fixed') {
             stickyEl2.nodeRef.classList.add('widget--sticky')
@@ -576,8 +578,7 @@ $(function ($) {
             tr.removeClass('shown')
 
             $(this).html('<i class="fa-solid fa-chevron-right icon-big"></i>')
-        }
-        else {
+        } else {
             // Открыть эту строку
             createChild(row)
             tr.addClass('shown')
@@ -703,14 +704,14 @@ $(function ($) {
                 }
             },
         ],
-        columnDefs: [{ visible: false, targets: 0 }],
+        columnDefs: [{visible: false, targets: 0}],
         drawCallback: function (settings) {
             let api = this.api();
-            let rows = api.rows({ page: 'current' }).nodes();
+            let rows = api.rows({page: 'current'}).nodes();
             let last = null;
             let data = rows.data()
 
-            api.column(0, { page: 'current' })
+            api.column(0, {page: 'current'})
                 .data()
                 .each(function (group, i) {
                     if (last !== group) {
@@ -1269,7 +1270,7 @@ $(function ($) {
         $.ajax({
             method: 'POST',
             async: true,
-            data: { id: id },
+            data: {id: id},
             url: '/ulab/requirement/getMethodDataAjax',
             dataType: 'json',
             success: function (data) {
@@ -1491,7 +1492,8 @@ $(function ($) {
             },
             dataType: "json",
             method: "POST",
-            success: function (json) { }
+            success: function (json) {
+            }
         })
     })
 
@@ -1526,7 +1528,7 @@ function getHtmlMethod(methodList, conditionList, gostNumber = 0, defaultMethod 
 
 
     return `<div class="row justify-content-between method-block mb-2" data-gost_number="${gostNumber}">
-                <div class="col-4">
+                <div class="col-3">
                     <div class="input-group">
                         <select class="form-control select2 method-select" name="form[${gostNumber}][new_method_id]" required>
                             <option value=""></option>
@@ -1537,7 +1539,15 @@ function getHtmlMethod(methodList, conditionList, gostNumber = 0, defaultMethod 
                         </a>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-2">
+                    <div class="input-group">
+                        <select class="form-control select2 method-select" name="form[${gostNumber}][name_nd]" required>
+                            <option value=""></option>
+                            ${optionCondition}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
                     <div class="input-group">
                         <input type = "text" class="form-control nd_string_input" name="form[${gostNumber}][nd_string_input]">
                     </div>
@@ -1571,20 +1581,20 @@ function getHtmlMethod(methodList, conditionList, gostNumber = 0, defaultMethod 
  * @param defaultTu
  * @returns {string}
  */
-function getHtmlOptionsTu(conditionList, defaultTu = 0) {
-    let optionCondition = '<option value="">--/--</option>'
+function getHtmlOptionsTu(conditionList, defaultTu = '') {
+    let optionCondition = '<option value="">--/--</option>';
 
     $.each(conditionList, function (i, item) {
-        let selected = ``
+        let selected = '';
 
-        if (item.id == defaultTu) {
-            selected = 'selected'
+        if (item === defaultTu) {
+            selected = 'selected';
         }
 
-        optionCondition += `<option value="${item.id}" ${selected}>${item.view_name}</option>`
-    })
+        optionCondition += `<option value="${item}" ${selected}>${item}</option>`;
+    });
 
-    return optionCondition
+    return optionCondition;
 }
 
 
@@ -2002,8 +2012,7 @@ function createChild(row) {
         } else if ($thisCell.hasClass('tu_view_name')) {
             cellName = 'tu'
             lastVal = data.tech_condition_string
-        }
-        else if ($thisCell.hasClass('method_view_name')) {
+        } else if ($thisCell.hasClass('method_view_name')) {
             cellName = 'method'
             lastVal = data.new_method_id
         } else if ($thisCell.hasClass('price')) {
@@ -2045,3 +2054,49 @@ function createChild(row) {
 
     })
 }
+
+const classes = [
+    'nd_list',
+    'manufacturer',
+    'manufacture_date',
+    'batch_mass',
+    'batch_size',
+    'batch_number',
+    'packing_name',
+    'packaging_integrity',
+    'expiration_date',
+    'storage_conditions',
+    'label_description',
+    'delivery_method'
+];
+
+$(document).on('change', function (event) {
+    const $element = $(event.target);
+    const tz_id = $('#tz_id').val();
+
+    const changedClass = classes.find(className =>
+        $element.hasClass(className)
+    );
+
+    if (!changedClass) {
+        return;
+    }
+
+    $.ajax({
+        method: "POST",
+        url: '/ulab/requirement/setDopInfoAjax',
+        data: {
+            field_name: changedClass,
+            id_tz: tz_id,
+            value: $element.val()
+        },
+        dataType: 'json',
+        success: function (json) {
+            console.log(json);
+        }
+    })
+
+    console.log('tz', tz_id);
+    console.log('Изменившийся класс:', changedClass);
+    console.log('Новое значение:', $element.val());
+});

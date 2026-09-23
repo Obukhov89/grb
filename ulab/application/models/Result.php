@@ -915,10 +915,10 @@ class Result extends Model
             $row['um_definition_range_1'] = $methodInfo['definition_range_1'];
             $row['um_definition_range_2'] = $methodInfo['definition_range_2'];
 
-            $tuInfo = $tuModel->get($row['tech_condition_id']);
-            $row['utc_definition_range_type'] = $tuInfo['definition_range_type'];
-            $row['utc_definition_range_1'] = $tuInfo['definition_range_1'];
-            $row['utc_definition_range_2'] = $tuInfo['definition_range_2'];
+//            $tuInfo = $tuModel->get($row['tech_condition_id']);
+//            $row['utc_definition_range_type'] = $tuInfo['definition_range_type'];
+//            $row['utc_definition_range_1'] = $tuInfo['definition_range_1'];
+//            $row['utc_definition_range_2'] = $tuInfo['definition_range_2'];
 
             // Единицы измерения
             $row['unit_id'] = $methodInfo['unit_id'];

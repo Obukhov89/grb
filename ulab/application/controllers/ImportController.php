@@ -1,7 +1,7 @@
 <?php
 
 use Bitrix\Im\Integration\Intranet\Department;
-
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * @desc Профиль лаборатории
@@ -69,11 +69,10 @@ class ImportController extends Controller
         unset($_SESSION['import_message']);
 
 
-
         $this->view('import');
     }
 
-        /**
+    /**
      * @desc Страница внесения сведений о компании (лаборатории)
      * @order 2
      */
@@ -82,7 +81,7 @@ class ImportController extends Controller
         $this->model('Permission')->checkPermission(__FUNCTION__, __FILE__);
 
         $this->data['title'] = 'Внесение сведений о руководстве';
-                
+
         /** @var Company $companyModel */
         $companyModel = $this->model('Company');
 
@@ -118,7 +117,7 @@ class ImportController extends Controller
         /** @var Company $companyModel */
         $companyModel = $this->model('Company');
 
-        $this->data['file'] ='logo.png';
+        $this->data['file'] = 'logo.png';
         $this->data['title'] = 'Внесение сведений о компании (лаборатории)';
         $this->data['is_file_exists'] = file_exists(UPLOAD_DIR . 'import/' . $this->data['file']);
 
@@ -158,7 +157,7 @@ class ImportController extends Controller
         $this->data['title'] = 'Внесение сведений об отделах (подразделениях)';
 
         $deptList = $userModel->getDepartmentsList();
-        $deptHead = array_filter($deptList, function($row) {
+        $deptHead = array_filter($deptList, function ($row) {
             return $row['ID_HEAD_USER'] !== null;
         });
         $deptHeadList = array_values($deptHead);
@@ -499,7 +498,7 @@ class ImportController extends Controller
         $this->addCSS("/assets/plugins/magnific-popup/magnific-popup.css");
         $this->addJs('/assets/plugins/magnific-popup/jquery.magnific-popup.min.js');
 
-        $this->addJs("/modules/Import/assets/js/department.js?v=".rand());
+        $this->addJs("/modules/Import/assets/js/department.js?v=" . rand());
 
         $this->view('department');
     }
@@ -546,7 +545,7 @@ class ImportController extends Controller
 
         //$crypter = new Crypter(ENCRYPTION_KEY);
 
-        $this->data['file'] ='logo.png';
+        $this->data['file'] = 'logo.png';
         $this->data['title'] = 'Внесения сведений о провайдере электронной почты';
 
         $this->data['is_file_exists'] = file_exists(UPLOAD_DIR . "import/mail/{$this->data['file']}");
@@ -580,7 +579,7 @@ class ImportController extends Controller
 
         /** @var Import $importModel */
         $importModel = $this->model('Import');
-        
+
         $this->data['title'] = 'Лабораторная база знаний';
         $this->data['onboarding'] = [];
 
@@ -736,26 +735,25 @@ class ImportController extends Controller
             $this->redirect($location);
         }
 
-        
 
         if (!isset($_POST['form']['ip'])) {           //Если выключен ИП, то проверяем ОГРН и КПП
             // ОГРН
             $valid = $this->validateNumber($_POST['form']['ogrn'], "ОГРН", false, 13);
-            if ( !$valid['success'] ) {
+            if (!$valid['success']) {
                 $this->showErrorMessage($valid['error']);
                 $this->redirect($location);
             }
 
             // КПП
             $valid = $this->validateNumber($_POST['form']['kpp'], "КПП", false, 9);
-            if ( !$valid['success'] ) {
+            if (!$valid['success']) {
                 $this->showErrorMessage($valid['error']);
                 $this->redirect($location);
             }
         } else {                                    //Если ИП включен, то проверяем ОГРНИП
             // ОГРНИП
             $valid = $this->validateNumber($_POST['form']['ogrnip'], "ОГРНИП", false, 15);
-            if ( !$valid['success'] ) {
+            if (!$valid['success']) {
                 $this->showErrorMessage($valid['error']);
                 $this->redirect($location);
             }
@@ -958,7 +956,7 @@ class ImportController extends Controller
         }
     }
 
-       /**
+    /**
      * @desc Создание изменение отделение
      * @param $deptid
      * @hide true
@@ -1021,7 +1019,7 @@ class ImportController extends Controller
     {
         /** @var User $companyModel */
         $userModel = $this->model('User');
-        
+
         $location = '/user/list/';
         $successMsg = !empty($_POST['user_id']) ? 'Сведения о сотруднике успешно изменены' : 'Сведения о сотруднике успешно сохранены';
 
@@ -1151,7 +1149,7 @@ class ImportController extends Controller
             $errorMsg = 'Не удалось сохранить данные раздела';
         }
 
-        if ( empty($result) ) {
+        if (empty($result)) {
             $this->showErrorMessage($errorMsg);
         } else {
             unset($_SESSION['onboarding_post']);
@@ -1160,8 +1158,6 @@ class ImportController extends Controller
 
         $this->redirect($location);
     }
-
-
 
 
     /**
@@ -1368,28 +1364,28 @@ class ImportController extends Controller
 
         $filter = [
             'paginate' => [
-                'length'    => $_POST['length'],  // кол-во строк на страницу
-                'start'      => $_POST['start'],  // текущая страница
+                'length' => $_POST['length'],  // кол-во строк на страницу
+                'start' => $_POST['start'],  // текущая страница
             ],
             'search' => [],
             'order' => []
         ];
 
         foreach ($_POST['columns'] as $column) {
-            if ( $column['search']['value'] !== '' ) {
+            if ($column['search']['value'] !== '') {
                 $filter['search'][$column['data']] = $column['search']['value'];
             }
         }
 
-        if ( isset($_POST['order']) && !empty($_POST['columns']) ) {
-            $filter['order']['by']  = $_POST['columns'][$_POST['order'][0]['column']]['data'];
+        if (isset($_POST['order']) && !empty($_POST['columns'])) {
+            $filter['order']['by'] = $_POST['columns'][$_POST['order'][0]['column']]['data'];
             $filter['order']['dir'] = $_POST['order'][0]['dir'];
         }
 
-        if ( !empty($_POST['stage']) ) {
+        if (!empty($_POST['stage'])) {
             $filter['search']['stage'] = $_POST['stage'];
         }
-        if ( !empty($_POST['lab']) ) {
+        if (!empty($_POST['lab'])) {
             $filter['search']['lab'] = $_POST['lab'];
         }
 
@@ -1430,9 +1426,10 @@ class ImportController extends Controller
     }
 
     /**
-    * @hide true
+     * @hide true
      */
-    public function getLabAjax() {
+    public function getLabAjax()
+    {
         global $APPLICATION;
 
         $APPLICATION->RestartBuffer();
@@ -1701,7 +1698,7 @@ class ImportController extends Controller
 
         $response = [];
 
-        if ( !empty($_POST['user_id']) ) {
+        if (!empty($_POST['user_id'])) {
             /** @var User $userModel */
             $userModel = $this->model('User');
             $response = $userModel->getUserData($_POST['user_id']);
@@ -1760,28 +1757,28 @@ class ImportController extends Controller
 
         $filter = [
             'paginate' => [
-                'length'    => $_POST['length'],  // кол-во строк на страницу
-                'start'      => $_POST['start'],  // текущая страница
+                'length' => $_POST['length'],  // кол-во строк на страницу
+                'start' => $_POST['start'],  // текущая страница
             ],
             'search' => [],
             'order' => []
         ];
 
         foreach ($_POST['columns'] as $column) {
-            if ( $column['search']['value'] !== '' ) {
+            if ($column['search']['value'] !== '') {
                 $filter['search'][$column['data']] = $column['search']['value'];
             }
         }
 
-        if ( isset($_POST['order']) && !empty($_POST['columns']) ) {
-            $filter['order']['by']  = $_POST['columns'][$_POST['order'][0]['column']]['data'];
+        if (isset($_POST['order']) && !empty($_POST['columns'])) {
+            $filter['order']['by'] = $_POST['columns'][$_POST['order'][0]['column']]['data'];
             $filter['order']['dir'] = $_POST['order'][0]['dir'];
         }
 
-        if ( !empty($_POST['stage']) ) {
+        if (!empty($_POST['stage'])) {
             $filter['search']['stage'] = $_POST['stage'];
         }
-        if ( !empty($_POST['lab']) ) {
+        if (!empty($_POST['lab'])) {
             $filter['search']['lab'] = $_POST['lab'];
         }
 
@@ -1859,7 +1856,7 @@ class ImportController extends Controller
 
         $response = [];
 
-        if ( !empty($_POST['department_id']) ) {
+        if (!empty($_POST['department_id'])) {
             /** @var User $userModel */
             $userModel = $this->model('User');
             $response = $userModel->getUsersByDeparment($_POST['department_id']);
@@ -2067,7 +2064,7 @@ class ImportController extends Controller
         require_once __DIR__ . "/templates/import/classifier_tnved.php";
         $result = (new ImportTnvedController())->importTnvedFromTxt();
     }
-    
+
 
     public function importSoexXls()
     {
@@ -2116,4 +2113,230 @@ class ImportController extends Controller
 
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
     }
+
+
+    public function uploadRequest()
+    {
+        $company = $this->model('Company');
+        $material = $this->model('Material');
+        $request = $this->model('Request');
+        $import = $this->model('Import');
+
+        $fields = [
+            4 => 'name_product',
+            5 => 'normative_document',
+            6 => 'customer',
+            8 => 'manufacturer',
+            10 => 'sampling_place',
+            11 => 'sampling_date',
+            12 => 'sampling_by',
+            14 => 'sample_quantity',
+            15 => 'package',
+            16 => 'manufacturing_date',
+            17 => 'expiration_date',
+            18 => 'storage_conditions',
+            19 => 'delivery_method',
+            20 => 'indicators',
+            21 => 'test_methods',
+            22 => 'normative_level',
+        ];
+
+        if (
+            !isset($_FILES['import_file']) ||
+            $_FILES['import_file']['error'] !== UPLOAD_ERR_OK
+        ) {
+            die('Ошибка загрузки файла.');
+        }
+
+        $tempFilePath = $_FILES['import_file']['tmp_name'];
+
+        try {
+            $spreadsheet = IOFactory::load($tempFilePath);
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $data = $sheet->toArray();
+
+            $products = [];
+
+            // Строка 4 содержит названия продуктов
+            if (!isset($data[4])) {
+                throw new Exception('В файле отсутствует строка с названиями продуктов.');
+            }
+
+            function cleanText(string $value): string
+            {
+                // Заменяем последовательность пробельных символов на один пробел
+                $value = preg_replace('/\s+/u', ' ', $value);
+
+                return trim($value);
+            }
+
+            // Колонки 3+ содержат данные по продуктам
+            for ($column = 3; $column < count($data[4]); $column++) {
+
+                $productName = trim($data[4][$column] ?? '');
+
+                // Если название продукта пустое — такой столбец пропускаем
+                if ($productName === '') {
+                    continue;
+                }
+
+                $product = [];
+
+                foreach ($fields as $row => $fieldName) {
+                    $product[$fieldName] = cleanText($data[$row][$column] ?? '');
+                }
+
+                $products[] = $product;
+            }
+
+        } catch (Exception $e) {
+            die('Ошибка парсинга файла: ' . $e->getMessage());
+        }
+
+        $companyInfo = [];
+        $newDealData = [];
+        $companyId = 0;
+        $material_id = 0;
+        $existMaterial = false;
+        $type = "ИЦ";
+        $inn = '4401116480';
+        $companyName = '';
+        $checkCompany = $company->getCompanyIdByInn(trim($inn));
+        if (empty($checkCompany)) {
+
+            $companyInfo = $company->getCompanyByInn(trim($inn));
+            try {
+                $companyId = $company->add($companyInfo['name']);
+
+                $companyName =  $companyInfo['name_short'];
+                $dataBank = [
+                    'ENTITY_ID' => $companyId,
+                    'ENTITY_TYPE_ID' => CCrmOwnerType::Company,
+                    'PRESET_ID' => $companyId,
+                    'NAME' => $companyInfo['name_short'],
+                    'SORT' => 500,
+                    'ACTIVE' => 'Y',
+                    'RQ_INN' => $companyInfo['inn'],
+                    'RQ_ACCOUNTANT' => $companyInfo['adress'],
+                    'RQ_OGRN' => $companyInfo['ogrn'],
+                    'RQ_COMPANY_FULL_NAME' => $_POST['name'],
+                    'RQ_DIRECTOR' => $_POST['official_name'],
+                ];
+                $requisiteResult = $company->setRequisiteByCompanyId($companyId, $dataBank);
+            } catch (Exception $e) {
+                http_response_code($e->getCode() ?: 500);
+                echo json_encode([
+                    'status' => 'error',
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        } else {
+            $companyInfo = $company->getRequisiteByCompanyId($checkCompany);
+            $companyName =  $companyInfo['name_short'];
+        }
+
+        $newDealData = [
+            'company_id' => $companyInfo['PRESET_ID'],
+            'type' => "SALE",
+            'type_rus' => $type,
+            'assigned' => '61',
+            'arrAssigned' => [],
+        ];
+
+        foreach ($products as $product) {
+            $responseMaterialName = $this->normalize($product['name_product']);
+
+            $materialsList = $material->getList();
+
+            $existMaterial = false;
+            $material_id = null;
+
+            $normalizedResponseName = $this->normalize($responseMaterialName);
+            foreach ($materialsList as $materialItem) {
+                if (!isset($materialItem['NAME'])) {
+                    continue;
+                }
+
+                $normalizedDbName = $this->normalize($materialItem['NAME']);
+                if ($normalizedResponseName === $normalizedDbName) {
+                    $material_id = $materialItem['ID'];
+                    $existMaterial = true;
+                    break;
+                }
+            }
+
+            if (!$existMaterial) {
+                try {
+                    $material_id = $material->add($responseMaterialName);
+                } catch (Exception $e) {
+                    http_response_code($e->getCode() ?: 500);
+                    echo json_encode([
+                        'status' => 'error',
+                        'code' => $e->getCode() ?: 500,
+                        'message' => $e->getMessage(),
+                    ]);
+                    exit;
+                }
+            }
+        }
+
+
+
+        try {
+            $regx = "/№(\d+)/";
+            $dealId = $request->create($newDealData);
+//            $import->updateDealResponse($dealId, $responseFile['id']);
+            $newDeal = $request->getDealById($dealId);
+            preg_match($regx, $newDeal['TITLE'], $match);
+            $number = $match[1] ?? 1;
+            $dataTz = [
+                'COMPANY_TITLE' => '"' . htmlspecialchars($companyInfo['name']) . '"',
+                'COMPANY_ID' => $companyId,
+                'TYPE_ID' => "'SALE'",
+                'CHECK_IP' => '0',
+                'order_type' => '1',
+                'REQUEST_TITLE' => "'{$newDeal['TITLE']}'",
+                'request_number' => $number,
+                'MATERIAL' => "'{$responseMaterialName}'",
+                'STAGE_ID' => "'NEW'"
+            ];
+            $resultAddTz = $request->addTz($dealId, $dataTz);
+//            $import->updateStatusResponse('checked', $responseFile['id']);
+        } catch (Exception $e) {
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                'status' => 'error',
+                'code' => $e->getCode() ?: 500,
+                'message' => $e->getMessage(),
+            ]);
+            exit;
+        }
+
+        echo '<pre>';
+        print_r($companyInfo);
+
+        echo '<pre>';
+        print_r($products);
+        die;
+
+        global $APPLICATION;
+
+        $APPLICATION->RestartBuffer();
+
+        /** @var Import $importModel */
+        $importModel = $this->model('Import');
+    }
+
+
+    public function normalize($str)
+    {
+        $str = trim($str);                    // Удаляем пробелы по краям
+        $str = preg_replace('/\s+/', ' ', $str); // Сжимаем пробелы
+        $str = rtrim($str, ')' . "\n\r\t\v\0"); // Удаляем скобки и пробелы в конце
+        return $str;
+    }
+
+
 }
