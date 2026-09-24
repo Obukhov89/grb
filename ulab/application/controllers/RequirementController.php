@@ -498,7 +498,7 @@ class RequirementController extends Controller
 
         $this->data['group_type'] = $tzData['group_type'];
 
-        $this->data['dop_info_tz'] = $requirementModel->getDopInfoByTzId($tzId);
+//        $this->data['dop_info_tz'] = $requirementModel->getDopInfoByTzId($tzId);
 
         //// заполнение селектов
         // Объект строительства

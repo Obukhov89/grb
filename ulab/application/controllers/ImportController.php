@@ -2121,6 +2121,7 @@ class ImportController extends Controller
         $material = $this->model('Material');
         $request = $this->model('Request');
         $import = $this->model('Import');
+        $requirement = $this->model('Requirement');
 
         $fields = [
             4 => 'name_product',
@@ -2209,7 +2210,7 @@ class ImportController extends Controller
             try {
                 $companyId = $company->add($companyInfo['name']);
 
-                $companyName =  $companyInfo['name_short'];
+                $companyName = $companyInfo['name_short'];
                 $dataBank = [
                     'ENTITY_ID' => $companyId,
                     'ENTITY_TYPE_ID' => CCrmOwnerType::Company,
@@ -2234,7 +2235,7 @@ class ImportController extends Controller
             }
         } else {
             $companyInfo = $company->getRequisiteByCompanyId($checkCompany);
-            $companyName =  $companyInfo['name_short'];
+            $companyName = $companyInfo['name_short'];
         }
 
         $newDealData = [
@@ -2245,6 +2246,7 @@ class ImportController extends Controller
             'arrAssigned' => [],
         ];
 
+        $idsMaterials = [];
         foreach ($products as $product) {
             $responseMaterialName = $this->normalize($product['name_product']);
 
@@ -2262,6 +2264,7 @@ class ImportController extends Controller
                 $normalizedDbName = $this->normalize($materialItem['NAME']);
                 if ($normalizedResponseName === $normalizedDbName) {
                     $material_id = $materialItem['ID'];
+                    $idsMaterials [] = $material_id;
                     $existMaterial = true;
                     break;
                 }
@@ -2270,6 +2273,7 @@ class ImportController extends Controller
             if (!$existMaterial) {
                 try {
                     $material_id = $material->add($responseMaterialName);
+                    $idsMaterials [] = $material_id;
                 } catch (Exception $e) {
                     http_response_code($e->getCode() ?: 500);
                     echo json_encode([
@@ -2282,13 +2286,13 @@ class ImportController extends Controller
             }
         }
 
-
+        $dealId = $request->create($newDealData);
+        $newDeal = $request->getDealById($dealId);
+        $resultAddTz = '';
 
         try {
             $regx = "/№(\d+)/";
-            $dealId = $request->create($newDealData);
-//            $import->updateDealResponse($dealId, $responseFile['id']);
-            $newDeal = $request->getDealById($dealId);
+
             preg_match($regx, $newDeal['TITLE'], $match);
             $number = $match[1] ?? 1;
             $dataTz = [
@@ -2299,7 +2303,6 @@ class ImportController extends Controller
                 'order_type' => '1',
                 'REQUEST_TITLE' => "'{$newDeal['TITLE']}'",
                 'request_number' => $number,
-                'MATERIAL' => "'{$responseMaterialName}'",
                 'STAGE_ID' => "'NEW'"
             ];
             $resultAddTz = $request->addTz($dealId, $dataTz);
@@ -2314,8 +2317,10 @@ class ImportController extends Controller
             exit;
         }
 
-        echo '<pre>';
-        print_r($companyInfo);
+        $counter = 1;
+        foreach ($idsMaterials as $product) {
+            $requirement->addMaterialToTz($dealId, $product, $counter);
+        }
 
         echo '<pre>';
         print_r($products);

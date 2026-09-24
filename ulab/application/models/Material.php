@@ -811,7 +811,7 @@ class Material extends Model
             return $sql['ID'];
         }
 
-        $sqlData = $this->prepearTableData('MATERIALS', ['NAME' => $name]);
+        $sqlData = $this->prepearTableData('MATERIALS', ['NAME' => $name, 'is_active' => 1]);
 
         return $this->DB->Insert('MATERIALS', $sqlData);
     }
