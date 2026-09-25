@@ -2122,6 +2122,7 @@ class ImportController extends Controller
         $request = $this->model('Request');
         $import = $this->model('Import');
         $requirement = $this->model('Requirement');
+        $probe = $this->model('Probe');
 
         $fields = [
             4 => 'name_product',
@@ -2195,6 +2196,9 @@ class ImportController extends Controller
             die('Ошибка парсинга файла: ' . $e->getMessage());
         }
 
+//        echo '<pre>';
+//        print_r($products);
+//        die;
         $companyInfo = [];
         $newDealData = [];
         $companyId = 0;
@@ -2246,9 +2250,11 @@ class ImportController extends Controller
             'arrAssigned' => [],
         ];
 
-        $idsMaterials = [];
-        foreach ($products as $product) {
+        $materialNames = '';
+
+        foreach ($products as &$product) {
             $responseMaterialName = $this->normalize($product['name_product']);
+            $materialNames .= $responseMaterialName . '; ';
 
             $materialsList = $material->getList();
 
@@ -2264,7 +2270,6 @@ class ImportController extends Controller
                 $normalizedDbName = $this->normalize($materialItem['NAME']);
                 if ($normalizedResponseName === $normalizedDbName) {
                     $material_id = $materialItem['ID'];
-                    $idsMaterials [] = $material_id;
                     $existMaterial = true;
                     break;
                 }
@@ -2273,7 +2278,6 @@ class ImportController extends Controller
             if (!$existMaterial) {
                 try {
                     $material_id = $material->add($responseMaterialName);
-                    $idsMaterials [] = $material_id;
                 } catch (Exception $e) {
                     http_response_code($e->getCode() ?: 500);
                     echo json_encode([
@@ -2284,7 +2288,9 @@ class ImportController extends Controller
                     exit;
                 }
             }
+            $product['material_id'] = $material_id;
         }
+        unset($product);
 
         $dealId = $request->create($newDealData);
         $newDeal = $request->getDealById($dealId);
@@ -2302,6 +2308,7 @@ class ImportController extends Controller
                 'CHECK_IP' => '0',
                 'order_type' => '1',
                 'REQUEST_TITLE' => "'{$newDeal['TITLE']}'",
+                'MATERIAL' => "'{$materialNames}'",
                 'request_number' => $number,
                 'STAGE_ID' => "'NEW'"
             ];
@@ -2317,13 +2324,34 @@ class ImportController extends Controller
             exit;
         }
 
+
         $counter = 1;
-        foreach ($idsMaterials as $product) {
-            $requirement->addMaterialToTz($dealId, $product, $counter);
+
+        foreach ($products as &$product) {
+            $ugtp_id = $requirement->addMaterialToTz($dealId, $product['material_id'], $counter);
+            $product['ugtp_id'] = $ugtp_id;
         }
+        unset($product);
+
+        $probes = $probe->getProbeByDealId($dealId);
+        $newActNum = $probe->getNewActNumber();
+        $selectionType = '1';
+        $actDAte = date('Y-m-d');
+
+        $actData =  [
+            'ACT_DATE' => $actDAte,
+            'ACT_NUM' => $newActNum,
+            'ID_Z' => $dealId,
+            'ID_TZ' => $resultAddTz,
+            'deliveryman' => '',
+            'act_type' => 1,
+            'creater' => $_SESSION['SESS_AUTH']['USER_ID']
+        ];
+
+        $probe->setProbesFromFiles($actData, $products);
 
         echo '<pre>';
-        print_r($products);
+        print_r($probes);
         die;
 
         global $APPLICATION;

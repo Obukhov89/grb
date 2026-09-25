@@ -39,7 +39,7 @@ class Probe extends Model
 
         while ($row = $sql->Fetch()) {
             $user = $userModel->getUserData($row['user_id']);
-            $row['short_name'] =  $user['short_name'];
+            $row['short_name'] = $user['short_name'];
             $row['date'] = date('d.m.Y H:i:s', strtotime($row['date']));
 
             $result[] = $row;
@@ -218,7 +218,9 @@ class Probe extends Model
             foreach ($labs as $lab) {
                 $user = $userModel->checkHeader($labModel->getDepartmentIdByLabId($lab));
 
-                if ( empty($user) || in_array($lab, [5, 6]) ) { continue; }
+                if (empty($user) || in_array($lab, [5, 6])) {
+                    continue;
+                }
 
                 $heads[$lab] = $user;
             }
@@ -291,7 +293,7 @@ class Probe extends Model
     {
         $row = $this->DB->Query("select accept_probe from probe_to_lab where umtr_id = {$umtrId} and user_id = {$userId}")->Fetch();
 
-        if ( isset($row['accept_probe']) ) {
+        if (isset($row['accept_probe'])) {
             return $row['accept_probe'];
         } else {
             return -1;
@@ -299,37 +301,38 @@ class Probe extends Model
     }
 
 
-	public function getCipherByMtrID($mtrID) {
+    public function getCipherByMtrID($mtrID)
+    {
 
-		$result = [];
+        $result = [];
 
-		$res = $this->DB->Query("SELECT ptm.`cipher`, ptm.`id`
+        $res = $this->DB->Query("SELECT ptm.`cipher`, ptm.`id`
 										FROM `MATERIALS_TO_REQUESTS` mtr, `probe_to_materials` ptm
 										WHERE ptm.`material_request_id` = mtr.`ID` AND mtr.`ID`= {$mtrID}
 										");
 
-		while ($row = $res->Fetch()) {
+        while ($row = $res->Fetch()) {
 
-			$rowArr = [
-				'cipher' => $row['cipher'],
-				'id' => $row['id']
-			];
+            $rowArr = [
+                'cipher' => $row['cipher'],
+                'id' => $row['id']
+            ];
 
 //			$result[] = $row['cipher'];
-			$result[] = $rowArr;
+            $result[] = $rowArr;
 
-		}
+        }
 
-		return $result;
+        return $result;
 
-	}
+    }
 
 
     /**
      * @param $umtrId
      * @return mixed
      */
-	public function getDealIdByProbe($umtrId)
+    public function getDealIdByProbe($umtrId)
     {
         $dealId = $this->DB->Query("select deal_id from ulab_material_to_request where id = {$umtrId}")->Fetch();
 
@@ -340,10 +343,10 @@ class Probe extends Model
      * @param $umtrId
      * @return mixed
      */
-	public function getActIdByProbeAndDeal($umtrId, $dealId)
+    public function getActIdByProbeAndDeal($umtrId, $dealId)
     {
         $act = $this->DB->Query(
-        "
+            "
             SELECT ab.ID
             FROM ACT_BASE ab
             INNER JOIN ulab_material_to_request umtr ON umtr.id = '{$umtrId}'
@@ -354,81 +357,81 @@ class Probe extends Model
     }
 
 
-	public function getProbeByDealId($dealId) : array
-	{
-		$methodModel = new Methods();
-		$userModel = new User();
-		$result = [];
-		$gosts = [];
-		$tester = [];
+    public function getProbeByDealId($dealId): array
+    {
+        $methodModel = new Methods();
+        $userModel = new User();
+        $result = [];
+        $gosts = [];
+        $tester = [];
 
-		$res = $this->DB->Query("SELECT *, umtr.id as umtr_id 
+        $res = $this->DB->Query("SELECT *, umtr.id as umtr_id 
 										from ulab_material_to_request as umtr
 										left join ulab_gost_to_probe as ugtp ON ugtp.material_to_request_id = umtr.id
 										left join MATERIALS m on umtr.material_id = m.ID
 								WHERE umtr.deal_id = {$dealId} order by umtr.probe_number, ugtp.gost_number");
 
-		while ($row = $res->Fetch()) {
+        while ($row = $res->Fetch()) {
 
-			$method = $methodModel->get($row['method_id']);
-			if (!empty($row['assigned_id'])) {
-				$test = $userModel->getUserShortById($row['assigned_id']);
-			}
+            $method = $methodModel->get($row['method_id']);
+            if (!empty($row['assigned_id'])) {
+                $test = $userModel->getUserShortById($row['assigned_id']);
+            }
 
-			$gosts[$row['umtr_id']][] = $method['view_gost'];
-			$tester[$row['umtr_id']][] = $test['short_name'];
+            $gosts[$row['umtr_id']][] = $method['view_gost'];
+            $tester[$row['umtr_id']][] = $test['short_name'];
 
-			$result[$row['umtr_id']] = [
-				'cipher' => !empty($row['cipher']) ? $row['cipher'] : 'Не присвоен шифр',
-				'material' => $row['NAME'],
-				'gost' => $gosts[$row['umtr_id']],
-				'tester' => $tester[$row['umtr_id']],
+            $result[$row['umtr_id']] = [
+                'cipher' => !empty($row['cipher']) ? $row['cipher'] : 'Не присвоен шифр',
+                'material' => $row['NAME'],
+                'gost' => $gosts[$row['umtr_id']],
+                'tester' => $tester[$row['umtr_id']],
                 'irrevocable' => $row['irrevocable'],
                 'date_probe' => !empty($probe['date_probe']) ? date('d.m.Y', strtotime($probe['date_probe'])) : ''
-			];
+            ];
 
-		}
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
 
     /**
      * Создает или обновляет Акт приемки проб
      * @param $data
      */
-	public function insertUpdateActProbe($data)
+    public function insertUpdateActProbe($data)
     {
         $historyModel = new History();
         $userModel = new User();
         $requestModel = new Request();
-		$probeModel = new Probe();
+        $probeModel = new Probe();
 
 //        $requestData = $requestModel->getDealById($data['deal_id']);
 
         $curYear = date("Y");
 
-        $actData =  [
+        $actData = [
             'ACT_DATE' => $data['actDate'],
             'ID_Z' => $data['deal_id'],
-			'ID_TZ' => $data['tz_id'],
-			'PLACE_PROBE' => $data['samplePlace'],
-			'DATE_PROBE' => $data['sampleDate'],
-			'PROBE_PROIZV' => $data['sampleMaker'],
-			'deliveryman' => $data['deliveryman'],
-			'act_type' => $data['actType'],
-			'SELECTION_TYPE' => isset($data['exampleCheck1'])? 1 : 0,
+            'ID_TZ' => $data['tz_id'],
+            'PLACE_PROBE' => $data['samplePlace'],
+            'DATE_PROBE' => $data['sampleDate'],
+            'PROBE_PROIZV' => $data['sampleMaker'],
+            'deliveryman' => $data['deliveryman'],
+            'act_type' => $data['actType'],
+            'SELECTION_TYPE' => isset($data['exampleCheck1']) ? 1 : 0,
         ];
 
         $requestData = [
-            'SELECTION_TYPE' => isset($data['exampleCheck1'])? 1 : 0,
+            'SELECTION_TYPE' => isset($data['exampleCheck1']) ? 1 : 0,
             'DESCRIPTION' => $data['description'],
             'QUARRY_ID' => $data['quarry'],
             'DATE_ACT' => $data['actDate'],
             'PROBE_IN_LAB' => 1,
         ];
 
-        if ( !empty($data['act_id']) ) { // обновление
+        if (!empty($data['act_id'])) { // обновление
             $historyType = "Обновление АКТа приемки проб";
             $sqlData = $this->prepearTableData('ACT_BASE', $actData);
             $this->DB->Update('ACT_BASE', $sqlData, "where ID = {$data['act_id']}");
@@ -540,119 +543,120 @@ class Probe extends Model
         $historyModel->addHistory($history);
     }
 
-	/**
-	 * Создает или обновляет Акт приемки проб
-	 * @param $data
-	 */
-	public function insertUpdateActProbeNew($data)
-	{
-		$historyModel = new History();
-		$userModel = new User();
-		$requestModel = new Request();
-		$requirementModel = new Requirement();
+    /**
+     * Создает или обновляет Акт приемки проб
+     * @param $data
+     */
+    public function insertUpdateActProbeNew($data)
+    {
+        $historyModel = new History();
+        $userModel = new User();
+        $requestModel = new Request();
+        $requirementModel = new Requirement();
 
-		$tzId = $requirementModel->getTzIdByDealId((int)$data['deal_id']);
+        $tzId = $requirementModel->getTzIdByDealId((int)$data['deal_id']);
 //        $probe = $requirementModel->getProbeFromTzWithoutAct($data['deal_id']);
 
         $probes = $data['probe']['umtr_id'];
 
-		$curYear = date("Y");
-		$curYearCipher = date("y");
+        $curYear = date("Y");
+        $curYearCipher = date("y");
 
         //$data['ACT_NUM'] = $this->getNewActNumber();
-		$actData =  [
-			'ACT_DATE' => $data['ACT_DATE'],
-			'ACT_NUM' => $data['ACT_NUM'],
+        $actData = [
+            'ACT_DATE' => $data['ACT_DATE'],
+            'ACT_NUM' => $data['ACT_NUM'],
 //			'ACT_NUM' => $number,
-			'ID_Z' => $data['deal_id'],
-			'ID_TZ' => $tzId,
-			'deliveryman' => $data['deliveryman'],
-			'act_type' => 1,
-			'creater' => $_SESSION['SESS_AUTH']['USER_ID']
-		];
+            'ID_Z' => $data['deal_id'],
+            'ID_TZ' => $tzId,
+            'deliveryman' => $data['deliveryman'],
+            'act_type' => 1,
+            'creater' => $_SESSION['SESS_AUTH']['USER_ID']
+        ];
 
-		if ( !empty($data['act_id']) ) { // обновление
-			$historyType = "Обновление АКТа приемки проб";
-			$sqlData = $this->prepearTableData('ACT_BASE', $actData);
-			$this->DB->Update('ACT_BASE', $sqlData, "where ID = {$data['act_id']}");
-		} else { // добавление
-			$historyType = "Формирование АКТа приемки проб";
+        if (!empty($data['act_id'])) { // обновление
+            $historyType = "Обновление АКТа приемки проб";
+            $sqlData = $this->prepearTableData('ACT_BASE', $actData);
+            $this->DB->Update('ACT_BASE', $sqlData, "where ID = {$data['act_id']}");
+        } else { // добавление
+            $historyType = "Формирование АКТа приемки проб";
 
-			$sqlData = $this->prepearTableData('ACT_BASE', $actData);
-			$this->DB->Insert('ACT_BASE', $sqlData);
+            $sqlData = $this->prepearTableData('ACT_BASE', $actData);
+            $this->DB->Insert('ACT_BASE', $sqlData);
 
-			$requestData['ACT_NUM'] = $data['ACT_NUM'];
-			$requestData['DATE_ACT'] = $data['ACT_DATE'];
-			$requestData['NUM_ACT_TABLE'] = $data['ACT_NUM'] . "/$curYear";
-			$requestData['PROBE_IN_LAB'] = 1;
-			$requestData['SELECTION_TYPE'] = $data['SELECTION_TYPE'];
-		}
+            $requestData['ACT_NUM'] = $data['ACT_NUM'];
+            $requestData['DATE_ACT'] = $data['ACT_DATE'];
+            $requestData['NUM_ACT_TABLE'] = $data['ACT_NUM'] . "/$curYear";
+            $requestData['PROBE_IN_LAB'] = 1;
+            $requestData['SELECTION_TYPE'] = $data['SELECTION_TYPE'];
+        }
 
-		$requestSqlData = $this->prepearTableData('ba_tz', $requestData);
-		$requestModel->updateTz($data['deal_id'], $requestSqlData);
+        $requestSqlData = $this->prepearTableData('ba_tz', $requestData);
+        $requestModel->updateTz($data['deal_id'], $requestSqlData);
 
-		$i = 1;
-		foreach ($probes as $val) {
+        $i = 1;
+        foreach ($probes as $val) {
 
             $currentVal = [];
 
-			$currentVal['cipher'] = $data['ACT_NUM'] . '.' . $i . "/$curYearCipher";
-			$currentVal['in_act'] = 1;
-			if ( !empty($data['place_all']) ) {
+            $currentVal['cipher'] = $data['ACT_NUM'] . '.' . $i . "/$curYearCipher";
+            $currentVal['in_act'] = 1;
+            if (!empty($data['place_all'])) {
                 $currentVal['place'] = $data['place_all'];
             }
-            if ( !empty($data['date_all']) && $data['date_all'] !== '0000-00-00' ) {
+            if (!empty($data['date_all']) && $data['date_all'] !== '0000-00-00') {
                 $currentVal['date_probe'] = $data['date_all'];
             }
-            if ( !empty($data['quarry_all']) ) {
+            if (!empty($data['quarry_all'])) {
                 $currentVal['quarry_id'] = $data['quarry_all'];
             }
 
-			$this->setLabHeaderByUmtrId($val);
+            $this->setLabHeaderByUmtrId($val);
 
-			$umtrSqlData = $this->prepearTableData('ulab_material_to_request', $currentVal);
+            $umtrSqlData = $this->prepearTableData('ulab_material_to_request', $currentVal);
 
-			$this->DB->Update('ulab_material_to_request', $umtrSqlData, "where id = {$val} AND in_act <> 1");
-			$i++;
+            $this->DB->Update('ulab_material_to_request', $umtrSqlData, "where id = {$val} AND in_act <> 1");
+            $i++;
 
-			$this->addHistory($val, "Пробу принял");
-		}
+            $this->addHistory($val, "Пробу принял");
+        }
 
 
-		$date = date('Y-m-d h:i:s');
-		$currentUser = $userModel->getCurrentUser();
-		$history = [
-			'DATE' => $date,
-			'ASSIGNED' => $currentUser['NAME'] . ' ' . $currentUser['LAST_NAME'],
-			'TZ_ID' => $data['tz_id'],
-			'USER_ID' => $currentUser['ID'],
-			'TYPE' => $historyType,
-			'REQUEST' => $requestData['TITLE'],
-		];
-		$historyModel->addHistory($history);
-	}
+        $date = date('Y-m-d h:i:s');
+        $currentUser = $userModel->getCurrentUser();
+        $history = [
+            'DATE' => $date,
+            'ASSIGNED' => $currentUser['NAME'] . ' ' . $currentUser['LAST_NAME'],
+            'TZ_ID' => $data['tz_id'],
+            'USER_ID' => $currentUser['ID'],
+            'TYPE' => $historyType,
+            'REQUEST' => $requestData['TITLE'],
+        ];
+        $historyModel->addHistory($history);
+    }
 
-    public function getNewActNumber() {
+    public function getNewActNumber()
+    {
 
-		$curYear = date("Y");
+        $curYear = date("Y");
 
-		$maxNumAct = $this->DB->Query(
-			"select max(CONVERT(ACT_NUM, UNSIGNED INTEGER )) as max 
+        $maxNumAct = $this->DB->Query(
+            "select max(CONVERT(ACT_NUM, UNSIGNED INTEGER )) as max 
                 FROM `ACT_BASE` 
                 WHERE `act_type` = 1 AND `ACT_DATE` > '{$curYear}-01-01'"
-		)->Fetch();
+        )->Fetch();
 
-		$num = $maxNumAct['max'] + 1;
+        $num = $maxNumAct['max'] + 1;
 
-		return $num;
-	}
+        return $num;
+    }
 
 
     /**
      * @param $umtrId
      * @return array
      */
-	public function getProbeLab($umtrId)
+    public function getProbeLab($umtrId)
     {
         $sql = $this->DB->Query("select * from `probe_to_lab`  WHERE `umtr_id` = {$umtrId}");
 
@@ -665,93 +669,95 @@ class Probe extends Model
     }
 
 
-	/**
-	 * @param $idReq
-	 */
-	public function acceptProbe($idReq)
-	{
+    /**
+     * @param $idReq
+     */
+    public function acceptProbe($idReq)
+    {
         $currentDate = date('Y-m-d H:i:s');
-		$this->DB->Query("UPDATE `probe_to_lab` SET `accept_probe` = 1, accept_date = '{$currentDate}' WHERE `id` = {$idReq}");
+        $this->DB->Query("UPDATE `probe_to_lab` SET `accept_probe` = 1, accept_date = '{$currentDate}' WHERE `id` = {$idReq}");
         $sql = $this->DB->Query("select * from `probe_to_lab`  WHERE `id` = {$idReq}")->Fetch();
         $id = $sql['umtr_id'];
         $this->addHistory($id, "Проба принята руководителем лаборатории на испытания");
-	}
+    }
 
-	/**
-	 * @param $idReq
-	 */
-	public function removeAcceptProbe($idReq)
-	{
-		$this->DB->Query("UPDATE `probe_to_lab` SET `accept_probe` = 0 WHERE `id` = {$idReq}");
-	}
+    /**
+     * @param $idReq
+     */
+    public function removeAcceptProbe($idReq)
+    {
+        $this->DB->Query("UPDATE `probe_to_lab` SET `accept_probe` = 0 WHERE `id` = {$idReq}");
+    }
 
-	public function setLabHeaderByUmtrId($umtr_id)
-	{
-		$sql = $this->DB->Query("select * 
+    public function setLabHeaderByUmtrId($umtr_id)
+    {
+        $sql = $this->DB->Query("select * 
 							from ulab_material_to_request as umtr
 							join ulab_gost_to_probe as ugtp on umtr.id = material_to_request_id 
 							where umtr.id = {$umtr_id}");
 
-		$methodModel = new Methods();
-		$labModel = new Lab();
-		$userModel = new User();
+        $methodModel = new Methods();
+        $labModel = new Lab();
+        $userModel = new User();
 
-		$users = [];
-		$labList = [];
+        $users = [];
+        $labList = [];
 
-		while ($row = $sql->Fetch()) {
-			$labs = $methodModel->getLab($row['method_id']);
-			foreach ($labs as $lab) {
-				$depId = $labModel->getDepartmentIdByLabId($lab);
-				$labList[$lab] = $depId;
-				$user = $userModel->checkHeader($depId);
-				if ( empty($user) || in_array($lab, [5, 6]) ) { continue; }
+        while ($row = $sql->Fetch()) {
+            $labs = $methodModel->getLab($row['method_id']);
+            foreach ($labs as $lab) {
+                $depId = $labModel->getDepartmentIdByLabId($lab);
+                $labList[$lab] = $depId;
+                $user = $userModel->checkHeader($depId);
+                if (empty($user) || in_array($lab, [5, 6])) {
+                    continue;
+                }
 
-				$userArr[$user['user_id']] = $user['user_id'];
-			}
+                $userArr[$user['user_id']] = $user['user_id'];
+            }
 
-		}
+        }
 
-		$headerArr = $this->checkLabHeaderByUmtrId($umtr_id);
+        $headerArr = $this->checkLabHeaderByUmtrId($umtr_id);
 
-		if (!empty($headerArr)) {
-			$newHeader = array_diff($headerArr, $userArr);
+        if (!empty($headerArr)) {
+            $newHeader = array_diff($headerArr, $userArr);
 
-			foreach ($newHeader as $userId) {
+            foreach ($newHeader as $userId) {
 
-				$data = ['umtr_id' => $umtr_id,
-					'user_id' => $userId];
+                $data = ['umtr_id' => $umtr_id,
+                    'user_id' => $userId];
 
-				$this->DB->Insert('probe_to_lab', $data);
-			}
-		} else {
-			foreach ($userArr as $userId) {
+                $this->DB->Insert('probe_to_lab', $data);
+            }
+        } else {
+            foreach ($userArr as $userId) {
 
-				$data = ['umtr_id' => $umtr_id,
-					'user_id' => $userId];
+                $data = ['umtr_id' => $umtr_id,
+                    'user_id' => $userId];
 
-				$this->DB->Insert('probe_to_lab', $data);
-			}
-		}
+                $this->DB->Insert('probe_to_lab', $data);
+            }
+        }
 
-	}
+    }
 
-	public function checkLabHeaderByUmtrId($umtr_id)
-	{
-		$sql = $this->DB->Query("select * 
+    public function checkLabHeaderByUmtrId($umtr_id)
+    {
+        $sql = $this->DB->Query("select * 
 							from probe_to_lab as ptl 
 							where umtr_id = {$umtr_id}");
 
-		$users = [];
+        $users = [];
 
-		while ($row = $sql->Fetch()) {
-			$users[] = $row['user_id'];
-		}
+        while ($row = $sql->Fetch()) {
+            $users[] = $row['user_id'];
+        }
 
-		return $users;
-	}
+        return $users;
+    }
 
-	public function setSelectionType($id, $prop)
+    public function setSelectionType($id, $prop)
     {
 
         $st = 'NULL';
@@ -773,28 +779,28 @@ class Probe extends Model
             'by' => 'id',
             'dir' => 'DESC'
         ];
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
-                if ( isset($filter['search']['deal_id']) ) {
+            if (!empty($filter['search'])) {
+                if (isset($filter['search']['deal_id'])) {
                     $where .= "umtr.deal_id = {$filter['search']['deal_id']} and ";
                 }
-                if ( isset($filter['search']['material_id']) ) {
+                if (isset($filter['search']['material_id'])) {
                     $where .= "umtr.material_id = {$filter['search']['material_id']} and ";
                 }
-                if ( isset($filter['search']['probe_id']) ) {
+                if (isset($filter['search']['probe_id'])) {
                     $where .= "umtr.id = {$filter['search']['probe_id']} and ";
                 }
             }
 
             // работа с сортировкой
-            if ( !empty($filter['order']) ) {
-                if ( $filter['order']['dir'] === 'asc' ) {
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
                     $order['dir'] = 'ASC';
                 }
 
@@ -810,12 +816,12 @@ class Probe extends Model
 
             // работа с пагинацией
             $offset = 0;
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -866,7 +872,7 @@ class Probe extends Model
         while ($row = $data->Fetch()) {
             $row['n'] = ++$i;
 
-            if ( $row['date_probe'] == '0000-00-00' ) {
+            if ($row['date_probe'] == '0000-00-00') {
                 $row['date_probe'] = '';
             }
 
@@ -893,14 +899,14 @@ class Probe extends Model
             'by' => 'id',
             'dir' => 'DESC'
         ];
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
+            if (!empty($filter['search'])) {
                 if (isset($filter['search']['cipher'])) {
                     $input = trim((string)$filter['search']['cipher']);
 
@@ -911,15 +917,15 @@ class Probe extends Model
                         $rangeClauses = [];
 
                         // парсим "277.1" или "277.1/26"
-                        $parse = function(string $s) {
+                        $parse = function (string $s) {
                             $s = trim($s);
                             if (preg_match('~^(\d+)\.(\d+)(?:/26)?$~', $s, $m)) {
-                                $num   = (int)$m[1];  // 277
+                                $num = (int)$m[1];  // 277
                                 $party = (int)$m[2];  // 1,2,3...
                                 return [
-                                    'num'   => $num,
+                                    'num' => $num,
                                     'party' => $party,
-                                    'cipher'=> $num . '.' . $party . '/26',
+                                    'cipher' => $num . '.' . $party . '/26',
                                 ];
                             }
                             return null;
@@ -929,7 +935,7 @@ class Probe extends Model
                             // диапазон "a-b"
                             if (preg_match('/^(.+?)\s*-\s*(.+)$/u', $p, $m)) {
                                 $from = $parse($m[1]);
-                                $to   = $parse($m[2]);
+                                $to = $parse($m[2]);
 
                                 if ($from && $to) {
                                     // если номер одинаковый (как в вашем примере 277.1-277.11)
@@ -937,7 +943,9 @@ class Probe extends Model
                                         $num = $from['num'];
                                         $a = $from['party'];
                                         $b = $to['party'];
-                                        if ($a > $b) { [$a, $b] = [$b, $a]; }
+                                        if ($a > $b) {
+                                            [$a, $b] = [$b, $a];
+                                        }
 
                                         $rangeClauses[] =
                                             "(SUBSTRING_INDEX(umtr.cipher,'.',1) = '$num'
@@ -974,17 +982,17 @@ class Probe extends Model
                         }
                     }
                 }
-                if ( isset($filter['search']['mg_name']) ) {
+                if (isset($filter['search']['mg_name'])) {
                     $where .= "mg.name LIKE '%{$filter['search']['mg_name']}%' and ";
                 }
-                if ( isset($filter['search']['name_for_protocol']) ) {
+                if (isset($filter['search']['name_for_protocol'])) {
                     $where .= "umtr.name_for_protocol LIKE '%{$filter['search']['name_for_protocol']}%' and ";
                 }
             }
 
             // работа с сортировкой
-            if ( !empty($filter['order']) ) {
-                if ( $filter['order']['dir'] === 'asc' ) {
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
                     $order['dir'] = 'ASC';
                 }
 
@@ -1000,12 +1008,12 @@ class Probe extends Model
 
             // работа с пагинацией
             $offset = 0;
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -1059,14 +1067,14 @@ class Probe extends Model
         while ($row = $data->Fetch()) {
             $row['n'] = ++$i;
 
-            if ( $row['date_probe'] == '0000-00-00' ) {
+            if ($row['date_probe'] == '0000-00-00') {
                 $row['date_probe'] = '';
             }
             $labs = $materialModel->getLabsForProbeWithCheckTz($row['id']);
             $labsArray = [];
 
             foreach ($labs as $value) {
-                $labsArray []= $value['short_name'];
+                $labsArray [] = $value['short_name'];
             }
 
             $currentProbeState = 'МФЦ';
@@ -1079,7 +1087,7 @@ class Probe extends Model
             $currUser = $user->getCurrentUser();
             $count = $row['probe_number'] + 1;
             $result[$row['material_id']]['probe'][$row['id']]['material_name'] = $row['material_name'];
-            $result[$row['material_id']]['probe'][$row['id']]['cipher'] = empty($row['cipher'])? 'Не присвоен шифр #'.$count : $row['cipher'];
+            $result[$row['material_id']]['probe'][$row['id']]['cipher'] = empty($row['cipher']) ? 'Не присвоен шифр #' . $count : $row['cipher'];
             $result[$row['material_id']]['probe'][$row['id']]['probe_number'] = $row['probe_number'];
             $result[$row['material_id']]['probe'][$row['id']]['name_for_protocol'] = htmlentities($row['name_for_protocol']);
             $result[$row['material_id']]['probe'][$row['id']]['group'] = $row['group'];
@@ -1101,12 +1109,12 @@ class Probe extends Model
             $acceptStatus = $probe->getAcceptStatus($row['id']);
             $acceptUser = [];
             foreach ($acceptStatus as $status) {
-                if ( $status['accept_probe'] == 1 ) {
+                if ($status['accept_probe'] == 1) {
                     $acceptUser[] = $status['user_info'];
                 }
             }
 
-            if ( !empty($acceptUser) ) {
+            if (!empty($acceptUser)) {
                 $result[$row['material_id']]['probe'][$row['id']]['state'] = "Проба принята: " . implode(', ', array_column($acceptUser, 'short_name'));
             }
         }
@@ -1123,30 +1131,30 @@ class Probe extends Model
      */
     public function updateProbeData($probeId, $data)
     {
-    	$user = new User();
-    	$request = new Request();
-		$requirementModel = new Requirement();
+        $user = new User();
+        $request = new Request();
+        $requirementModel = new Requirement();
 
         $dataSql = $this->prepearTableData('ulab_material_to_request', $data);
         $dealId = $this->getDealIdByProbe($probeId);
 
-		$currentUser = $user->getCurrentUser();
-		$dealName = $request->getDealById($dealId);
-		$tzId = $request->getTzByDealId($dealId)['ID'];
+        $currentUser = $user->getCurrentUser();
+        $dealName = $request->getDealById($dealId);
+        $tzId = $request->getTzByDealId($dealId)['ID'];
         if (!isset($data['irrevocable'])) {
             $this->pre($data);
         }
 
-		$historyData = [
-			'DATE' => date('Y-m-d H:i:s'),
-			'ASSIGNED' => "{$currentUser['NAME']} {$currentUser['LAST_NAME']}",
-			'TZ_ID' => $tzId,
-			'USER_ID' => $currentUser['ID'],
-			'TYPE' => "Изменены данные пробы",
-			'REQUEST' => $dealName['TITLE']
-		];
+        $historyData = [
+            'DATE' => date('Y-m-d H:i:s'),
+            'ASSIGNED' => "{$currentUser['NAME']} {$currentUser['LAST_NAME']}",
+            'TZ_ID' => $tzId,
+            'USER_ID' => $currentUser['ID'],
+            'TYPE' => "Изменены данные пробы",
+            'REQUEST' => $dealName['TITLE']
+        ];
 
-		$requirementModel->saveHistory($historyData);
+        $requirementModel->saveHistory($historyData);
 
         $this->DB->Update('ulab_material_to_request', $dataSql, "where id = {$probeId}");
     }
@@ -1159,5 +1167,42 @@ class Probe extends Model
         $sql = $this->DB->Query("select * from `ba_laba`  WHERE `ID` = {$lab_id}")->Fetch();
         $name = $sql['short_name'];
         $this->addHistory($probeId, "Проба готова к испытаниям " . $name);
+    }
+
+
+    public function setProbesFromFiles($actData, $data = null)
+    {
+        $sqlData = $this->prepearTableData('ACT_BASE', $actData);
+        $this->DB->Insert('ACT_BASE', $sqlData);
+
+        $curYearCipher = date("y");
+
+        $i = 1;
+        foreach ($data as $val) {
+
+            $currentVal = [];
+
+            $currentVal['cipher'] = $actData['ACT_NUM'] . '.' . $i . "/$curYearCipher";
+            $currentVal['in_act'] = 1;
+            $currentVal['place'] = $val['sampling_place'];
+            $value = trim($val['sampling_date']);
+            $date = DateTime::createFromFormat('n/j/Y', $value);
+
+            if ($date === false) {
+                var_dump($value);
+                var_dump(DateTime::getLastErrors());
+                die;
+            }
+            $date = DateTime::createFromFormat('m/d/Y', $value);
+
+            $result = $date->format('Y-m-d');
+            $currentVal['date_probe'] = $result;
+
+            $umtrSqlData = $this->prepearTableData('ulab_material_to_request', $currentVal);
+
+            $this->DB->Update('ulab_material_to_request', $umtrSqlData, "where id = {$val['ugtp_id']} AND in_act <> 1");
+            $i++;
+
+        }
     }
 }

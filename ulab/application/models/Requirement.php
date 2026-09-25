@@ -2813,6 +2813,7 @@ class Requirement extends Model
      */
     public function addMaterialToTz($dealId, $materialId, $number)
     {
+        $ugtp_id = 0;
         $data = [
             'deal_id' => $dealId,
             'material_id' => $materialId,
@@ -2833,8 +2834,10 @@ class Requirement extends Model
         for ($i = 0; $i < $number; $i++) {
             $data['probe_number'] = ++$probeNumber;
 
-            $this->DB->Insert('ulab_material_to_request', $data);
+            $ugtp_id = $this->DB->Insert('ulab_material_to_request', $data);
         }
+
+        return $ugtp_id;
     }
 
 
