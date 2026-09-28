@@ -4179,81 +4179,26 @@ class Requirement extends Model
 
     public function setDopInfo($data)
     {
+        $ugtp_id = $data['ugtp_id'];
+
         $fields = [
-            'nd_list' => 'nd',
-            'manufacturer' => 'manufacturer',
-            'manufacture_date' => 'manufacturing_date',
-            'batch_mass' => 'batch_mass',
-            'batch_size' => 'batch_size',
-            'batch_number' => 'batch_number',
-            'packing_name' => 'packing_name',
-            'packaging_integrity' => 'packaging_integrity',
-            'expiration_date' => 'expiration_date',
-            'storage_conditions' => 'storage_conditions',
-            'label_description' => 'label_description',
-            'delivery_method' => 'delivery_method',
+            'manufacturer' => $data['manufacturer'],
+            'packing_name' => $data['packing_name'],
+            'packaging_integrity' => $data['packaging_integrity'],
+            'batch_size' => $data['batch_size'],
+            'nd' => $data['nd'],
+            'storage_conditions' => $data['storage_conditions'],
+            'delivery_method' => $data['delivery_method'],
+            'manufacture_date' => $data['manufacturing_date'],
+            'expiration_date' => $data['expiration_date'],
+            'sampling_place' => $data['sampling_place'],
+            'sampling_by' => $data['sampling_by']
         ];
 
-        if (
-            empty($data['id_tz']) ||
-            empty($data['field_name']) ||
-            !array_key_exists($data['field_name'], $fields)
-        ) {
-            return false;
-        }
+        $where = 'where ugtp_id = ' . $ugtp_id;
 
-        $idTz = (int)$data['id_tz'];
-        $fieldName = $fields[$data['field_name']];
-        $value = $data['value'] ?? '';
-
-        // Обработка дат
-        if (
-            in_array($data['field_name'], ['manufacture_date', 'expiration_date'], true)
-            && !empty($value)
-        ) {
-            $date = DateTime::createFromFormat('Y-m-d', $value);
-
-            if (!$date || $date->format('Y-m-d') !== $value) {
-                return false;
-            }
-
-            $value = $date->format('Y-m-d');
-        }
-
-        $value = $this->DB->ForSql($value);
-
-        // Проверяем, существует ли запись для данного ТЗ
-        $query = $this->DB->Query("
-        SELECT id
-        FROM dop_info_requirement
-        WHERE id_tz = {$idTz}
-        LIMIT 1
-    ");
-
-        $row = $query->Fetch();
-
-        if ($row) {
-            // Запись уже существует — обновляем нужное поле
-            $result = $this->DB->Query("
-            UPDATE dop_info_requirement
-            SET {$fieldName} = '{$value}'
-            WHERE id = " . (int)$row['id']
-            );
-        } else {
-            // Записи ещё нет — создаём
-            $result = $this->DB->Query("
-            INSERT INTO dop_info_requirement (
-                id_tz,
-                {$fieldName}
-            )
-            VALUES (
-                {$idTz},
-                '{$value}'
-            )
-        ");
-        }
-
-        return $result;
+        $sqlData = $this->prepearTableData('dop_info_requirement', $fields);
+        $this->DB->Update('dop_info_requirement', $sqlData, $where);
     }
 
     public function getNDList($id_tz)
@@ -4263,8 +4208,8 @@ class Requirement extends Model
         return explode(';', $ndQuery['nd']);
     }
 
-    public function getDopInfoByTzId($id_tz)
+    public function getDopInfoByUgtpId($ugtp_id)
     {
-        return $this->DB->Query("select * from dop_info_requirement where id_tz = {$id_tz}")->Fetch();
+        return $this->DB->Query("select * from dop_info_requirement where ugtp_id = {$ugtp_id}")->Fetch();
     }
 }

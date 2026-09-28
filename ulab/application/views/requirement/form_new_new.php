@@ -308,120 +308,6 @@
             <!--./panel-body-->
         </div>
 
-
-        <div class="panel panel-default">
-            <header class="panel-heading">
-                Сведения об образце
-                <span class="tools float-end">
-                    <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
-                    <a href="#" class="fa fa-chevron-up"></a>
-                </span>
-            </header>
-            <div class="panel-body">
-                <div class="wrapper-add-info mt-3 flex-column">
-                    <div class="row mb-4">
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">НД (ТД) на продукцию</label>
-                            <div>
-                                <textarea style="min-width: 100%"
-                                          name="nd_list" class="form-control nd_list"
-                                          placeholder="НД (ТД)"
-                                          required><?= $this->data['dop_info_tz']['nd'] ?? '' ?></textarea>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Изготовитель</label>
-                            <div class="formation-protocol-reason">
-                                <input type="text" class="form-control manufacturer"
-                                       value="<?= $this->data['dop_info_tz']['manufacturer'] ?? '' ?>">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Дата изготовления</label>
-                            <div class="formation-protocol-reason">
-                                <input type="date"
-                                       class="form-control manufacture_date"
-                                       value="<?= $this->data['dop_info_tz']['manufacturing_date'] ?? '' ?>"
-                                       required min="<?= date('Y-m-d') ?>">
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="wrapper-add-info mt-3 flex-column">
-                    <div class="row mb-4">
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Масса партии</label>
-                            <div>
-                                <input type="text" class="form-control batch_mass" value="<?= $this->data['dop_info_tz']['batch_mass'] ?? '' ?>">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Размер партии</label>
-                            <div class="formation-protocol-reason">
-                                <input type="text" class="form-control batch_size" value="<?= $this->data['dop_info_tz']['batch_size'] ?? '' ?>">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Номер партии</label>
-                            <div class="formation-protocol-reason">
-                                <input type="text" class="form-control batch_number" value="<?= $this->data['dop_info_tz']['batch_number'] ?? '' ?>">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="wrapper-add-info mt-3 flex-column">
-                    <div class="row mb-4">
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Наименование упаковки</label>
-                            <div>
-                                <input type="text" class="form-control packing_name" value="<?= $this->data['dop_info_tz']['packing_name'] ?? '' ?>">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Целостность упаковки</label>
-                            <div class="formation-protocol-reason">
-                                <input type="text" class="form-control packaging_integrity" value="<?= $this->data['dop_info_tz']['packaging_integrity'] ?? '' ?>">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Срок годности</label>
-                            <div class="formation-protocol-reason">
-                                <input type="date"
-                                       class="form-control manufacture_date"
-                                       value="<?= $this->data['dop_info_tz']['manufacturing_date'] ?? '' ?>"
-                                       required min="<?= date('Y-m-d') ?>">
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="wrapper-add-info mt-3 flex-column">
-                    <div class="row mb-4">
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Условия хранения</label>
-                            <div>
-                                <input type="text" class="form-control storage_conditions" value="<?= $this->data['dop_info_tz']['storage_conditions'] ?? '' ?>">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Описание этикетки (состав)</label>
-                            <div class="formation-protocol-reason">
-                                <input type="text" class="form-control label_description" value="<?= $this->data['dop_info_tz']['label_description'] ?? '' ?>">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="form-label mb-1">Спсосб доставки образца</label>
-                            <div class="formation-protocol-reason">
-                                <input type="text" class="form-control delivery_method" value="<?= $this->data['dop_info_tz']['delivery_method'] ?? '' ?>">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
         <div class="panel panel-default">
             <div class="panel-heading">
                 Объект испытаний
@@ -1111,6 +997,26 @@
                 <option value="<?= $material['ID'] ?>"><?= $material['NAME'] ?></option>
             <?php endforeach; ?>
         </select>
+    </div>
+
+    <div class="line-dashed-small"></div>
+
+    <button type="submit" name="button" value="save" class="btn btn-primary">Сохранить</button>
+</form>
+
+<form id="edit-material-info-form" class="bg-light mfp-hide col-6 m-auto p-3 position-relative" method="post"
+      action="<?= URI ?>/requirement/setDopInfo">
+    <div class="title mb-3 h-2">
+        Информация о пробе
+    </div>
+
+    <div class="line-dashed-small"></div>
+
+    <input name="deal_id" value="<?= $this->data['deal_id'] ?>" type="hidden">
+    <input name="tz_id" value="<?= $this->data['tz_id'] ?>" type="hidden">
+
+    <div class="mb-3" id="dopInfoContainer">
+
     </div>
 
     <div class="line-dashed-small"></div>

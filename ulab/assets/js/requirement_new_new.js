@@ -728,9 +728,10 @@ $(function ($) {
                                             </label>
                                         </div>
                                     </td>
-                                    <td class="text-end">
-                                        <a class="btn btn-primary btn-sm popup-edit-material-form" data-material_id="${data[i].material_id}">
-                                            <i class="fa-solid fa-gear"></i>
+                                    <td class="text-end" style="display: flex; justify-content: flex-end">
+
+                                        <a class="btn btn-primary btn-sm popup-edit-material-info" data-ugtp_id="${data[i].id}">
+                                            <i class="fa-solid fa-info-circle"></i>
                                         </a>
                                     </td>
                                 </tr>`
@@ -943,6 +944,184 @@ $(function ($) {
             midClick: true
         })
     })
+
+    $body.on('click', '.popup-edit-material-info', function (e) {
+        const button = $(this);
+        const ugtpId = button.data('ugtp_id');
+
+        console.log(ugtpId);
+
+        $.ajax({
+            url: '/ulab/requirement/dopInfoAjax',
+            type: 'POST',
+            data: {
+                ugtp_id: ugtpId
+            },
+            dataType: 'json',
+            success: function (response) {
+
+                console.log(response);
+
+                let manufacturingDate = formatDate(response.manufacturing_date);
+                let html = '';
+
+                html = `
+                    
+                <div class="mb-3">
+                    <input type="hidden" name="ugtp_id" value="${ugtpId}">
+                </div>
+                <div class="d-flex flex-column gap-3">
+                
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Производитель</label>
+                            <textarea
+                                class="form-control"
+                                name="manufacturer"
+                                rows="2"
+                            >${response.manufacturer ?? ''}</textarea>
+                        </div>
+                
+                    </div>
+                
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Упаковка</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="packing_name"
+                                value="${response.packing_name ?? ''}"
+                            >
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label class="form-label">Описание упаковки</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="packaging_integrity"
+                                value="${response.packaging_integrity ?? ''}"
+                            >
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Количество</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="batch_size"
+                                value="${response.batch_size ?? ''}"
+                            >
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label class="form-label">НД</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="nd"
+                                value="${response.nd ?? ''}"
+                            >
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Место отбора</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="sampling_place"
+                                value="${response.sampling_place ?? ''}"
+                            >
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label class="form-label">Отбор произведен</label>
+                            <input
+                                type="text"
+                                class="sampling_by"
+                                name="nd"
+                                value="${response.sampling_by ?? ''}"
+                            >
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Условия хранения</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="storage_conditions"
+                                value="${response.storage_conditions ?? ''}"
+                            >
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label class="form-label">Метод доставки</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="delivery_method"
+                                value="${response.delivery_method ?? ''}"
+                            >
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Дата изготовления</label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                name="manufacturing_date"
+                                value="${response.manufacturing_date ?? ''}"
+                            >
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label class="form-label">Дата отбора</label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                name="expiration_date"
+                                value="${response.expiration_date ?? ''}"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                
+                `
+                $('#dopInfoContainer').html(html);
+                // И только после успешного AJAX открываем модалку
+                $.magnificPopup.open({
+                    items: {
+                        src: '#edit-material-info-form',
+                    },
+                    type: 'inline',
+                    closeBtnInside: true,
+                    fixedContentPos: false,
+                    closeOnBgClick: false,
+                    focus: '#focus-blur-loop-select',
+                    midClick: true
+                });
+            },
+            error: function (xhr) {
+                console.error(xhr);
+            }
+        });
+    });
+
+    function formatDate(date) {
+        if (!date) {
+            return '';
+        }
+
+        const [year, month, day] = date.split('-');
+
+        return `${day}.${month}.${year}`;
+    }
 
     $body.on('click', '.delete-probe-btn', function () {
         return confirm(
@@ -1276,8 +1455,8 @@ $(function ($) {
             success: function (data) {
                 // Вставляем строку в нужный инпут
 
-                let ndString = `от ${data.definition_range_1} до ${data.definition_range_2}`;
-                $parent.find('.nd_string_input').val(ndString);
+                // let ndString = `от ${data.definition_range_1} до ${data.definition_range_2}`;
+                // $parent.find('.nd_string_input').val(ndString);
 
                 // Обновляем поле цены
                 $parent.find('.price-input').val(parseFloat(data.price));

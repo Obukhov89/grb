@@ -2124,6 +2124,8 @@ class ImportController extends Controller
         $requirement = $this->model('Requirement');
         $probe = $this->model('Probe');
 
+
+
         $fields = [
             4 => 'name_product',
             5 => 'normative_document',
@@ -2196,9 +2198,6 @@ class ImportController extends Controller
             die('Ошибка парсинга файла: ' . $e->getMessage());
         }
 
-//        echo '<pre>';
-//        print_r($products);
-//        die;
         $companyInfo = [];
         $newDealData = [];
         $companyId = 0;
@@ -2208,6 +2207,7 @@ class ImportController extends Controller
         $inn = '4401116480';
         $companyName = '';
         $checkCompany = $company->getCompanyIdByInn(trim($inn));
+
         if (empty($checkCompany)) {
 
             $companyInfo = $company->getCompanyByInn(trim($inn));
@@ -2324,7 +2324,7 @@ class ImportController extends Controller
             exit;
         }
 
-
+        $location = "/request/card/{$dealId}";
         $counter = 1;
 
         foreach ($products as &$product) {
@@ -2349,17 +2349,7 @@ class ImportController extends Controller
         ];
 
         $probe->setProbesFromFiles($actData, $products);
-
-        echo '<pre>';
-        print_r($probes);
-        die;
-
-        global $APPLICATION;
-
-        $APPLICATION->RestartBuffer();
-
-        /** @var Import $importModel */
-        $importModel = $this->model('Import');
+        $this->redirect($location);
     }
 
 

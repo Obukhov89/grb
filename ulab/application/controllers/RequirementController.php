@@ -2177,13 +2177,20 @@ class RequirementController extends Controller
         $this->redirect("/ulab/requirement/card_new_new/{$_POST['tz_id']}");
     }
 
-    public function setDopInfoAjax()
+    public function setDopInfo()
+    {
+        $location = "/requirement/card/{$_POST['tz_id']}";
+        $requirementModel = $this->model("Requirement");
+        $requirementModel->setDopInfo($_POST);
+        $this->redirect($location);
+    }
+
+    public function dopInfoAjax()
     {
         global $APPLICATION;
         $APPLICATION->RestartBuffer();
 
         $requirementModel = $this->model("Requirement");
-
-        echo json_encode($requirementModel->setDopInfo($_POST));
+        echo json_encode($requirementModel->getDopInfoByUgtpId($_POST['ugtp_id']));
     }
 }

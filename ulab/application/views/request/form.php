@@ -18,7 +18,7 @@
     }
 
     .file-upload input[type="file"] {
-        display: none;
+        /*display: none;*/
     }
 
     .file-upload__button {
@@ -76,6 +76,7 @@
     </h2>
 <?php endif; ?>
 
+<?php if (isset($this->data['request']['id']) && empty($this->data['request']['id'])): ?>
 <form action="<?= URI ?>/import/uploadRequest/" method="POST" enctype="multipart/form-data">
     <div class="panel panel-default">
         <header class="panel-heading">
@@ -93,14 +94,6 @@
                         name="import_file"
                         id="import_file"
                 >
-
-                <span class="file-upload__button">
-                Выбрать файл
-            </span>
-
-                <span class="file-upload__name">
-                Файл не выбран
-            </span>
             </label>
 
             <button type="submit" class="btn btn-primary">
@@ -110,6 +103,9 @@
         </div>
     </div>
 </form>
+<?php endif; ?>
+
+<?php if (isset($this->data['request']['id']) && !empty($this->data['request']['id'])): ?>
 
 <form class="form-horizontal" method="post" id="create_request_form" action="<?= URI ?>/request/insertUpdate/">
 
@@ -148,7 +144,7 @@
                 <label class="col-sm-2 col-form-label">ИП</label>
                 <div class="col-sm-8">
                     <input class="form-check-input check-ip" type="checkbox" name="check_ip"
-                           value="1" <?= $this->data['request']['check_ip'] == 1 ? 'checked' : '' ?>>
+                           value="1" <?= $this->data['request']['check_ip'] == 1 ? 'checked' : '' ?>
                 </div>
                 <div class="col-sm-2"></div>
             </div>
@@ -367,252 +363,161 @@
     </div>
 
 
-    <div class="panel panel-default">
-        <header class="panel-heading">
-            Данные заявки
-            <span class="tools float-end">
-            <a href="#" class="fa fa-chevron-up"></a>
-         </span>
-        </header>
-        <div class="panel-body">
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Основание для проведения испытаний</label>
-                <div class="col-sm-8">
-                    <div class="input-group">
-                        <input type="radio" class="btn-check" id="order" name="order_type" autocomplete="off"
-                               value="1" <?= $this->data['request']['order_type'] == 1 || empty($this->data['request']['order_type']) ? 'checked' : '' ?>>
-                        <label class="btn btn-outline-primary" for="order">Договор</label>
-                        <input type="radio" class="btn-check" id="offer-invoice" name="order_type" autocomplete="off"
-                               value="2" <?= $this->data['request']['order_type'] == 2 ? 'checked' : '' ?>>
-                        <label class="btn btn-outline-primary" for="offer-invoice">Счет-оферта</label>
-                        <!--						<input type="radio" class="btn-check" id="int-order" name="order_type" autocomplete="off" value="3" <? //=$this->data['request']['order_type'] == 3 ? 'checked' : ''?>>-->
-                        <!--						<label class="btn btn-outline-primary" for="int-order">Международный договор</label>-->
-                    </div>
-                </div>
-                <div class="col-sm-2"></div>
-            </div>
-
-            <div class="form-group row order-type ">
-                <label class="col-sm-2 col-form-label">Выбрать документ-основание:</label>
-                <div class="col-sm-8">
-                    <select class="form-control" name="NUM_DOGOVOR">
-                        <option value="<?= $this->data['request']['DOGOVOR_NUM'] ?? '' ?>">Новый договор</option>
-                        <?php foreach ($this->data['contracts'] as $contract): ?>
-                            <option value="<?= $contract['ID'] ?>" <?= $this->data['request']['DOGOVOR_NUM'] == $contract['ID'] ? 'selected' : '' ?>>
-                                <?= $contract['CONTRACT_TYPE'] ?? 'Договор' ?>
-                                №<?= $contract['number_client'] ? $contract['number_client'] : $contract['NUMBER'] ?>
-                                от <?= $contract['DATE'] ?><?= $contract['endless_text'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col-sm-2"></div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Тип заявки <span class="redStars">*</span></label>
-                <div class="col-sm-8">
-                    <select class="form-control" name="REQ_TYPE" required>
-                        <option value="SALE" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] === 'SALE') ? 'selected' : '' ?>>
-                            ИЦ
-                        </option>
-                        <option value="COMPLEX" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] === 'COMPLEX') ? 'selected' : '' ?>>
-                            ОСК
-                        </option>
-                        <option value="1" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '1') ? 'selected' : '' ?>>
-                            ВЛК
-                        </option>
-                        <option value="2" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '2') ? 'selected' : '' ?>>
-                            МСИ
-                        </option>
-                        <option value="5" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '5') ? 'selected' : '' ?>>
-                            АП
-                        </option>
-                        <option value="4" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '4') ? 'selected' : '' ?>>
-                            НК
-                        </option>
-                        <option value="8" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '8') ? 'selected' : '' ?>>
-                            Н
-                        </option>
-                        <option value="7" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '7') ? 'selected' : '' ?>>
-                            ПР
-                        </option>
-                        <option value="9" <?= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '9') ? 'selected' : '' ?>>
-                            НИЦ
-                        </option>
-                    </select>
-                </div>
-                <div class="col-sm-2"></div>
-            </div>
-
-            <!--            --><?php //if ( !isset($this->data['request']['id']) ): ?>
-            <!--                <div class="form-group row">-->
-            <!--                    <label class="col-sm-2 col-form-label">Материал для исследования <span class="redStars">*</span></label>-->
-            <!--                    <div class="col-sm-8">-->
-            <!--                        <div class="input-group">-->
-            <!--                            <input-->
-            <!--                                    type="text"-->
-            <!--                                    id="material0"-->
-            <!--                                    list="materials"-->
-            <!--                                    name="material[0][name]"-->
-            <!--                                    class="form-control"-->
-            <!--                                    value="-->
-            <? //=$this->data['request']['material'][0]['name']?><!--"-->
-            <!--                                    autocomplete="off" required-->
-            <!--                                --><? //=$this->data['is_edit']? 'readonly' : ''?>
-            <!--                            >-->
-            <!--                            <span class="input-group-text">Кол-во:</span>-->
-            <!--                            <input type="number" name="material[0][count]" class="form-control material-count" min="1" step="1" required value="-->
-            <? //=$this->data['request']['material'][0]['count']?? 1?><!--">-->
-            <!--                        </div>-->
-            <!--                        <input type="hidden" name="material[0][id]" id="material0-hidden" class="material_id" value="-->
-            <? //=$this->data['request']['material'][0]['id']?? ''?><!--">-->
-            <!--                        <datalist id="materials">-->
-            <!--                            --><?php //if (isset($this->data['materials'])): ?>
-            <!--                                --><?php //foreach ($this->data['materials'] as $material): ?>
-            <!--                                    <option data-value="--><? //=$material['ID']?><!--">-->
-            <? //=$material['NAME']?><!--</option>-->
-            <!--                                --><?php //endforeach; ?>
-            <!--                            --><?php //endif; ?>
-            <!--                        </datalist>-->
-            <!--                    </div>-->
-            <!--                    <div class="col-sm-2">-->
-            <!--                        --><?php //if ( !$this->data['is_edit'] ): ?>
-            <!--                            <button class="btn btn-primary add_material btn-add-del" type="button">-->
-            <!--                                <i class="fa-solid fa-plus icon-fix"></i>-->
-            <!--                            </button>-->
-            <!--                        --><?php //endif; ?>
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!---->
-            <!--                --><?php //if (isset($this->data['request']['material']) && count($this->data['request']['material']) > 1): ?>
-            <!--                    --><?php //for ($i = 1; $i < count($this->data['request']['material']); $i++): ?>
-            <!--                        <div class="form-group row added_material">-->
-            <!--                            <label class="col-sm-2 col-form-label"></label>-->
-            <!--                            <div class="col-sm-8">-->
-            <!--                                <div class="input-group">-->
-            <!--                                    <input-->
-            <!--                                            type="text"-->
-            <!--                                            id="material--><? //=$i?><!--"-->
-            <!--                                            list="materials"-->
-            <!--                                            name="material[--><? //=$i?><!--][name]"-->
-            <!--                                            class="form-control"-->
-            <!--                                            value="-->
-            <? //=$this->data['request']['material'][$i]['name']?><!--" required-->
-            <!--                                        --><? //=$this->data['is_edit']? 'readonly' : ''?>
-            <!--                                    >-->
-            <!--                                    <span class="input-group-text">Кол-во:</span>-->
-            <!--                                    <input type="number" name="material[-->
-            <? //=$i?><!--][count]" class="form-control material-count" min="1" step="1" required value="-->
-            <? //=$this->data['request']['material'][$i]['count']?? 1?><!--">-->
-            <!--                                </div>-->
-            <!--                                <input type="hidden" name="material[-->
-            <? //=$i?><!--][id]" id="material--><? //=$i?><!---hidden" class="material_id" value="-->
-            <? //=$this->data['request']['material'][$i]['id']?><!--">-->
-            <!--                            </div>-->
-            <!--                            <div class="col-sm-2">-->
-            <!--                                --><?php //if ( !$this->data['is_edit'] ): ?>
-            <!--                                    <button class="btn btn-danger remove_this btn-add-del" type="button">-->
-            <!--                                        <i class="fa-solid fa-minus icon-fix"></i>-->
-            <!--                                    </button>-->
-            <!--                                --><?php //endif; ?>
-            <!--                            </div>-->
-            <!--                        </div>-->
-            <!--                    --><?php //endfor; ?>
-            <!--                --><?php //endif; ?>
-            <!--            --><?php //endif; ?>
-
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Главный Ответственный <span class="redStars">*</span></label>
-                <div class="col-sm-8">
-                    <input
-                            id="assigned0"
-                            class="form-control"
-                            type="text"
-                            list="assigneds_main"
-                            name="ASSIGNED[]"
-                            size="20"
-                            value="<?= $this->data['request']['assign'][0]['user_name'] ?? '' ?>"
-                            autocomplete="off"
-                            required
-                    >
-                    <input name="id_assign[]" id="assigned0-hidden" type="hidden" class="assigned_id"
-                           value="<?= $this->data['request']['assign'][0]['user_id'] ?? '' ?>">
-                    <datalist id="assigneds_main">
-                        <?php if (isset($this->data['clients_main'])): ?>
-                            <?php foreach ($this->data['clients_main'] as $client): ?>
-                                <option data-value="<?= $client['ID'] ?>"><?= $client['LAST_NAME'] ?> <?= $client['NAME'] ?></option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </datalist>
-                    <datalist id="assigneds">
-                        <?php if (isset($this->data['clients'])): ?>
-                            <?php foreach ($this->data['clients'] as $client): ?>
-                                <option data-value="<?= $client['ID'] ?>"><?= $client['LAST_NAME'] ?> <?= $client['NAME'] ?></option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </datalist>
-                </div>
-                <div class="col-sm-2">
-                    <button class="btn btn-primary add_assigned btn-add-del" type="button">
-                        <i class="fa-solid fa-plus icon-fix"></i>
-                    </button>
-                </div>
-            </div>
-
-            <?php if (count($this->data['request']['assign']) > 1): ?>
-                <?php for ($i = 1; $i < count($this->data['request']['assign']); $i++): ?>
-                    <div class="form-group row added_assigned">
-                        <label class="col-sm-2 col-form-label">Ответственный</label>
-                        <div class="col-sm-8">
-                            <input
-                                    id="assigned<?= $i ?>"
-                                    class="form-control"
-                                    type="text"
-                                    list="assigneds"
-                                    name="ASSIGNED[]"
-                                    size="20"
-                                    value="<?= $this->data['request']['assign'][$i]['user_name'] ?>"
-                                    required
-                            >
-                            <input name="id_assign[]" id="assigned<?= $i ?>-hidden" class="assigned_id" type="hidden"
-                                   value="<?= $this->data['request']['assign'][$i]['user_id'] ?>">
-                        </div>
-                        <div class="col-sm-2">
-                            <button class="btn btn-danger remove_this btn-add-del" type="button">
-                                <i class="fa-solid fa-minus icon-fix"></i>
-                            </button>
-                        </div>
-                    </div>
-                <?php endfor; ?>
-            <?php endif; ?>
-
-            <!--            <div class="form-group row">-->
-            <!--                <label class="col-sm-2 col-form-label">Создать заявку для каждого материала отдельно</label>-->
-            <!--                <div class="col-sm-8">-->
-            <!--                    <input class="form-check-input few_deals" type="checkbox" name="few_deals">-->
-            <!--                </div>-->
-            <!--                <div class="col-sm-2"></div>-->
-            <!--            </div>-->
-        </div>
-    </div>
+<!--    <div class="panel panel-default">-->
+<!--        <header class="panel-heading">-->
+<!--            Данные заявки-->
+<!--            <span class="tools float-end">-->
+<!--            <a href="#" class="fa fa-chevron-up"></a>-->
+<!--         </span>-->
+<!--        </header>-->
+<!--        <div class="panel-body">-->
+<!--            <div class="form-group row">-->
+<!--                <label class="col-sm-2 col-form-label">Основание для проведения испытаний</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <div class="input-group">-->
+<!--                        <input type="radio" class="btn-check" id="order" name="order_type" autocomplete="off"-->
+<!--                               value="1" --><?php //= $this->data['request']['order_type'] == 1 || empty($this->data['request']['order_type']) ? 'checked' : '' ?>
+<!--                        <label class="btn btn-outline-primary" for="order">Договор</label>-->
+<!--                        <input type="radio" class="btn-check" id="offer-invoice" name="order_type" autocomplete="off"-->
+<!--                               value="2" --><?php //= $this->data['request']['order_type'] == 2 ? 'checked' : '' ?>
+<!--                        <label class="btn btn-outline-primary" for="offer-invoice">Счет-оферта</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-sm-2"></div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="form-group row order-type ">-->
+<!--                <label class="col-sm-2 col-form-label">Выбрать документ-основание:</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <select class="form-control" name="NUM_DOGOVOR">-->
+<!--                        <option value="--><?php //= $this->data['request']['DOGOVOR_NUM'] ?? '' ?><!--">Новый договор</option>-->
+<!--                        --><?php //foreach ($this->data['contracts'] as $contract): ?>
+<!--                            <option value="--><?php //= $contract['ID'] ?><!--" --><?php //= $this->data['request']['DOGOVOR_NUM'] == $contract['ID'] ? 'selected' : '' ?>
+<!--                                --><?php //= $contract['CONTRACT_TYPE'] ?? 'Договор' ?>
+<!--                                №--><?php //= $contract['number_client'] ? $contract['number_client'] : $contract['NUMBER'] ?>
+<!--                                от --><?php //= $contract['DATE'] ?><!----><?php //= $contract['endless_text'] ?>
+<!--                            </option>-->
+<!--                        --><?php //endforeach; ?>
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <div class="col-sm-2"></div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="form-group row">-->
+<!--                <label class="col-sm-2 col-form-label">Тип заявки <span class="redStars">*</span></label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <select class="form-control" name="REQ_TYPE" required>-->
+<!--                        <option value="SALE" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] === 'SALE') ? 'selected' : '' ?>
+<!--                            ИЦ-->
+<!--                        </option>-->
+<!--                        <option value="COMPLEX" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] === 'COMPLEX') ? 'selected' : '' ?>
+<!--                            ОСК-->
+<!--                        </option>-->
+<!--                        <option value="1" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '1') ? 'selected' : '' ?>
+<!--                            ВЛК-->
+<!--                        </option>-->
+<!--                        <option value="2" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '2') ? 'selected' : '' ?>
+<!--                            МСИ-->
+<!--                        </option>-->
+<!--                        <option value="5" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '5') ? 'selected' : '' ?>
+<!--                            АП-->
+<!--                        </option>-->
+<!--                        <option value="4" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '4') ? 'selected' : '' ?>
+<!--                            НК-->
+<!--                        </option>-->
+<!--                        <option value="8" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '8') ? 'selected' : '' ?>
+<!--                            Н-->
+<!--                        </option>-->
+<!--                        <option value="7" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '7') ? 'selected' : '' ?>
+<!--                            ПР-->
+<!--                        </option>-->
+<!--                        <option value="9" --><?php //= (isset($this->data['request']['REQ_TYPE']) && $this->data['request']['REQ_TYPE'] == '9') ? 'selected' : '' ?>
+<!--                            НИЦ-->
+<!--                        </option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <div class="col-sm-2"></div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="form-group row">-->
+<!--                <label class="col-sm-2 col-form-label">Главный Ответственный <span class="redStars">*</span></label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <input-->
+<!--                            id="assigned0"-->
+<!--                            class="form-control"-->
+<!--                            type="text"-->
+<!--                            list="assigneds_main"-->
+<!--                            name="ASSIGNED[]"-->
+<!--                            size="20"-->
+<!--                            value="--><?php //= $this->data['request']['assign'][0]['user_name'] ?? '' ?><!--"-->
+<!--                            autocomplete="off"-->
+<!--                            required-->
+<!--                    >-->
+<!--                    <input name="id_assign[]" id="assigned0-hidden" type="hidden" class="assigned_id"-->
+<!--                           value="--><?php //= $this->data['request']['assign'][0]['user_id'] ?? '' ?><!--">-->
+<!--                    <datalist id="assigneds_main">-->
+<!--                        --><?php //if (isset($this->data['clients_main'])): ?>
+<!--                            --><?php //foreach ($this->data['clients_main'] as $client): ?>
+<!--                                <option data-value="--><?php //= $client['ID'] ?><!--">--><?php //= $client['LAST_NAME'] ?><!-- --><?php //= $client['NAME'] ?><!--</option>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        --><?php //endif; ?>
+<!--                    </datalist>-->
+<!--                    <datalist id="assigneds">-->
+<!--                        --><?php //if (isset($this->data['clients'])): ?>
+<!--                            --><?php //foreach ($this->data['clients'] as $client): ?>
+<!--                                <option data-value="--><?php //= $client['ID'] ?><!--">--><?php //= $client['LAST_NAME'] ?><!-- --><?php //= $client['NAME'] ?><!--</option>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        --><?php //endif; ?>
+<!--                    </datalist>-->
+<!--                </div>-->
+<!--                <div class="col-sm-2">-->
+<!--                    <button class="btn btn-primary add_assigned btn-add-del" type="button">-->
+<!--                        <i class="fa-solid fa-plus icon-fix"></i>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--            --><?php //if (count($this->data['request']['assign']) > 1): ?>
+<!--                --><?php //for ($i = 1; $i < count($this->data['request']['assign']); $i++): ?>
+<!--                    <div class="form-group row added_assigned">-->
+<!--                        <label class="col-sm-2 col-form-label">Ответственный</label>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <input-->
+<!--                                    id="assigned--><?php //= $i ?><!--"-->
+<!--                                    class="form-control"-->
+<!--                                    type="text"-->
+<!--                                    list="assigneds"-->
+<!--                                    name="ASSIGNED[]"-->
+<!--                                    size="20"-->
+<!--                                    value="--><?php //= $this->data['request']['assign'][$i]['user_name'] ?><!--"-->
+<!--                                    required-->
+<!--                            >-->
+<!--                            <input name="id_assign[]" id="assigned--><?php //= $i ?><!---hidden" class="assigned_id" type="hidden"-->
+<!--                                   value="--><?php //= $this->data['request']['assign'][$i]['user_id'] ?><!--">-->
+<!--                        </div>-->
+<!--                        <div class="col-sm-2">-->
+<!--                            <button class="btn btn-danger remove_this btn-add-del" type="button">-->
+<!--                                <i class="fa-solid fa-minus icon-fix"></i>-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                --><?php //endfor; ?>
+<!--            --><?php //endif; ?>
+<!--        </div>-->
+<!--    </div>-->
 
     <button class="btn btn-primary block-after-click" type="submit" id="save_button" name="save"
             value="<?= $this->data['request']['save'] ?? '' ?>">Сохранить
     </button>
 
-    <!--    <div class="line-dashed"></div>-->
-
-    <!--    --><?php //if ( isset($this->data['request']['id']) && !empty($this->data['request']['id']) ): ?>
-    <!--        <a href="/request_new.php?EDIT=-->
-    <? //=$this->data['request']['id']?><!--">Вернуться на старый дизайн</a>-->
-    <!--    --><?php //else: ?>
-    <!--        <a href="/request_new.php">Вернуться на старый дизайн</a>-->
-    <!--    --><?php //endif; ?>
 </form>
-
+<?php endif;?>
 <script>
     document.getElementById("create_request_form").addEventListener("submit", function () {
         document.getElementById("save_button").disabled = true;
+    });
+
+    document.getElementById('import_file').addEventListener('change', function () {
+        alert(this.files[0].name);
     });
 </script>

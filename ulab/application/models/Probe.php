@@ -1174,35 +1174,55 @@ class Probe extends Model
     {
         $sqlData = $this->prepearTableData('ACT_BASE', $actData);
         $this->DB->Insert('ACT_BASE', $sqlData);
-
         $curYearCipher = date("y");
-
+        $idTz = $actData['ID_TZ'];
         $i = 1;
+
         foreach ($data as $val) {
-
             $currentVal = [];
-
             $currentVal['cipher'] = $actData['ACT_NUM'] . '.' . $i . "/$curYearCipher";
             $currentVal['in_act'] = 1;
-            $currentVal['place'] = $val['sampling_place'];
-            $value = trim($val['sampling_date']);
-            $date = DateTime::createFromFormat('n/j/Y', $value);
+            $currentVal['place'] = $val['sampling_place']; /* * Дата отбора образца */
+            $drawSampleDate = trim($val['sampling_date']);
+
+            $date = DateTime::createFromFormat('n/j/Y', $drawSampleDate);
 
             if ($date === false) {
-                var_dump($value);
-                var_dump(DateTime::getLastErrors());
-                die;
-            }
-            $date = DateTime::createFromFormat('m/d/Y', $value);
+                throw new RuntimeException("Некорректная дата sampling_date: {$drawSampleDate}");
+            } /* * Срок годности */
+            $drawExpDate = trim($val['expiration_date']);
+            $expDate = DateTime::createFromFormat('n/j/Y', $drawExpDate);
 
-            $result = $date->format('Y-m-d');
-            $currentVal['date_probe'] = $result;
+            if ($expDate === false) {
+                throw new RuntimeException("Некорректная дата expiration_date: {$drawExpDate}");
+            } /* * Дата отбора для ulab_material_to_request */
+            $currentVal['date_probe'] = $date->format('Y-m-d');
 
             $umtrSqlData = $this->prepearTableData('ulab_material_to_request', $currentVal);
-
             $this->DB->Update('ulab_material_to_request', $umtrSqlData, "where id = {$val['ugtp_id']} AND in_act <> 1");
-            $i++;
 
+            $drawPackName = explode(',', $val['package']);
+            $packName = $drawPackName[0];
+            $packaging_integrity = trim($drawPackName[1]);
+            $dopInfoProbe =
+                [
+                    'id_tz' => $idTz,
+                    'ugtp_id' => $val['ugtp_id'],
+                    'nd' => $val['normative_level'],
+                    'manufacturer' => $val['manufacturer'],
+                    'batch_size' => $val['sample_quantity'],
+                    'packing_name' => $packName,
+                    'packaging_integrity' => $packaging_integrity,
+                    'manufacturing_date' => $date->format('Y-m-d'),
+                    'expiration_date' => $expDate->format('Y-m-d'),
+                    'storage_conditions' => $val['storage_conditions'],
+                    'delivery_method' => $val['delivery_method'],
+                    'sampling_place' => $val['sampling_place'],
+                    'sampling_by' => $val['sampling_by'],
+                ];
+
+            $dopInfoDate = $this->prepearTableData('dop_info_requirement', $dopInfoProbe);
+            $this->DB->Insert('dop_info_requirement', $dopInfoDate);
         }
     }
 }

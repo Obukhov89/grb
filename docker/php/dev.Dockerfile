@@ -1,4 +1,4 @@
-FROM maximniistrom/bitrix:ic.23.300.101
+FROM maximniistrom/bitrix:ic.23.300.101-custom_2
 
 COPY . /var/www/html
 
