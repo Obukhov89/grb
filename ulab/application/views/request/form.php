@@ -76,7 +76,7 @@
     </h2>
 <?php endif; ?>
 
-<?php if (isset($this->data['request']['id']) && empty($this->data['request']['id'])): ?>
+<?php if (empty($this->data['request']['id'])): ?>
 <form action="<?= URI ?>/import/uploadRequest/" method="POST" enctype="multipart/form-data">
     <div class="panel panel-default">
         <header class="panel-heading">
