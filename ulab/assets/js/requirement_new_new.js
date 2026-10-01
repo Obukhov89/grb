@@ -951,6 +951,8 @@ $(function ($) {
 
         console.log(ugtpId);
 
+
+
         $.ajax({
             url: '/ulab/requirement/dopInfoAjax',
             type: 'POST',
@@ -981,7 +983,16 @@ $(function ($) {
                                 rows="2"
                             >${response.manufacturer ?? ''}</textarea>
                         </div>
-                
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Место отбора</label>
+                            <textarea
+                                class="form-control"
+                                name="sampling_place"
+                                rows="2"
+                            >${response.sampling_place ?? ''}</textarea>
+                        </div>
                     </div>
                 
                     <div class="row g-3">
@@ -1026,28 +1037,16 @@ $(function ($) {
                             >
                         </div>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Место отбора</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="sampling_place"
-                                value="${response.sampling_place ?? ''}"
-                            >
-                        </div>
-                
+                    <div class="row g-3">                
                         <div class="col-md-6">
                             <label class="form-label">Отбор произведен</label>
                             <input
                                 type="text"
-                                class="sampling_by"
+                                class="form-control"
                                 name="nd"
-                                value="${response.sampling_by ?? ''}"
+                                value="${escapeHtml(response.sampling_by ?? '')}"
                             >
                         </div>
-                    </div>
-                    <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Условия хранения</label>
                             <input
@@ -1057,7 +1056,8 @@ $(function ($) {
                                 value="${response.storage_conditions ?? ''}"
                             >
                         </div>
-                
+                    </div>
+                    <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Метод доставки</label>
                             <input
@@ -1067,8 +1067,6 @@ $(function ($) {
                                 value="${response.delivery_method ?? ''}"
                             >
                         </div>
-                    </div>
-                    <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Дата изготовления</label>
                             <input
@@ -1078,7 +1076,8 @@ $(function ($) {
                                 value="${response.manufacturing_date ?? ''}"
                             >
                         </div>
-                
+                    </div>
+                    <div class="row g-3">                
                         <div class="col-md-6">
                             <label class="form-label">Дата отбора</label>
                             <input
@@ -2279,3 +2278,12 @@ $(document).on('change', function (event) {
     console.log('Изменившийся класс:', changedClass);
     console.log('Новое значение:', $element.val());
 });
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
