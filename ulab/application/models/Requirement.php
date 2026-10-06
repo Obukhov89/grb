@@ -2813,6 +2813,7 @@ class Requirement extends Model
      */
     public function addMaterialToTz($dealId, $materialId, $number)
     {
+
         $ugtp_id = 0;
         $data = [
             'deal_id' => $dealId,

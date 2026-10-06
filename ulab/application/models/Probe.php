@@ -549,6 +549,7 @@ class Probe extends Model
      */
     public function insertUpdateActProbeNew($data)
     {
+
         $historyModel = new History();
         $userModel = new User();
         $requestModel = new Request();
@@ -558,7 +559,6 @@ class Probe extends Model
 //        $probe = $requirementModel->getProbeFromTzWithoutAct($data['deal_id']);
 
         $probes = $data['probe']['umtr_id'];
-
         $curYear = date("Y");
         $curYearCipher = date("y");
 
@@ -1170,18 +1170,16 @@ class Probe extends Model
     }
 
 
-    public function setProbesFromFiles($actData, $data = null)
+    public function setProbesFromFiles($actData, $data = null, $methodsArr = null)
     {
-        $sqlData = $this->prepearTableData('ACT_BASE', $actData);
-        $this->DB->Insert('ACT_BASE', $sqlData);
+        $methodModel = new Methods();
+        $labModel = new Lab();
+
         $curYearCipher = date("y");
         $idTz = $actData['ID_TZ'];
         $i = 1;
 
         foreach ($data as $val) {
-            $currentVal = [];
-            $currentVal['cipher'] = $actData['ACT_NUM'] . '.' . $i . "/$curYearCipher";
-            $currentVal['in_act'] = 1;
             $currentVal['place'] = $val['sampling_place']; /* * Дата отбора образца */
             $drawSampleDate = trim($val['sampling_date']);
 
@@ -1200,6 +1198,7 @@ class Probe extends Model
 
             $umtrSqlData = $this->prepearTableData('ulab_material_to_request', $currentVal);
             $this->DB->Update('ulab_material_to_request', $umtrSqlData, "where id = {$val['ugtp_id']} AND in_act <> 1");
+            $actData['probe']['umtr_id'] = $val['ugtp_id'];
 
             $drawPackName = explode(',', $val['package']);
             $packName = $drawPackName[0];
@@ -1221,8 +1220,41 @@ class Probe extends Model
                     'sampling_by' => $val['sampling_by'],
                 ];
 
+            $this->insertUpdateActProbeNew($actData);
+
             $dopInfoDate = $this->prepearTableData('dop_info_requirement', $dopInfoProbe);
             $this->DB->Insert('dop_info_requirement', $dopInfoDate);
         }
+
+        $result = [];
+
+        foreach ($methodsArr as $key => $methods) {
+            foreach ($methods as $item) {
+                $labMethodIds = $methodModel->getLab($item['method_id']);
+
+                foreach ($labMethodIds as $methodId) {
+                    $sql = $this->DB->Query("select max(gost_number) as gost_number from ulab_gost_to_probe where material_to_request_id = {$key}")->Fetch();
+                    $gostNumber = $sql['gost_number'];
+                    if (!is_numeric($gostNumber)) {
+                        $gostNumber = -1;
+                    }
+                    $lab = $labModel->getLab($methodId);
+
+                    $result = [
+                        'material_to_request_id' => $key,
+                        'method_id' => $item['method_id'],
+                        'new_method_id' => $item['method_id'],
+                        'conditions_id' => null,
+                        'tech_condition_id' => null,
+                        'price' => $item['price'],
+                        'assigned_id' => $lab['HEAD_ID'],
+                        'gost_number' => ++$gostNumber,
+                    ];
+                    $this->DB->Insert('ulab_gost_to_probe', $result);
+                }
+            }
+        }
     }
+
+
 }

@@ -2123,7 +2123,7 @@ class ImportController extends Controller
         $import = $this->model('Import');
         $requirement = $this->model('Requirement');
         $probe = $this->model('Probe');
-
+        $method = $this->model('Methods');
 
 
         $fields = [
@@ -2251,13 +2251,11 @@ class ImportController extends Controller
         ];
 
         $materialNames = '';
-
         foreach ($products as &$product) {
             $responseMaterialName = $this->normalize($product['name_product']);
             $materialNames .= $responseMaterialName . '; ';
 
             $materialsList = $material->getList();
-
             $existMaterial = false;
             $material_id = null;
 
@@ -2329,26 +2327,69 @@ class ImportController extends Controller
 
         foreach ($products as &$product) {
             $ugtp_id = $requirement->addMaterialToTz($dealId, $product['material_id'], $counter);
+            $indicators = array_values(array_filter(
+                preg_split('/\s+(?=-)/u', $product['indicators']),
+                fn($item) => str_starts_with(trim($item), '-')
+            ));
+
+            $indicators = array_map(
+                fn($item) => ltrim(trim($item), '-'),
+                $indicators
+            );
+
+            foreach ($indicators as $indicator) {
+                $parts = array_map('trim', explode(';', $indicator));
+
+                if (isset($parts[2])) {
+                    preg_match('/^.*\d/u', $parts[2], $matches);
+
+                    if (!empty($matches[0])) {
+                        $parts[2] = trim($matches[0]);
+                    }
+                }
+                $methodsRequest[$ugtp_id][] = [
+                    'method_name' => $parts[0],
+                    'unit' => $parts[1],
+                    'value' => $parts[2],
+                ];
+            }
             $product['ugtp_id'] = $ugtp_id;
         }
         unset($product);
+
+        $ugtpArr = [];
+        foreach ($methodsRequest as $key => $methodRequest) {
+            $methodsList = $method->getList();
+            foreach ($methodRequest as $methods) {
+                $normNewMethodName = $this->normalize($methods['method_name']);
+                foreach ($methodsList as $methodItem) {
+                    $normDbNameMethod = $this->normalize($methodItem['name']);
+                    if ($normDbNameMethod === $normNewMethodName) {
+                        $ugtpArr[$key][] = [
+                            'method_id' => $methodItem['id'],
+                            'price' => $methodItem['price'],
+                        ];
+                    }
+                }
+            }
+        }
 
         $probes = $probe->getProbeByDealId($dealId);
         $newActNum = $probe->getNewActNumber();
         $selectionType = '1';
         $actDAte = date('Y-m-d');
 
-        $actData =  [
+        $actData = [
             'ACT_DATE' => $actDAte,
             'ACT_NUM' => $newActNum,
-            'ID_Z' => $dealId,
+            'deal_id' => $dealId,
             'ID_TZ' => $resultAddTz,
             'deliveryman' => '',
-            'act_type' => 1,
+            'act_type' => 0,
             'creater' => $_SESSION['SESS_AUTH']['USER_ID']
         ];
 
-        $probe->setProbesFromFiles($actData, $products);
+        $probe->setProbesFromFiles($actData, $products, $ugtpArr);
         $this->redirect($location);
     }
 
