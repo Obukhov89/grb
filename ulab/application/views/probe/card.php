@@ -113,17 +113,17 @@ if ((int)$this->data['user_id'] === 61)  { $colspan++; }
                     <label class="form-label mb-1" for="protocolDeadline">Дата отбора (общее)</label>
                     <input type="date" class="form-control bg-white w-100" id="date_all" name="act[date_all]">
                 </div>
-                <div class="form-group col-sm-2">
-                    <label class="form-label mb-1">Карьер</label>
-                    <div class="input-group">
-                        <select class="form-control select2" id="quarry_all" name="act[quarry_all]">
-                            <option value="">Нет карьера</option>
-                            <?php foreach($this->data['quarry'] as $quarry): ?>
-                                <option value="<?=$quarry['ID']?>"><?=$quarry['NAME']?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
+<!--                <div class="form-group col-sm-2">-->
+<!--                    <label class="form-label mb-1">Карьер</label>-->
+<!--                    <div class="input-group">-->
+<!--                        <select class="form-control select2" id="quarry_all" name="act[quarry_all]">-->
+<!--                            <option value="">Нет карьера</option>-->
+<!--                            --><?php //foreach($this->data['quarry'] as $quarry): ?>
+<!--                                <option value="--><?php //=$quarry['ID']?><!--">--><?php //=$quarry['NAME']?><!--</option>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <button type="submit" class="btn btn-primary">
                     Сохранить изменения
                 </button>

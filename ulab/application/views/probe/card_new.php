@@ -216,14 +216,14 @@
         <input type="date" name="form[date_probe]" class="form-control probe_date" value="">
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Карьер</label>
-        <select name="form[quarry_id]" class="form-control probe_quarry_id">
-            <?php foreach($this->data['quarry'] as $key => $value): ?>
-                <option value='<?=$value['ID']?>'><?=$value['NAME']?></option>
-            <?php endforeach;?>
-        </select>
-    </div>
+<!--    <div class="mb-3">-->
+<!--        <label class="form-label">Карьер</label>-->
+<!--        <select name="form[quarry_id]" class="form-control probe_quarry_id">-->
+<!--            --><?php //foreach($this->data['quarry'] as $key => $value): ?>
+<!--                <option value='--><?php //=$value['ID']?><!--'>--><?php //=$value['NAME']?><!--</option>-->
+<!--            --><?php //endforeach;?>
+<!--        </select>-->
+<!--    </div>-->
 
     <div class="line-dashed-small"></div>
 
