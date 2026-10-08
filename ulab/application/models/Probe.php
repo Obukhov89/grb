@@ -549,24 +549,20 @@ class Probe extends Model
      */
     public function insertUpdateActProbeNew($data)
     {
-
         $historyModel = new History();
         $userModel = new User();
         $requestModel = new Request();
         $requirementModel = new Requirement();
 
         $tzId = $requirementModel->getTzIdByDealId((int)$data['deal_id']);
-//        $probe = $requirementModel->getProbeFromTzWithoutAct($data['deal_id']);
 
-        $probes = $data['probe']['umtr_id'];
+        $probes = $data['probe']['ugtp_id'];
         $curYear = date("Y");
         $curYearCipher = date("y");
 
-        //$data['ACT_NUM'] = $this->getNewActNumber();
         $actData = [
             'ACT_DATE' => $data['ACT_DATE'],
             'ACT_NUM' => $data['ACT_NUM'],
-//			'ACT_NUM' => $number,
             'ID_Z' => $data['deal_id'],
             'ID_TZ' => $tzId,
             'deliveryman' => $data['deliveryman'],
@@ -596,7 +592,6 @@ class Probe extends Model
 
         $i = 1;
         foreach ($probes as $val) {
-
             $currentVal = [];
 
             $currentVal['cipher'] = $data['ACT_NUM'] . '.' . $i . "/$curYearCipher";
@@ -1175,69 +1170,90 @@ class Probe extends Model
         $methodModel = new Methods();
         $labModel = new Lab();
 
-        $curYearCipher = date("y");
         $idTz = $actData['ID_TZ'];
-        $i = 1;
+
+        $this->insertUpdateActProbeNew($actData);
 
         foreach ($data as $val) {
-            $currentVal['place'] = $val['sampling_place']; /* * Дата отбора образца */
-            $drawSampleDate = trim($val['sampling_date']);
+            // Дата отбора образца
+            $date = $this->parseDate($val['sampling_date']);
 
-            $date = DateTime::createFromFormat('n/j/Y', $drawSampleDate);
+            // Срок годности
+            $expDate = $this->parseDate($val['expiration_date']);
 
-            if ($date === false) {
-                throw new RuntimeException("Некорректная дата sampling_date: {$drawSampleDate}");
-            } /* * Срок годности */
-            $drawExpDate = trim($val['expiration_date']);
-            $expDate = DateTime::createFromFormat('n/j/Y', $drawExpDate);
+            // Данные для ulab_material_to_request
+            $currentVal = [
+                'place' => $val['sampling_place'],
+                'date_probe' => $date->format('Y-m-d'),
+            ];
 
-            if ($expDate === false) {
-                throw new RuntimeException("Некорректная дата expiration_date: {$drawExpDate}");
-            } /* * Дата отбора для ulab_material_to_request */
-            $currentVal['date_probe'] = $date->format('Y-m-d');
+            $umtrSqlData = $this->prepearTableData(
+                'ulab_material_to_request',
+                $currentVal
+            );
 
-            $umtrSqlData = $this->prepearTableData('ulab_material_to_request', $currentVal);
-            $this->DB->Update('ulab_material_to_request', $umtrSqlData, "where id = {$val['ugtp_id']} AND in_act <> 1");
+            $this->DB->Update(
+                'ulab_material_to_request',
+                $umtrSqlData,
+                "where id = {$val['ugtp_id']} AND in_act <> 1"
+            );
+
             $actData['probe']['umtr_id'] = $val['ugtp_id'];
 
+            // Упаковка
             $drawPackName = explode(',', $val['package']);
-            $packName = $drawPackName[0];
-            $packaging_integrity = trim($drawPackName[1]);
-            $dopInfoProbe =
-                [
-                    'id_tz' => $idTz,
-                    'ugtp_id' => $val['ugtp_id'],
-                    'nd' => $val['normative_level'],
-                    'manufacturer' => $val['manufacturer'],
-                    'batch_size' => $val['sample_quantity'],
-                    'packing_name' => $packName,
-                    'packaging_integrity' => $packaging_integrity,
-                    'manufacturing_date' => $date->format('Y-m-d'),
-                    'expiration_date' => $expDate->format('Y-m-d'),
-                    'storage_conditions' => $val['storage_conditions'],
-                    'delivery_method' => $val['delivery_method'],
-                    'sampling_place' => $val['sampling_place'],
-                    'sampling_by' => $val['sampling_by'],
-                ];
 
-            $this->insertUpdateActProbeNew($actData);
+            $packName = trim($drawPackName[0]);
+            $packagingIntegrity = isset($drawPackName[1])
+                ? trim($drawPackName[1])
+                : '';
 
-            $dopInfoDate = $this->prepearTableData('dop_info_requirement', $dopInfoProbe);
-            $this->DB->Insert('dop_info_requirement', $dopInfoDate);
+            // Дополнительная информация об образце
+            $dopInfoProbe = [
+                'id_tz' => $idTz,
+                'ugtp_id' => $val['ugtp_id'],
+                'nd' => $val['normative_level'],
+                'manufacturer' => $val['manufacturer'],
+                'batch_size' => $val['sample_quantity'],
+                'packing_name' => $packName,
+                'packaging_integrity' => $packagingIntegrity,
+                'manufacturing_date' => $date->format('Y-m-d'),
+                'expiration_date' => $expDate->format('Y-m-d'),
+                'storage_conditions' => $val['storage_conditions'],
+                'delivery_method' => $val['delivery_method'],
+                'sampling_place' => $val['sampling_place'],
+                'sampling_by' => $val['sampling_by'],
+            ];
+
+            $dopInfoData = $this->prepearTableData(
+                'dop_info_requirement',
+                $dopInfoProbe
+            );
+
+            $this->DB->Insert(
+                'dop_info_requirement',
+                $dopInfoData
+            );
         }
-
-        $result = [];
 
         foreach ($methodsArr as $key => $methods) {
             foreach ($methods as $item) {
                 $labMethodIds = $methodModel->getLab($item['method_id']);
 
                 foreach ($labMethodIds as $methodId) {
-                    $sql = $this->DB->Query("select max(gost_number) as gost_number from ulab_gost_to_probe where material_to_request_id = {$key}")->Fetch();
-                    $gostNumber = $sql['gost_number'];
+                    $sql = $this->DB->Query(
+                        "select max(gost_number) as gost_number
+                     from ulab_gost_to_probe
+                     where material_to_request_id = {$key}"
+                    );
+
+                    $sqlData = $sql->Fetch();
+                    $gostNumber = $sqlData['gost_number'];
+
                     if (!is_numeric($gostNumber)) {
                         $gostNumber = -1;
                     }
+
                     $lab = $labModel->getLab($methodId);
 
                     $result = [
@@ -1250,10 +1266,54 @@ class Probe extends Model
                         'assigned_id' => $lab['HEAD_ID'],
                         'gost_number' => ++$gostNumber,
                     ];
-                    $this->DB->Insert('ulab_gost_to_probe', $result);
+
+                    $this->DB->Insert(
+                        'ulab_gost_to_probe',
+                        $result
+                    );
                 }
             }
         }
+    }
+
+    private function parseDate(string $value): DateTime
+    {
+        $value = trim($value);
+
+        if ($value === '') {
+            throw new RuntimeException('Дата не может быть пустой');
+        }
+
+        $formats = [
+            'n/j/Y',   // 1/5/2026
+            'm/d/Y',   // 01/05/2026
+            'd.m.Y',   // 05.01.2026
+            'd/m/Y',   // 05/01/2026
+            'Y-m-d',   // 2026-01-05
+            'Y/m/d',   // 2026/01/05
+        ];
+
+        foreach ($formats as $format) {
+            $date = DateTime::createFromFormat($format, $value);
+            $errors = DateTime::getLastErrors();
+
+            if (
+                $date !== false &&
+                (
+                    $errors === false ||
+                    (
+                        $errors['warning_count'] === 0 &&
+                        $errors['error_count'] === 0
+                    )
+                )
+            ) {
+                return $date;
+            }
+        }
+
+        throw new RuntimeException(
+            "Некорректная дата: {$value}"
+        );
     }
 
 

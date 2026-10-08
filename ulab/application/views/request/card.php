@@ -157,7 +157,7 @@
                     </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                 <header class="panel-heading">
                     Общая информация
                     <span class="tools float-end">
@@ -166,7 +166,7 @@
                 </header>
                 <div class="panel-body">
                     <div class="row mb-3">
-                        <div class="col-4">
+                        <div class="col-4" >
                             <div>Общая стоимость</div>
                             <div><strong><?= number_format($this->data['payment']['price'], 2, ',', '') ?> руб.</strong></div>
                         </div>
@@ -194,7 +194,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                         <div class="col-4">
                             <div>Контактное лицо</div>
                             <div><strong><?= $this->data['contact'] ?></strong></div>
@@ -283,7 +283,7 @@
                                 <td class="w30"></td>
                             </tr>
 
-                            <tr class="<?= $this->data['proposal']['check'] ? 'table-green' : '' ?>">
+                            <tr class="<?= $this->data['proposal']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                 <td><strong>Коммерческое предложение</strong></td>
                                 <td>
                                     <?= $this->data['proposal']['number'] ?>
@@ -337,7 +337,7 @@
                                 <td></td>
                             </tr>
 
-                            <tr class="<?= $this->data['order']['check'] ?>">
+                            <tr class="<?= $this->data['order']['check'] ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                 <td><strong>Договор</strong></td>
                                 <td>
                                     <?php if ($this->data['order']['is_generated']): ?>
@@ -397,7 +397,7 @@
                                 <td></td>
                             </tr>
 
-                            <tr class="<?= $this->data['attach']['check'] ?>">
+                            <tr class="<?= $this->data['attach']['check'] ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                 <td><strong>Прил. к договору (ТЗ)</strong></td>
                                 <td>
                                     <?= $this->data['attach']['number'] ?>
@@ -488,7 +488,7 @@
                                 </td>
                             </tr>
 
-                            <tr class="<?= $this->data['invoice']['check'] ? 'table-green' : '' ?>">
+                            <tr class="<?= $this->data['invoice']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                 <td><strong>Счет</strong></td>
                                 <td><?= $this->data['invoice']['number'] ?></td>
                                 <td><?= $this->data['invoice']['date'] ?></td>
@@ -555,7 +555,7 @@
                                 <td></td>
                             </tr>
 
-                            <tr class="<?= $this->data['payment']['check'] ? 'table-green' : '' ?>">
+                            <tr class="<?= $this->data['payment']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                 <td><strong>Оплата</strong></td>
                                 <td><?= $this->data['payment']['status'] ?></td>
                                 <td><?= $this->data['payment']['datePayment'] ?></td>
@@ -765,7 +765,7 @@
                             </tr>
 
                             <?php if (empty($this->data['protocol'])): ?>
-                                <tr>
+                                <tr style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                     <td><strong>Протокол</strong></td>
                                     <td>
                                         Не сформирован
@@ -800,7 +800,7 @@
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($this->data['protocol'] as $key => $protocol): ?>
-                                    <tr class="<?= $protocol['check'] ? 'table-green' : '' ?>">
+                                    <tr class="<?= $protocol['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                         <td><strong>Протокол</strong></td>
                                         <td>
                                             <?= $protocol['title'] ?>
@@ -898,7 +898,7 @@
                                 <?php endforeach; ?>
                             <?php endif; ?>
 
-                            <tr class="<?= !empty($this->data['is_end_test']) ? 'table-green' : '' ?>">
+                            <tr class="<?= !empty($this->data['is_end_test']) ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                                 <td><strong>Завершение испытаний</strong></td>
                                 <td><?= $this->data['is_end_test'] ? 'Завершено' : 'Не завершено' ?></td>
                                 <td><?= $this->data['complete']['date'] ?></td>

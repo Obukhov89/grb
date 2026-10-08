@@ -737,6 +737,8 @@ class RequestController extends Controller
         /** @var Status $statusModel */
         $statusModel = $this->model('Status');
 
+        $labModel = $this->model('Lab');
+
         $this->data['title'] = "Карточка заявки";
 
         $tzId = $requirement->getTzIdByDealId($dealId);
@@ -762,6 +764,12 @@ class RequestController extends Controller
         $permissionInfo         = $permissionModel->getUserPermission($_SESSION['SESS_AUTH']['USER_ID']);
         $dateRequestUPD         = $request->getDateRequestUPD($dealId);
 
+        $currUserId = $user->getCurrentUserId();
+        $labInfo = $labModel->getLabByUserId($currUserId);
+        $this->data['isLabHeader'] = false;
+        if ($labInfo['HEAD_ID'] == $currUserId){
+            $this->data['isLabHeader'] = true;
+        }
 
         $userFiles = $request->getFilesFromDir(UPLOAD_DIR . "/request/{$dealId}");
         $techFiles = $request->getFilesFromDir(UPLOAD_DIR . "/request_tech/{$dealId}");

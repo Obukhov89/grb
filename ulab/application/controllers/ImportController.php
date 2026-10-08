@@ -2311,7 +2311,6 @@ class ImportController extends Controller
                 'STAGE_ID' => "'NEW'"
             ];
             $resultAddTz = $request->addTz($dealId, $dataTz);
-//            $import->updateStatusResponse('checked', $responseFile['id']);
         } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
@@ -2360,15 +2359,19 @@ class ImportController extends Controller
         $ugtpArr = [];
         foreach ($methodsRequest as $key => $methodRequest) {
             $methodsList = $method->getList();
+
             foreach ($methodRequest as $methods) {
                 $normNewMethodName = $this->normalize($methods['method_name']);
+
                 foreach ($methodsList as $methodItem) {
                     $normDbNameMethod = $this->normalize($methodItem['name']);
+
                     if ($normDbNameMethod === $normNewMethodName) {
                         $ugtpArr[$key][] = [
                             'method_id' => $methodItem['id'],
                             'price' => $methodItem['price'],
                         ];
+                        break;
                     }
                 }
             }
@@ -2379,6 +2382,11 @@ class ImportController extends Controller
         $selectionType = '1';
         $actDAte = date('Y-m-d');
 
+        $umtrArr = [];
+        foreach ($probes as $k => $val){
+            $umtrArr[] = $k;
+        }
+
         $actData = [
             'ACT_DATE' => $actDAte,
             'ACT_NUM' => $newActNum,
@@ -2386,7 +2394,10 @@ class ImportController extends Controller
             'ID_TZ' => $resultAddTz,
             'deliveryman' => '',
             'act_type' => 0,
-            'creater' => $_SESSION['SESS_AUTH']['USER_ID']
+            'creater' => $_SESSION['SESS_AUTH']['USER_ID'],
+            'probe' => [
+                'ugtp_id' => $umtrArr
+            ]
         ];
 
         $probe->setProbesFromFiles($actData, $products, $ugtpArr);

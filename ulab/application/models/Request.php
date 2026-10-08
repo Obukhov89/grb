@@ -133,7 +133,7 @@ class Request extends Model
         }
 
         $ba_contr = $this->DB->Query(
-                "
+            "
                 SELECT DISTINCT d.*
                 FROM `DOGOVOR` d
                 LEFT JOIN ba_tz bt1 ON bt1.ID_Z = d.DEAL_ID AND bt1.COMPANY_ID = {$companyId}
@@ -141,7 +141,7 @@ class Request extends Model
                 WHERE d.IS_ACTION > 0 
                   AND (d.CLIENT_ID = {$companyId} OR bt1.ID_Z IS NOT NULL OR bt2.ID IS NOT NULL)
             "
-            );
+        );
 
         while ($row = $ba_contr->Fetch()) {
             $row['DATE'] = date("d.m.Y", strtotime($row['DATE']));
@@ -366,20 +366,20 @@ class Request extends Model
         $dealData = $this->getDealById($newDealId);
 
         $data = [
-            'TYPE_ID' =>        $this->quoteStr($dealData['TYPE_ID']),
-            'ASSIGNED' =>       $this->quoteStr($dealData['ASSIGNED']),
-            'REQUEST_TITLE' =>  $this->quoteStr($dealData['TITLE']),
-            'STAGE_ID' =>       $this->quoteStr('NEW'),
-            'TZ' =>             $this->quoteStr($ba_tz['TZ']),
-            'OBJECT' =>         $this->quoteStr($ba_tz['OBJECT']),
+            'TYPE_ID' => $this->quoteStr($dealData['TYPE_ID']),
+            'ASSIGNED' => $this->quoteStr($dealData['ASSIGNED']),
+            'REQUEST_TITLE' => $this->quoteStr($dealData['TITLE']),
+            'STAGE_ID' => $this->quoteStr('NEW'),
+            'TZ' => $this->quoteStr($ba_tz['TZ']),
+            'OBJECT' => $this->quoteStr($ba_tz['OBJECT']),
             //            'PROBE' =>          $this->quoteStr($ba_tz['PROBE']),
-            'SAVE_MAIL' =>      $this->quoteStr($ba_tz['SAVE_MAIL']),
-            'MATERIAL' =>       $this->quoteStr($ba_tz['MATERIAL']),
-            'COMPANY_ID' =>     $this->quoteStr($ba_tz['COMPANY_ID']),
-            'COMPANY_TITLE' =>  $this->quoteStr($ba_tz['COMPANY_TITLE']),
-            'DESCRIPTION' =>    $this->quoteStr($ba_tz['DESCRIPTION']),
-            'PRICE' =>          $this->quoteStr($totalPrice),
-            'LABA_ID' =>        $this->quoteStr($ba_tz['LABA_ID']),
+            'SAVE_MAIL' => $this->quoteStr($ba_tz['SAVE_MAIL']),
+            'MATERIAL' => $this->quoteStr($ba_tz['MATERIAL']),
+            'COMPANY_ID' => $this->quoteStr($ba_tz['COMPANY_ID']),
+            'COMPANY_TITLE' => $this->quoteStr($ba_tz['COMPANY_TITLE']),
+            'DESCRIPTION' => $this->quoteStr($ba_tz['DESCRIPTION']),
+            'PRICE' => $this->quoteStr($totalPrice),
+            'LABA_ID' => $this->quoteStr($ba_tz['LABA_ID']),
         ];
 
         $this->addTz($newDealId, $data);
@@ -408,7 +408,7 @@ class Request extends Model
         $ar = array(
             "TO_CHAT_ID" => 855, // ID чата
             "FROM_USER_ID" => 278, // ID пользователя состоящего в чате
-            "MESSAGE"     => "По заявке [URL=/ulab/request/card/{$dealId}]{$res['REQUEST_TITLE']} {$res['COMPANY_TITLE']}[/URL] внесена оплата в размере {$amount} рублей", // Произвольный текст
+            "MESSAGE" => "По заявке [URL=/ulab/request/card/{$dealId}]{$res['REQUEST_TITLE']} {$res['COMPANY_TITLE']}[/URL] внесена оплата в размере {$amount} рублей", // Произвольный текст
         );
         CIMChat::AddMessage($ar);
 
@@ -515,7 +515,6 @@ class Request extends Model
                 ['DISABLE_USER_FIELD_CHECK' => true]
             );
         }
-
 
 
         return $result;
@@ -677,13 +676,13 @@ class Request extends Model
             $shortName = StringHelper::shortName($name);
 
             $resultData = [
-                'user_id'       => $row['user_id'],
-                'name'          => trim($name),
-                'last_name'     => trim($lastName),
-                'user_name'     => "{$name} {$lastName}",
-                'short_name'    => "{$shortName}. {$lastName}",
-                'is_main'       => $row['is_main'],
-                'department'    => $user["UF_DEPARTMENT"],
+                'user_id' => $row['user_id'],
+                'name' => trim($name),
+                'last_name' => trim($lastName),
+                'user_name' => "{$name} {$lastName}",
+                'short_name' => "{$shortName}. {$lastName}",
+                'is_main' => $row['is_main'],
+                'department' => $user["UF_DEPARTMENT"],
             ];
 
             $result[] = $resultData;
@@ -723,13 +722,13 @@ class Request extends Model
                 $shortName = StringHelper::shortName($name);
 
                 $resultData = [
-                    'user_id'       => $ass,
-                    'name'          => $name,
-                    'last_name'     => $lastName,
-                    'user_name'     => "{$lastName} {$name}",
-                    'short_name'    => "{$shortName}. {$lastName}",
-                    'is_main'       => 0,
-                    'department'    => $user["UF_DEPARTMENT"],
+                    'user_id' => $ass,
+                    'name' => $name,
+                    'last_name' => $lastName,
+                    'user_name' => "{$lastName} {$name}",
+                    'short_name' => "{$shortName}. {$lastName}",
+                    'is_main' => 0,
+                    'department' => $user["UF_DEPARTMENT"],
                 ];
 
                 $result[] = $resultData;
@@ -747,7 +746,7 @@ class Request extends Model
      */
     public function tzUnderConsideration($userId)
     {
-        $year = (int) date("Y", time()) % 10 ? substr(date("Y", time()), -2) : date("Y", time());
+        $year = (int)date("Y", time()) % 10 ? substr(date("Y", time()), -2) : date("Y", time());
         $yearLast = $year - 1;
 
         //TODO: почему account not null?
@@ -907,6 +906,17 @@ class Request extends Model
     {
         $requirementModel = new Requirement();
         $statusModel = new Status();
+        $userModel = new User();
+        $labModel = new Lab();
+
+
+        $currUserId = $userModel->getCurrentUserId();
+        $labInfo = $labModel->getLabByUserId($currUserId);
+        $isLabHeader = false;
+        if ($labInfo['HEAD_ID'] == $currUserId) {
+            $isLabHeader = true;
+        }
+
 
         $where = "";
         $limit = "";
@@ -1021,8 +1031,7 @@ class Request extends Model
                             $statusWhere .= " INNER JOIN PROTOCOLS {$aliasP} ON {$aliasP}.ID = {$aliasUmtr}.protocol_id AND {$aliasP}.NUMBER IS NULL ";
 
                             $groupConditions[] = "({$aliasTsh}.id IS NOT NULL AND {$aliasP}.id IS NOT NULL)";
-                        }
-                        // 2. Обработка групп (например, "g 1")
+                        } // 2. Обработка групп (например, "g 1")
                         else if (strpos((string)$stageValue, 'g') === 0) {
                             $groupId = explode(' ', $stageValue)[1];
                             $statuses = $statusModel->getStatusesForGroup($groupId);
@@ -1044,8 +1053,7 @@ class Request extends Model
                             if (!empty($subGroupConditions)) {
                                 $groupConditions[] = "(" . implode(' AND ', $subGroupConditions) . ")";
                             }
-                        }
-                        // 3. Обработка конкретных ID статусов
+                        } // 3. Обработка конкретных ID статусов
                         else {
                             $prStatus = "";
                             $prWhere = "";
@@ -1250,6 +1258,11 @@ class Request extends Model
                 $row['ASSIGNED'] = implode(', ', $arrAss);
             }
 
+            if ($isLabHeader) {
+                $row['MATERIAL'] = '--';
+                $row['price_discount'] = 0;
+            }
+
             $baTzIds[] = $row['b_id'];
 
             $protocolsData = [];
@@ -1279,7 +1292,6 @@ class Request extends Model
             }
 
 
-
             $row['bgCheck'] = $mangoClass;
 
             $row['bgConfirm'] = $greenClass;
@@ -1302,6 +1314,12 @@ class Request extends Model
 
             $row['price_ru'] = StringHelper::priceFormatRus($row['price_discount']);
 
+            if ($isLabHeader) {
+                $row['price_discount'] = 0;
+            } else {
+                $row['price_discount'] = $row['PRICE'];
+            }
+
             if ($row['TAKEN_ID_DEAL'] || $row['TYPE_ID'] == 7) {
                 $row['bgPrice'] = 'bg-green-transp';
             } elseif (round($row['price_discount'], 2) && round($row['OPLATA'], 2) >= round($row['price_discount'], 2) || !$row['price_discount']) {
@@ -1312,7 +1330,12 @@ class Request extends Model
 
             //Название компании
             if (!empty($row['COMPANY_ID'])) {
-                $row['COMPANY_TITLE'] = $row['company_title_bcc'];
+                if ($isLabHeader) {
+                    $row['COMPANY_TITLE'] = '--';
+                } else {
+                    $row['COMPANY_TITLE'] = $row['company_title_bcc'];
+                }
+
             }
 
 
@@ -1358,12 +1381,12 @@ class Request extends Model
 
             $row['TAKEN_SERT_ISP'] = (int)$row['TAKEN_SERT_ISP'];
 
-            $row['YEAR_ACT'] = !empty($row['DEADLINE']) ? date('Y',  strtotime($row['DATE_ACT'])) : '';
+            $row['YEAR_ACT'] = !empty($row['DEADLINE']) ? date('Y', strtotime($row['DATE_ACT'])) : '';
 
-            $row['DEADLINE_TABLE'] = !empty($row['DEADLINE_TABLE']) ? date('d.m.Y',  strtotime($row['DEADLINE_TABLE'])) : '';
-            $row['deadlineISO'] = !empty($row['DEADLINE_TABLE']) ? date('Y-m-d',  strtotime($row['DEADLINE_TABLE'])) : ''; //TODO: Проверить почему не всегда записывается поле DEADLINE и заменить
+            $row['DEADLINE_TABLE'] = !empty($row['DEADLINE_TABLE']) ? date('d.m.Y', strtotime($row['DEADLINE_TABLE'])) : '';
+            $row['deadlineISO'] = !empty($row['DEADLINE_TABLE']) ? date('Y-m-d', strtotime($row['DEADLINE_TABLE'])) : ''; //TODO: Проверить почему не всегда записывается поле DEADLINE и заменить
 
-            $row['dateOplataISO'] = !empty($row['DATE_OPLATA']) ? date('Y-m-d',  strtotime($row['DATE_OPLATA'])) : '';
+            $row['dateOplataISO'] = !empty($row['DATE_OPLATA']) ? date('Y-m-d', strtotime($row['DATE_OPLATA'])) : '';
 
             $textColor = '';
             if (
@@ -1376,11 +1399,11 @@ class Request extends Model
             $row['textColor'] = $textColor;
 
             $row['DATE_CREATE_TIMESTAMP'] = !empty($row['DATE_CREATE_TIMESTAMP']) && $row['DATE_CREATE_TIMESTAMP'] != "0000-00-00 00:00:00"
-                ? date('Y-m-d',  strtotime($row['DATE_CREATE_TIMESTAMP']))
+                ? date('Y-m-d', strtotime($row['DATE_CREATE_TIMESTAMP']))
                 : '';
 
             $row['dateCreateRu'] = !empty($row['DATE_CREATE_TIMESTAMP']) && $row['DATE_CREATE_TIMESTAMP'] != "0000-00-00 00:00:00"
-                ? date('d.m.Y',  strtotime($row['DATE_CREATE_TIMESTAMP']))
+                ? date('d.m.Y', strtotime($row['DATE_CREATE_TIMESTAMP']))
                 : '';
 
             $result[] = $row;
@@ -1551,7 +1574,7 @@ class Request extends Model
 
             if (empty($row['date_reply']) && empty($row['date_return'])) {
                 $status = 'На рассмотрении руководителя лаборатории';
-            } elseif (!empty($row['date_reply']) && empty($row['date_return']) &&  !empty($row['confirm'])) {
+            } elseif (!empty($row['date_reply']) && empty($row['date_return']) && !empty($row['confirm'])) {
                 $status = 'Заявка принята руководителем. Счет не выставлен.';
                 $bgColor = 'bg-light-pink';
             }
@@ -1849,7 +1872,7 @@ class Request extends Model
         )->SelectedRowsCount();
 
         while ($row = $data->Fetch()) {
-            $row['DATE_ACT'] = !empty($row['DATE_ACT']) ? date('d.m.Y',  strtotime($row['DATE_ACT'])) : '';
+            $row['DATE_ACT'] = !empty($row['DATE_ACT']) ? date('d.m.Y', strtotime($row['DATE_ACT'])) : '';
 
             $assigned = $this->getAssignedByDealId($row['ID_Z']);
             $arrAss = [];
@@ -2110,9 +2133,9 @@ class Request extends Model
 
         while ($row = $data->Fetch()) {
             $row['STAGE_NUMBER'] = '';
-            $row['DATE'] = !empty($row['DATE']) ? date('d.m.Y',  strtotime($row['DATE'])) : '';
-            $row['DATE_ACT_VR'] = !empty($row['DATE_ACT_VR']) ? date('d.m.Y',  strtotime($row['DATE_ACT_VR'])) : '';
-            $row['SEND_DATE_ACT_VR'] = !empty($row['SEND_DATE_ACT_VR']) ? date('d.m.Y',  strtotime($row['SEND_DATE_ACT_VR'])) : '';
+            $row['DATE'] = !empty($row['DATE']) ? date('d.m.Y', strtotime($row['DATE'])) : '';
+            $row['DATE_ACT_VR'] = !empty($row['DATE_ACT_VR']) ? date('d.m.Y', strtotime($row['DATE_ACT_VR'])) : '';
+            $row['SEND_DATE_ACT_VR'] = !empty($row['SEND_DATE_ACT_VR']) ? date('d.m.Y', strtotime($row['SEND_DATE_ACT_VR'])) : '';
 
             $assigned = $this->getAssignedByDealId($row['ID_Z']);
             $arrAss = [];
@@ -2391,7 +2414,7 @@ class Request extends Model
 
     public function getStageRequestById($dealId)
     {
-        $request =  CCrmDeal::GetByID($dealId);
+        $request = CCrmDeal::GetByID($dealId);
 
         return $request['STAGE_ID'];
     }
@@ -2416,8 +2439,8 @@ class Request extends Model
 
         while ($row = $sql->Fetch()) {
             $result[] = [
-                'id' =>   $row['ID_Z'],
-                'title' =>   $row['REQUEST_TITLE'],
+                'id' => $row['ID_Z'],
+                'title' => $row['REQUEST_TITLE'],
             ];
         }
 
@@ -2985,6 +3008,7 @@ class Request extends Model
 
         return $result;
     }
+
     public function getDateRequestUPD($dealId)
     {
         $result = $this->DB->Query("SELECT date FROM request_upd WHERE deal_id = '{$dealId}'")->Fetch()['date'];
@@ -2995,6 +3019,7 @@ class Request extends Model
         }
         return $result2;
     }
+
     public function requestUPD($dealId, $text)
     {
         $userModel = new User();
