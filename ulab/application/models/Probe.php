@@ -1,5 +1,8 @@
 <?php
 
+use Bitrix\Im\Model\ChatTable;
+use Bitrix\Im\Model\RelationTable;
+
 /**
  * Модель для работы с Пробами
  * Class Probe
@@ -1236,44 +1239,50 @@ class Probe extends Model
             );
         }
 
-        foreach ($methodsArr as $key => $methods) {
-            foreach ($methods as $item) {
-                $labMethodIds = $methodModel->getLab($item['method_id']);
-
-                foreach ($labMethodIds as $methodId) {
-                    $sql = $this->DB->Query(
-                        "select max(gost_number) as gost_number
-                     from ulab_gost_to_probe
-                     where material_to_request_id = {$key}"
-                    );
-
-                    $sqlData = $sql->Fetch();
-                    $gostNumber = $sqlData['gost_number'];
-
-                    if (!is_numeric($gostNumber)) {
-                        $gostNumber = -1;
-                    }
-
-                    $lab = $labModel->getLab($methodId);
-
-                    $result = [
-                        'material_to_request_id' => $key,
-                        'method_id' => $item['method_id'],
-                        'new_method_id' => $item['method_id'],
-                        'conditions_id' => null,
-                        'tech_condition_id' => null,
-                        'price' => $item['price'],
-                        'assigned_id' => $lab['HEAD_ID'],
-                        'gost_number' => ++$gostNumber,
-                    ];
-
-                    $this->DB->Insert(
-                        'ulab_gost_to_probe',
-                        $result
-                    );
-                }
-            }
-        }
+//        $arrHeadLabs = [];
+//        foreach ($methodsArr as $key => $methods) {
+//            foreach ($methods as $item) {
+//                $labMethodIds = $methodModel->getLab($item['method_id']);
+//
+//                foreach ($labMethodIds as $methodId) {
+//                    $sql = $this->DB->Query(
+//                        "select max(gost_number) as gost_number
+//                     from ulab_gost_to_probe
+//                     where material_to_request_id = {$key}"
+//                    );
+//
+//                    $sqlData = $sql->Fetch();
+//                    $gostNumber = $sqlData['gost_number'];
+//
+//                    if (!is_numeric($gostNumber)) {
+//                        $gostNumber = -1;
+//                    }
+//
+//                    $lab = $labModel->getLab($methodId);
+//
+//                    $result = [
+//                        'material_to_request_id' => $key,
+//                        'method_id' => $item['method_id'],
+//                        'new_method_id' => $item['method_id'],
+//                        'conditions_id' => null,
+//                        'tech_condition_id' => null,
+//                        'price' => $item['price'],
+//                        'assigned_id' => $lab['HEAD_ID'],
+//                        'gost_number' => ++$gostNumber,
+//                    ];
+//
+//
+//
+//                    $this->DB->Insert(
+//                        'ulab_gost_to_probe',
+//                        $result
+//                    );
+//                }
+//            }
+//        }
+//
+//        $arrHeadLabs = array_unique($arrHeadLabs);
+//        $this->sendNotify($arrHeadLabs, $idTz);
     }
 
     private function parseDate(string $value): DateTime
@@ -1285,12 +1294,12 @@ class Probe extends Model
         }
 
         $formats = [
-            'n/j/Y',   // 1/5/2026
-            'm/d/Y',   // 01/05/2026
-            'd.m.Y',   // 05.01.2026
-            'd/m/Y',   // 05/01/2026
-            'Y-m-d',   // 2026-01-05
-            'Y/m/d',   // 2026/01/05
+            'n/j/Y',
+            'm/d/Y',
+            'd.m.Y',
+            'd/m/Y',
+            'Y-m-d',
+            'Y/m/d',
         ];
 
         foreach ($formats as $format) {
@@ -1316,5 +1325,67 @@ class Probe extends Model
         );
     }
 
+
+    public function sendNotify($arrHeadLabs, $tzId)
+    {
+        $serverName = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            ? 'https'
+            : 'http';
+
+        $url = $scheme . '://' . $serverName . '/ulab/requirement/card_new_new/' . (int)$tzId;
+
+        $chatManager = new CIMChat();
+        $adminId = 61;
+
+        $location =
+
+        $titleChat = 'Уведомления по заявкам';
+
+        foreach ($arrHeadLabs as $headLab) {
+            $headLab = (int)$headLab;
+
+            $query = $this->DB->Query("
+                SELECT r.CHAT_ID
+                FROM b_im_relation r
+                INNER JOIN b_im_chat c ON c.ID = r.CHAT_ID
+                WHERE r.USER_ID = {$headLab}
+                  AND c.TITLE = '" . $this->DB->ForSql($titleChat) . "'
+                LIMIT 1
+            ");
+
+            $chat = $query->Fetch();
+
+            if ($chat) {
+                $chatId = (int)$chat['CHAT_ID'];
+                // Отправляем сообщение
+                if ((int)$chatId > 0) {
+                    CIMChat::AddMessage([
+                        'TO_CHAT_ID' => (int)$chatId,
+                        'FROM_USER_ID' => (int)$adminId,
+                        'MESSAGE' => 'Поступила новая заявка. Назначьте ответственных. ' . $url,
+                    ]);
+                }
+            } else {
+                $chatId = $chatManager->Add([
+                    'TITLE' => $titleChat,
+                    'DESCRIPTION' => 'Системные уведомления по заявкам',
+                    'COLOR' => 'MINT',
+                    'TYPE' => IM_MESSAGE_CHAT,
+                    'AUTHOR_ID' => (int)$adminId,
+                    'USERS' => [(int)$adminId, $headLab],
+                ]);
+
+                // Отправляем сообщение
+                if ((int)$chatId > 0) {
+                    CIMChat::AddMessage([
+                        'TO_CHAT_ID' => (int)$chatId,
+                        'FROM_USER_ID' => (int)$adminId,
+                        'MESSAGE' => 'Поступила новая заявка. Назначьте ответственных. ' . $url,
+                    ]);
+                }
+            }
+        }
+    }
 
 }

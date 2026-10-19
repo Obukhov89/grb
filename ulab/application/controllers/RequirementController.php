@@ -1892,6 +1892,15 @@ class RequirementController extends Controller
                 'new_method_id' => $_POST['val'],
                 'method_id' => $_POST['val'],
             ],
+            'changed_unit_id' => [
+                'changed_unit_id' => $_POST['val'],
+            ],
+            'permissible_value' => [
+                'permissible_value' => $_POST['val'],
+            ],
+            'saving_rates' => [
+                'saving_rates' => $_POST['val'],
+            ],
             'price' => [
                 'price' => $_POST['val'],
             ],
@@ -2192,5 +2201,16 @@ class RequirementController extends Controller
 
         $requirementModel = $this->model("Requirement");
         echo json_encode($requirementModel->getDopInfoByUgtpId($_POST['ugtp_id']));
+    }
+
+    public function getUnitListAjax()
+    {
+        global $APPLICATION;
+        $APPLICATION->RestartBuffer();
+
+        $methodsModel = $this->model('Methods');
+        $result = $methodsModel->getUnitList();
+
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
     }
 }

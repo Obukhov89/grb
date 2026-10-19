@@ -572,7 +572,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                Подтверждение ТЗ
+                Назначение исполнителей
                 <span class="tools float-end">
             <a href="javascript:;" class="fa fa-star-of-life bg-transparent text-danger d-none"></a>
             <a href="javascript:;" class="fa fa-chevron-up"></a>
@@ -621,7 +621,7 @@
 
                             <?php if (!empty($this->data['lab_head']['user']) && $this->data['check_state'] == CHECK_TZ_APPROVE): ?>
                                 <div class="mt-1">
-                                    <label class="form-label text-green fw-bold">Техническое задание утверждено.</label>
+                                    <label class="form-label text-green fw-bold">Исполнители назначены.</label>
                                 </div>
                             <?php endif; ?>
 
@@ -630,13 +630,13 @@
                                     <?php if ($this->data['check_state'] == CHECK_TZ_NOT_SENT): ?>
                                         <button type="button"
                                                 class="aa btn btn-primary sent_approve_tz <?= $this->data['lab_head']['check_state'] == CHECK_TZ_NOT_SENT ? 'disable' : '' ?>">
-                                            <i class="fa-regular fa-paper-plane"></i> Утвердить
+                                            <i class="fa-regular fa-paper-plane"></i> Назначить
                                         </button>
                                     <?php else: ?>
                                         <button type="button"
                                                 class="bb btn btn-success me-3 approve_tz
                                                 <?= ($this->data['check_state'] == CHECK_TZ_WAIT || $this->data['check_state'] == CHECK_TZ_NOT_APPROVE) && $this->data['lab_head']['curr_user_status'] != 1 ? '' : 'disable' ?>">
-                                            <i class="fa-regular fa-circle-check"></i> Утвердить
+                                            <i class="fa-regular fa-circle-check"></i> Назначить
                                         </button>
                                         <a href="#return-modal-form"
                                            class="btn btn-danger me-3 not_approve_tz popup-with-form
@@ -1025,7 +1025,7 @@
 </form>
 
 
-<form id="add-methods-modal-form" class="bg-light mfp-hide col-9 m-auto p-3 position-relative" method="post"
+<form id="add-methods-modal-form" class="bg-light mfp-hide col-12 m-auto p-3 position-relative" method="post"
       action="<?= URI ?>/requirement/addMethodsToProbe/">
     <div class="title mb-3 h-2">
         Добавление методик
@@ -1052,23 +1052,26 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-3">
-            <label class="form-label mb-1">Методика испытаний <span class="redStars">*</span></label>
-        </div>
-        <div class="col-2">
-            <label class="form-label mb-1">НД</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label mb-1">Нормы НД</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label mb-1">Исполнитель</label>
-        </div>
-        <div class="col">
-            <label class="form-label mb-1">Цена</label>
-        </div>
-    </div>
+<!--    <div class="row">-->
+<!--        <div class="col-3">-->
+<!--            <label class="form-label mb-1">Методика испытаний <span class="redStars">*</span></label>-->
+<!--        </div>-->
+<!--        <div class="col-2">-->
+<!--            <label class="form-label mb-1">Нормативный документ</label>-->
+<!--        </div>-->
+<!--        <div class="col-2">-->
+<!--            <label class="form-label mb-1">Единицы измерения</label>-->
+<!--        </div>-->
+<!--        <div class="col-2">-->
+<!--            <label class="form-label mb-1">Допустимое значение</label>-->
+<!--        </div>-->
+<!--        <div class="col-2">-->
+<!--            <label class="form-label mb-1">Исполнитель</label>-->
+<!--        </div>-->
+<!--        <div class="col">-->
+<!--            <label class="form-label mb-1">Цена</label>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <div class="method-container mb-3">
 
@@ -1245,7 +1248,7 @@
       action="/ulab/requirement/<?= (!empty($this->data['lab_head']['user']) && $this->data['check_state'] == CHECK_TZ_NOT_SENT) ? 'confirmTzSent' : 'confirmTzSentForCanceled' ?>/"
       method="post">
     <div class="title mb-3 h-2">
-        Отправка руководителям на проверку
+        Отправка руководителям на утверждение исполнителей
     </div>
 
     <div class="line-dashed-small"></div>

@@ -20,28 +20,28 @@ class Reference extends Model
             'by' => 'id',
             'dir' => 'DESC'
         ];
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
-                if ( isset($filter['search']['name']) ) {
+            if (!empty($filter['search'])) {
+                if (isset($filter['search']['name'])) {
                     $where .=
                         "`name` like '%{$filter['search']['name']}%' and ";
                 }
                 // везде
-                if ( isset($filter['search']['everywhere']) ) {
+                if (isset($filter['search']['everywhere'])) {
                     $where .=
                         "";
                 }
             }
 
             // работа с сортировкой
-            if ( !empty($filter['order']) ) {
-                if ( $filter['order']['dir'] === 'asc' ) {
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
                     $order['dir'] = 'ASC';
                 }
 
@@ -59,13 +59,13 @@ class Reference extends Model
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -118,30 +118,30 @@ class Reference extends Model
             'by' => 'id',
             'dir' => 'DESC'
         ];
-        if ( !empty($filter) ) {
+        if (!empty($filter)) {
             // из $filter собирать строку $where тут
             // формат такой: $where .= "что-то = чему-то AND ";
             // или такой:    $where .= "что-то LIKE '%чему-то%' AND ";
             // слева без пробела, справа всегда AND пробел
 
             // работа с фильтрами
-            if ( !empty($filter['search']) ) {
-                if ( isset($filter['search']['name']) ) {
+            if (!empty($filter['search'])) {
+                if (isset($filter['search']['name'])) {
                     $where .= "`name` like '%{$filter['search']['name']}%' and ";
                 }
-                if ( isset($filter['search']['unit_rus']) ) {
+                if (isset($filter['search']['unit_rus'])) {
                     $where .= "`unit_rus` like '%{$filter['search']['unit_rus']}%' and ";
                 }
                 // везде
-                if ( isset($filter['search']['everywhere']) ) {
+                if (isset($filter['search']['everywhere'])) {
                     $where .=
                         "";
                 }
             }
 
             // работа с сортировкой
-            if ( !empty($filter['order']) ) {
-                if ( $filter['order']['dir'] === 'asc' ) {
+            if (!empty($filter['order'])) {
+                if ($filter['order']['dir'] === 'asc') {
                     $order['dir'] = 'ASC';
                 }
 
@@ -162,13 +162,13 @@ class Reference extends Model
             }
 
             // работа с пагинацией
-            if ( isset($filter['paginate']) ) {
+            if (isset($filter['paginate'])) {
                 $offset = 0;
                 // количество строк на страницу
-                if ( isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0 ) {
+                if (isset($filter['paginate']['length']) && $filter['paginate']['length'] > 0) {
                     $length = $filter['paginate']['length'];
 
-                    if ( isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0 ) {
+                    if (isset($filter['paginate']['start']) && $filter['paginate']['start'] > 0) {
                         $offset = $filter['paginate']['start'];
                     }
                     $limit = "LIMIT {$offset}, {$length}";
@@ -206,6 +206,11 @@ class Reference extends Model
         return $result;
     }
 
+    public function getUnitById($id_unit = null)
+    {
+        return $this->DB->Query("select * from ulab_dimension where id = {$id_unit}")->Fetch();
+    }
+
 
     /**
      * @param $id
@@ -231,7 +236,7 @@ class Reference extends Model
     public function syncMeasuredProperties()
     {
         $array = array(
-            'pageSize'   => 100000,
+            'pageSize' => 100000,
         );
 
         $ch = curl_init('https://mal-dev.fsa.gov.ru/rpi/measuredProperties?' . http_build_query($array));
@@ -261,10 +266,10 @@ class Reference extends Model
         $countInsert = 0;
         foreach ($result['items'] as $item) {
             $name = $this->quoteStr($this->DB->ForSql(trim($item['name'])));
-            $isActual = $item['actual']? 1 : 0;
+            $isActual = $item['actual'] ? 1 : 0;
             $updateAffected = $this->DB->Update('ulab_measured_properties', ['is_actual' => $isActual, 'name' => $name], "where fsa_id = {$item['id']}");
 
-            if ( !$updateAffected ) {
+            if (!$updateAffected) {
                 $countInsert++;
                 $this->DB->Insert('ulab_measured_properties', ['fsa_id' => $item['id'], 'name' => $name, 'is_actual' => $isActual]);
             } else {
@@ -288,7 +293,7 @@ class Reference extends Model
     public function syncUnits()
     {
         $array = array(
-            'pageSize'   => 100000,
+            'pageSize' => 100000,
         );
 
         $ch = curl_init('https://mal-dev.fsa.gov.ru/rpi/measuringUnits?' . http_build_query($array));
@@ -320,7 +325,7 @@ class Reference extends Model
             $name = $this->quoteStr($this->DB->ForSql(trim($item['name'])));
             $unitRu = $this->quoteStr($this->DB->ForSql(trim($item['unitRus'])));
             $unitEn = $this->quoteStr($this->DB->ForSql(trim($item['unitEng'])));
-            $isActual = $item['isActual']? 1 : 0;
+            $isActual = $item['isActual'] ? 1 : 0;
             $updateAffected = $this->DB->Update(
                 'ulab_dimension',
                 [
@@ -332,7 +337,7 @@ class Reference extends Model
                 "where fsa_id = {$item['id']}"
             );
 
-            if ( !$updateAffected ) {
+            if (!$updateAffected) {
                 $countInsert++;
                 $this->DB->Insert(
                     'ulab_dimension',

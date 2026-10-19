@@ -1,5 +1,6 @@
 let methodList = null
 let conditionList = null
+let unitList = null
 let quarryList = null
 
 let dnsMulti = null
@@ -30,6 +31,15 @@ $.ajax({
     dataType: 'json',
     success: function (data) {
         conditionList = data
+    }
+})
+
+$.ajax({
+    method: "POST",
+    url: '/ulab/requirement/getUnitListAjax',
+    dataType: 'json',
+    success: function (data) {
+        unitList = data;
     }
 })
 
@@ -952,7 +962,6 @@ $(function ($) {
         console.log(ugtpId);
 
 
-
         $.ajax({
             url: '/ulab/requirement/dopInfoAjax',
             type: 'POST',
@@ -1379,7 +1388,7 @@ $(function ($) {
                 success: function (json) {
 
                     $.each(json, function (i, item) {
-                        $methodContainer.append(getHtmlMethod(methodList, conditionList, i + countMethod, item.method_id, item.tu_id, dealTypeId, userGroups))
+                        $methodContainer.append(getHtmlMethod(methodList, unitList, i + countMethod, item.method_id, item.tu_id, dealTypeId, userGroups))
 
                         $methodContainer.find('.method-block:last-child').find('.method-select').trigger('change')
                         $methodContainer.find('.method-block:last-child').find('.select2').select2({
@@ -1419,7 +1428,7 @@ $(function ($) {
             countMethod = Math.max.apply(Math, num) + 1;
         }
 
-        $methodContainer.append(getHtmlMethod(methodList, conditionList, countMethod, 0, 0, dealTypeId, userGroups))
+        $methodContainer.append(getHtmlMethod(methodList, unitList, countMethod, 0, 0, dealTypeId, userGroups))
 
         $methodContainer.find('.method-block:last-child').find('.select2').select2({
             theme: 'bootstrap-5',
@@ -1691,9 +1700,12 @@ $(function ($) {
  * @param dealTypeId
  * @returns {string}
  */
-function getHtmlMethod(methodList, conditionList, gostNumber = 0, defaultMethod = 0, defaultTu = 0, dealTypeId = '', userGroups = []) {
+function getHtmlMethod(methodList, unitList, gostNumber = 0, defaultMethod = 0, defaultTu = 0, dealTypeId = '', userGroups = []) {
     let optionMethod = getHtmlOptionsMethod(methodList, defaultMethod)
-    let optionCondition = getHtmlOptionsTu(conditionList, defaultTu)
+    let optionUnits = getHtmlOptionsUnit(unitList);
+
+    console.log(optionUnits)
+
     let priceReadonly = ''
 
     if (dealTypeId === 'COMPLEX') {
@@ -1705,51 +1717,105 @@ function getHtmlMethod(methodList, conditionList, gostNumber = 0, defaultMethod 
     }
 
 
-    return `<div class="row justify-content-between method-block mb-2" data-gost_number="${gostNumber}">
-                <div class="col-3">
+    return `
+    <div class="row method-block mb-3 align-items-center"
+         data-gost_number="${gostNumber}">
+
+        <div class="col-11">
+            <div class="row g-2">
+
+                <!-- Методика -->
+                <div class="col-md-6 col-12">
+                    <label class="form-label">Методика</label>
                     <div class="input-group">
-                        <select class="form-control select2 method-select" name="form[${gostNumber}][new_method_id]" required>
+                        <select class="form-control select2 method-select"
+                                name="form[${gostNumber}][new_method_id]"
+                                required>
                             <option value=""></option>
                             ${optionMethod}
                         </select>
-                        <a class="btn btn-outline-secondary method-link disabled" target="_blank" title="Перейти в методику" href="">
+                        <a class="btn btn-outline-secondary method-link disabled"
+                           target="_blank"
+                           title="Перейти в методику"
+                           href="">
                             <i class="fa-solid fa-right-to-bracket"></i>
                         </a>
                     </div>
                 </div>
-                <div class="col-2">
-                    <div class="input-group">
-                        <select class="form-control select2 method-select" name="form[${gostNumber}][name_nd]" required>
-                            <option value=""></option>
-                            ${optionCondition}
-                        </select>
-                    </div>
+
+                <!-- Текстовое поле 1 -->
+                <div class="col-md-6 col-12">
+                    <label class="form-label">Нормативный документ</label>
+                    <input type="text"
+                           class="form-control nd_string_input"
+                           name="form[${gostNumber}][nd_string_input]">
                 </div>
-                <div class="col-2">
-                    <div class="input-group">
-                        <input type = "text" class="form-control nd_string_input" name="form[${gostNumber}][nd_string_input]">
-                    </div>
+
+                <!-- Текстовое поле 2 -->
+                <div class="col-md-6 col-12">
+                    <label class="form-label">Допустимое значение</label>
+                    <input type="text"
+                           class="form-control nd_string_input"
+                           name="form[${gostNumber}][permissible_value]">
                 </div>
-                <div class="col-2">
-                    <select class="form-control user-select select2" name="form[${gostNumber}][assigned_id]">
-                        <option value="">Исполнитель</option>
+
+                <!-- Текстовое поле 3 -->
+                <div class="col-md-6 col-12">
+                    <label class="form-label">Нормы посева (микробиология)</label>
+                    <input type="text"
+                           class="form-control nd_string_input"
+                           name="form[${gostNumber}][saving_rates]">
+                </div>
+
+                <!-- Единица измерения -->
+                <div class="col-md-4 col-12">
+                    <label class="form-label">Единица измерения</label>
+                    <select class="form-control select2 method-select"
+                            name="form[${gostNumber}][unit_id]"
+                            required>
+                        <option value=""></option>
+                        ${optionUnits}
                     </select>
                 </div>
-                <div class="col">
+
+                <!-- Исполнитель -->
+                <div class="col-md-4 col-12">
+                    <label class="form-label">Исполнитель</label>
+                    <select class="form-control user-select select2"
+                            name="form[${gostNumber}][assigned_id]">
+                        <option value="">Выберите исполнителя</option>
+                    </select>
+                </div>
+
+                <!-- Стоимость -->
+                <div class="col-md-4 col-12">
+                    <label class="form-label">Стоимость</label>
                     <div class="input-group">
-                        <input class="form-control price-input" name="form[${gostNumber}][price]" type="number" min="0" step="0.01" value="0" ${priceReadonly}>
+                        <input class="form-control price-input"
+                               name="form[${gostNumber}][price]"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               value="0"
+                               ${priceReadonly}>
                         <span class="input-group-text">₽</span>
                     </div>
                 </div>
-                <div class="col-auto">
-                    <button
-                            class="btn btn-danger mt-0 del-new-method btn-square float-end"
-                            type="button"
-                    >
-                        <i class="fa-solid fa-minus icon-fix"></i>
-                    </button>
-                </div>
-            </div>`
+
+            </div>
+        </div>
+
+        <!-- Удаление по центру -->
+        <div class="col-1 d-flex justify-content-center align-items-center">
+            <button class="btn btn-danger del-new-method btn-square"
+                    type="button"
+                    title="Удалить методику">
+                <i class="fa-solid fa-minus icon-fix"></i>
+            </button>
+        </div>
+
+    </div>
+`;
 }
 
 
@@ -1770,6 +1836,27 @@ function getHtmlOptionsTu(conditionList, defaultTu = '') {
         }
 
         optionCondition += `<option value="${item}" ${selected}>${item}</option>`;
+    });
+
+    return optionCondition;
+}
+
+function getHtmlOptionsUnit(unitList, defUnit = '') {
+
+    console.log(unitList)
+
+    let optionCondition = '<option value="">--/--</option>';
+
+    $.each(unitList, function (i, item) {
+
+        let selected = '';
+
+        if (item.id == defUnit) {
+            selected = 'selected'
+        }
+
+
+        optionCondition += `<option value="${item.id}" ${selected}>${item.unit_rus} | ${item.name}</option>`;
     });
 
     return optionCondition;
@@ -1904,9 +1991,12 @@ function createChild(row) {
         <thead>
             <tr class="table-light">
                 <th scope="col" style="width: 2%">№</th>
-                <th scope="col" style="width: 61%">Методика испытаний</th>
+                <th scope="col" style="width: 31%">Методика испытаний</th>
                 <th scope="col" style="width: 2%"></th>
                 <th scope="col" style="width: 16%">НД</th>
+                <th scope="col" style="width: 16%">Допустимое значение</th>
+                <th scope="col" style="width: 16%">Нормы посева (микробиология)</th>
+                <th scope="col" style="width: 9%">Ед. измерения</th>
                 <th scope="col" style="width: 9%">Исполнитель</th>
                 <th scope="col" style="width: 10%">Цена</th>
                 <th scope="col" style="width: 3%"></th>
@@ -1938,6 +2028,7 @@ function createChild(row) {
             },
             url: '/ulab/requirement/getMethodJournalAjax/',
             dataSrc: function (json) {
+                console.log(json.data)
                 return json.data
             }
         },
@@ -1988,6 +2079,24 @@ function createChild(row) {
                 data: 'tech_condition_string',
                 orderable: false,
                 className: 'tu_view_name edit-cell cursor-pointer'
+            },
+            {
+                data: 'permissible_value',
+                orderable: false,
+                className: 'permissible_value edit-cell cursor-pointer'
+            },
+            {
+                data: 'saving_rates',
+                orderable: false,
+                className: 'saving_rates edit-cell cursor-pointer'
+            },
+            {
+                data: 'unit_info',
+                orderable: false,
+                className: 'changed_unit_id edit-cell cursor-pointer',
+                render: function (data, type, item) {
+                    return item.unit_info
+                }
             },
             {
                 data: 'assigned_name',
@@ -2142,8 +2251,18 @@ function createChild(row) {
             $thisCell.html(
                 `<input type="text" class="form-control" style="width: 400px" value="${data.tech_condition_string ?? ''}">`
             );
+        } else if ($thisCell.hasClass('permissible_value')) {
+            $thisCell.html(
+                `<input type="text" class="form-control" style="width: 400px" value="${data.permissible_value ?? ''}">`
+            );
+        } else if ($thisCell.hasClass('saving_rates')) {
+            $thisCell.html(
+                `<input type="text" class="form-control" style="width: 400px" value="${data.saving_rates ?? ''}">`
+            );
         } else if ($thisCell.hasClass('method_view_name') && (userGroups.includes('23') || textConfirmTz.length === 0)) {
             $thisCell.html(`<select class="form-control select2">` + getHtmlOptionsMethod(methodList, data.new_method_id) + `</select>`)
+        } else if ($thisCell.hasClass('changed_unit_id') && (userGroups.includes('23') || textConfirmTz.length === 0)) {
+            $thisCell.html(`<select class="form-control select2">` + getHtmlOptionsUnit(unitList, data.changed_unit_id) + `</select>`)
         } else if ($thisCell.hasClass('price') && userGroups.includes('23')) {
             $thisCell.html($(`<input type="number" class="form-control" style="min-width: 160px" value="${data.price}">`))
         } else {
@@ -2193,6 +2312,15 @@ function createChild(row) {
         } else if ($thisCell.hasClass('method_view_name')) {
             cellName = 'method'
             lastVal = data.new_method_id
+        } else if ($thisCell.hasClass('changed_unit_id')) {
+            cellName = 'changed_unit_id'
+            lastVal = data.changed_unit_id
+        } else if ($thisCell.hasClass('permissible_value')) {
+            cellName = 'permissible_value'
+            lastVal = data.permissible_value
+        } else if ($thisCell.hasClass('saving_rates')) {
+            cellName = 'saving_rates'
+            lastVal = data.price
         } else if ($thisCell.hasClass('price')) {
             cellName = 'price'
             lastVal = data.price

@@ -2125,7 +2125,6 @@ class ImportController extends Controller
         $probe = $this->model('Probe');
         $method = $this->model('Methods');
 
-
         $fields = [
             4 => 'name_product',
             5 => 'normative_document',
@@ -2383,7 +2382,7 @@ class ImportController extends Controller
         $actDAte = date('Y-m-d');
 
         $umtrArr = [];
-        foreach ($probes as $k => $val){
+        foreach ($probes as $k => $val) {
             $umtrArr[] = $k;
         }
 
@@ -2400,6 +2399,7 @@ class ImportController extends Controller
             ]
         ];
 
+
         $probe->setProbesFromFiles($actData, $products, $ugtpArr);
         $this->redirect($location);
     }
@@ -2413,5 +2413,18 @@ class ImportController extends Controller
         return $str;
     }
 
+
+    private function debugChat($title, $data = null)
+    {
+        $file = $_SERVER['DOCUMENT_ROOT'] . '/chat_debug.log';
+
+        $message = date('Y-m-d H:i:s') . ' | ' . $title;
+
+        if ($data !== null) {
+            $message .= ' | ' . print_r($data, true);
+        }
+
+        file_put_contents($file, $message . PHP_EOL, FILE_APPEND);
+    }
 
 }

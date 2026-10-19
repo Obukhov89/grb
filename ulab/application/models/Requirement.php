@@ -462,6 +462,7 @@ class Requirement extends Model
     public function getMethodJournal($dealId, $filter)
     {
         $userModel = new User();
+        $referenceModel = new Reference();
 
         $where = "";
         $limit = "";
@@ -595,6 +596,15 @@ class Requirement extends Model
 
                 $row['assigned_name'] = $user['short_name'];
             }
+
+            $row['unit_info'] = 'Не выбрана';
+
+            if (!empty($row['changed_unit_id'])) {
+                $unitInfo = $referenceModel->getUnitById($row['changed_unit_id']);
+
+                $row['unit_info'] = $unitInfo['unit_rus'] . ' | ' . $unitInfo['name'];
+            }
+
 
             $result[] = $row;
         }
@@ -1825,9 +1835,10 @@ class Requirement extends Model
     public function confirmTzSentUsers($dealId, $userList)
     {
         $requestModel = new Request();
+        $probeModel = new Probe();
+
 
         $tzId = $requestModel->getTzIdByDealId($dealId)['ID'];
-
         //$this->confirmTzClear($tzId);
 
         foreach ($userList as $userId) {
@@ -1842,6 +1853,8 @@ class Requirement extends Model
 
             $this->DB->Insert('CHECK_TZ', $sqlData);
         }
+
+        $probeModel->sendNotify($userList, $tzId);
     }
 
     /**
@@ -2903,11 +2916,14 @@ class Requirement extends Model
                     'method_id' => $item['new_method_id'],
                     'new_method_id' => $item['new_method_id'],
                     'conditions_id' => "'{$item['name_nd']}'",
-                    'tech_condition_id' => "'{$item['name_nd']}'",
+                    'tech_condition_id' => "'{$item['name_nd']}'" ?? null,
                     'price' => $item['price'],
                     'assigned_id' => $item['assigned_id'],
                     'gost_number' => ++$gostNumber,
-                    'tech_condition_string' => "'{$item['nd_string_input']}'"
+                    'tech_condition_string' => "'{$item['nd_string_input']}'",
+                    'changed_unit_id' => $item['unit_id'],
+                    'permissible_value' => "'{$item['permissible_value']}'",
+                    'saving_rates' => "'{$item['saving_rates']}'"
                 ];
 
                 $this->DB->Insert('ulab_gost_to_probe', $sqlData);
@@ -2923,6 +2939,7 @@ class Requirement extends Model
      */
     public function checkHaveLeader($dealId, $probesArray): void
     {
+
         $resultModel = new Result();
         $idTz = $this->getTzIdByDealId($dealId);
 
@@ -2941,6 +2958,7 @@ class Requirement extends Model
             );
 
             while ($row = $leadersResponse->Fetch()) {
+
                 $checkLeader = $this->DB->Query("SELECT id FROM CHECK_TZ WHERE tz_id = '{$idTz}' AND leader = '{$row['HEAD_ID']}'")->Fetch();
 
                 if ($checkLeader) continue;
