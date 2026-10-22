@@ -1093,7 +1093,16 @@ $(function ($) {
                                 type="date"
                                 class="form-control"
                                 name="expiration_date"
-                                value="${response.expiration_date ?? ''}"
+                                value="${response.sampling_date ?? ''}"
+                            >
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Срок годности</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="expiration_date"
+                                value="${response.best_before_date ?? ''}"
                             >
                         </div>
                     </div>
@@ -1102,7 +1111,6 @@ $(function ($) {
                 
                 `
                 $('#dopInfoContainer').html(html);
-                // И только после успешного AJAX открываем модалку
                 $.magnificPopup.open({
                     items: {
                         src: '#edit-material-info-form',

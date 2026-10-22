@@ -1174,6 +1174,7 @@ class Probe extends Model
         $labModel = new Lab();
 
         $idTz = $actData['ID_TZ'];
+        $manufacturing_date = '';
 
         $this->insertUpdateActProbeNew($actData);
 
@@ -1181,8 +1182,16 @@ class Probe extends Model
             // Дата отбора образца
             $date = $this->parseDate($val['sampling_date']);
 
+            if (!empty($val['manufacturing_date'])) {
+                $manufacturing_date = $this->parseDate($val['manufacturing_date']);
+                $manufacturing_date = $manufacturing_date->format('Y-m-d');
+            } else {
+                $manufacturing_date = null;
+            }
+
+
             // Срок годности
-            $expDate = $this->parseDate($val['expiration_date']);
+//            $expDate = $this->parseDate($val['expiration_date']);
 
             // Данные для ulab_material_to_request
             $currentVal = [
@@ -1220,8 +1229,9 @@ class Probe extends Model
                 'batch_size' => $val['sample_quantity'],
                 'packing_name' => $packName,
                 'packaging_integrity' => $packagingIntegrity,
-                'manufacturing_date' => $date->format('Y-m-d'),
-                'expiration_date' => $expDate->format('Y-m-d'),
+                'manufacturing_date' => $manufacturing_date,
+                'sampling_date' => $date->format('Y-m-d'),
+                'best_before_date' => $val['expiration_date'],
                 'storage_conditions' => $val['storage_conditions'],
                 'delivery_method' => $val['delivery_method'],
                 'sampling_place' => $val['sampling_place'],
@@ -1289,21 +1299,36 @@ class Probe extends Model
     {
         $value = trim($value);
 
+        // Если дата отсутствует — используем текущий день
         if ($value === '') {
-            throw new RuntimeException('Дата не может быть пустой');
+            return new DateTime('today');
         }
 
+        // Ищем дату в произвольном тексте
+        $pattern = '~(?<!\d)(?:\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})(?!\d)~u';
+
+        if (!preg_match($pattern, $value, $matches)) {
+            throw new RuntimeException("Дата не найдена в строке: {$value}");
+        }
+
+        $dateValue = $matches[0];
+
         $formats = [
-            'n/j/Y',
-            'm/d/Y',
-            'd.m.Y',
-            'd/m/Y',
             'Y-m-d',
             'Y/m/d',
+            'Y.m.d',
+            'd.m.Y',
+            'd/m/Y',
+            'm/d/Y',
+            'n/j/Y',
+            'd.m.y',
+            'd/m/y',
+            'm/d/y',
+            'n/j/y',
         ];
 
         foreach ($formats as $format) {
-            $date = DateTime::createFromFormat($format, $value);
+            $date = DateTime::createFromFormat('!' . $format, $dateValue);
             $errors = DateTime::getLastErrors();
 
             if (
@@ -1321,7 +1346,7 @@ class Probe extends Model
         }
 
         throw new RuntimeException(
-            "Некорректная дата: {$value}"
+            "Некорректная дата: {$dateValue}"
         );
     }
 

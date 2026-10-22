@@ -2203,7 +2203,7 @@ class ImportController extends Controller
         $material_id = 0;
         $existMaterial = false;
         $type = "ИЦ";
-        $inn = '4401116480';
+        $inn = '';
         $companyName = '';
         $checkCompany = $company->getCompanyIdByInn(trim($inn));
 
@@ -2399,9 +2399,13 @@ class ImportController extends Controller
             ]
         ];
 
-
-        $probe->setProbesFromFiles($actData, $products, $ugtpArr);
-        $this->redirect($location);
+        try {
+            $probe->setProbesFromFiles($actData, $data, $ugtpArr);
+            $this->redirect($location);
+        } catch (RuntimeException $e) {
+            $this->showErrorMessage($e->getMessage());
+            $this->redirect("/request/new/");
+        }
     }
 
 
