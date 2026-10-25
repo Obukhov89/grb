@@ -468,6 +468,15 @@ class RequirementController extends Controller
         $quarryModel = $this->model('Quarry');
         $userModel = new User();
 
+        $labModel = $this->model('Lab');
+
+        $currUserId = $userModel->getCurrentUserId();
+        $labInfo = $labModel->getLabByUserId($currUserId);
+        $this->data['isLabHeader'] = false;
+        if ($labInfo['HEAD_ID'] == $currUserId){
+            $this->data['isLabHeader'] = true;
+        }
+
         //// получение данных
         $tzData = $requirementModel->getTzByTzId((int)$tzId);
 

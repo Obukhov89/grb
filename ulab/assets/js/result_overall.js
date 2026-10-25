@@ -290,9 +290,9 @@ $(function ($) {
                         html += `<input data-cell="normative_val" type="text"
                                            class="form-control normative-value bg-white"
                                            name="normative_value[${item.mtr_id}][${item.ugtp_id}]"
+                                           title="${item.normative_message?? ''}"
                                            value="${item.normative_value?? ''}">`
                     }
-                    html += `<div class="form-text text-start">${item.normative_message?? ''}</div>`
 
                     return html
                 }
@@ -318,12 +318,12 @@ $(function ($) {
                                     <input ${item.actual_value_type}
                                             class="me-2 actual-value actual-value-${item.ugtp_id} w-100 border p-2 "
                                             name="actual_value[${item.mtr_id}][${item.ugtp_id}]"
+                                            title="${item.actual_value_message?? ''}"
                                             value="${item.actual_value}" ${readonly}
                                             data-cell="actual_value"
                                         >
                                 </div>`
                     }
-                    html += `<div class="form-text text-start">${item.actual_value_message?? ''}</div>`
 
                     return html
                 }
@@ -368,11 +368,11 @@ $(function ($) {
                                     </option>
                                 </select>
                                 <div id="match_${item.mtr_id}_${item.ugtp_id}"
-                                     class="invalid-feedback">
-                                    ${item.match_message?? ''}
+                                     class="invalid-feedback" title="${item.match_message?? ''}">
+                                    
                                 </div>`
                     }
-                    html += `<div class="form-text">${item.match_text?? ''}</div>`
+
 
                     return html
                 }

@@ -1179,6 +1179,7 @@ class Probe extends Model
         $this->insertUpdateActProbeNew($actData);
 
         foreach ($data as $val) {
+
             // Дата отбора образца
             $date = $this->parseDate($val['sampling_date']);
 
@@ -1248,51 +1249,6 @@ class Probe extends Model
                 $dopInfoData
             );
         }
-
-//        $arrHeadLabs = [];
-//        foreach ($methodsArr as $key => $methods) {
-//            foreach ($methods as $item) {
-//                $labMethodIds = $methodModel->getLab($item['method_id']);
-//
-//                foreach ($labMethodIds as $methodId) {
-//                    $sql = $this->DB->Query(
-//                        "select max(gost_number) as gost_number
-//                     from ulab_gost_to_probe
-//                     where material_to_request_id = {$key}"
-//                    );
-//
-//                    $sqlData = $sql->Fetch();
-//                    $gostNumber = $sqlData['gost_number'];
-//
-//                    if (!is_numeric($gostNumber)) {
-//                        $gostNumber = -1;
-//                    }
-//
-//                    $lab = $labModel->getLab($methodId);
-//
-//                    $result = [
-//                        'material_to_request_id' => $key,
-//                        'method_id' => $item['method_id'],
-//                        'new_method_id' => $item['method_id'],
-//                        'conditions_id' => null,
-//                        'tech_condition_id' => null,
-//                        'price' => $item['price'],
-//                        'assigned_id' => $lab['HEAD_ID'],
-//                        'gost_number' => ++$gostNumber,
-//                    ];
-//
-//
-//
-//                    $this->DB->Insert(
-//                        'ulab_gost_to_probe',
-//                        $result
-//                    );
-//                }
-//            }
-//        }
-//
-//        $arrHeadLabs = array_unique($arrHeadLabs);
-//        $this->sendNotify($arrHeadLabs, $idTz);
     }
 
     private function parseDate(string $value): DateTime

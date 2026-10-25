@@ -2153,6 +2153,7 @@ class ImportController extends Controller
 
         $tempFilePath = $_FILES['import_file']['tmp_name'];
 
+
         try {
             $spreadsheet = IOFactory::load($tempFilePath);
             $sheet = $spreadsheet->getActiveSheet();
@@ -2203,7 +2204,7 @@ class ImportController extends Controller
         $material_id = 0;
         $existMaterial = false;
         $type = "ИЦ";
-        $inn = '';
+        $inn = '4401116480';
         $companyName = '';
         $checkCompany = $company->getCompanyIdByInn(trim($inn));
 
@@ -2400,7 +2401,7 @@ class ImportController extends Controller
         ];
 
         try {
-            $probe->setProbesFromFiles($actData, $data, $ugtpArr);
+            $probe->setProbesFromFiles($actData, $products, $ugtpArr);
             $this->redirect($location);
         } catch (RuntimeException $e) {
             $this->showErrorMessage($e->getMessage());
@@ -2415,20 +2416,6 @@ class ImportController extends Controller
         $str = preg_replace('/\s+/', ' ', $str); // Сжимаем пробелы
         $str = rtrim($str, ')' . "\n\r\t\v\0"); // Удаляем скобки и пробелы в конце
         return $str;
-    }
-
-
-    private function debugChat($title, $data = null)
-    {
-        $file = $_SERVER['DOCUMENT_ROOT'] . '/chat_debug.log';
-
-        $message = date('Y-m-d H:i:s') . ' | ' . $title;
-
-        if ($data !== null) {
-            $message .= ' | ' . print_r($data, true);
-        }
-
-        file_put_contents($file, $message . PHP_EOL, FILE_APPEND);
     }
 
 }

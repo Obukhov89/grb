@@ -465,7 +465,7 @@
 
                 <div class="line-dashed"></div>
 
-                <div class="wrapper-discount bg-light-secondary p-2">
+                <div class="wrapper-discount bg-light-secondary p-2" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                     <div class="row justify-content-end">
                         <div class="col-auto d-flex flex-column">
                             <div>
