@@ -437,7 +437,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <input type="hidden" value="<?= $this->data['isLabHeader'] ?>" id="isLabHeader">
                         <table id="journal_material_2"
                                class="table table-striped journal table-hover table-sm table-light">
                             <thead>
@@ -458,6 +458,7 @@
                                 </th>
                             </tr>
                             <tbody>
+
                             </tbody>
                         </table>
                     </div>
@@ -465,7 +466,8 @@
 
                 <div class="line-dashed"></div>
 
-                <div class="wrapper-discount bg-light-secondary p-2" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                <div class="wrapper-discount bg-light-secondary p-2"
+                     style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
                     <div class="row justify-content-end">
                         <div class="col-auto d-flex flex-column">
                             <div>
@@ -1052,26 +1054,26 @@
         </div>
     </div>
 
-<!--    <div class="row">-->
-<!--        <div class="col-3">-->
-<!--            <label class="form-label mb-1">Методика испытаний <span class="redStars">*</span></label>-->
-<!--        </div>-->
-<!--        <div class="col-2">-->
-<!--            <label class="form-label mb-1">Нормативный документ</label>-->
-<!--        </div>-->
-<!--        <div class="col-2">-->
-<!--            <label class="form-label mb-1">Единицы измерения</label>-->
-<!--        </div>-->
-<!--        <div class="col-2">-->
-<!--            <label class="form-label mb-1">Допустимое значение</label>-->
-<!--        </div>-->
-<!--        <div class="col-2">-->
-<!--            <label class="form-label mb-1">Исполнитель</label>-->
-<!--        </div>-->
-<!--        <div class="col">-->
-<!--            <label class="form-label mb-1">Цена</label>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--    <div class="row">-->
+    <!--        <div class="col-3">-->
+    <!--            <label class="form-label mb-1">Методика испытаний <span class="redStars">*</span></label>-->
+    <!--        </div>-->
+    <!--        <div class="col-2">-->
+    <!--            <label class="form-label mb-1">Нормативный документ</label>-->
+    <!--        </div>-->
+    <!--        <div class="col-2">-->
+    <!--            <label class="form-label mb-1">Единицы измерения</label>-->
+    <!--        </div>-->
+    <!--        <div class="col-2">-->
+    <!--            <label class="form-label mb-1">Допустимое значение</label>-->
+    <!--        </div>-->
+    <!--        <div class="col-2">-->
+    <!--            <label class="form-label mb-1">Исполнитель</label>-->
+    <!--        </div>-->
+    <!--        <div class="col">-->
+    <!--            <label class="form-label mb-1">Цена</label>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
     <div class="method-container mb-3">
 

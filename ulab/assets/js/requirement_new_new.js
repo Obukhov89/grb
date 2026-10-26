@@ -13,6 +13,8 @@ let methodInfo = null
 
 // Все пробы, представленные на странице
 let methodsAlreadySet = false;
+let isLabHeader = $('#isLabHeader').val()
+console.log(isLabHeader);
 const tz_id = $('#tz_id').val();
 
 $.ajax({
@@ -738,9 +740,9 @@ $(function ($) {
                                             </label>
                                         </div>
                                     </td>
-                                    <td class="text-end" style="display: flex; justify-content: flex-end">
-
-                                        <a class="btn btn-primary btn-sm popup-edit-material-info" data-ugtp_id="${data[i].id}">
+                                    <td class="text-end">
+                                        <a class="btn btn-primary btn-sm popup-edit-material-info ${isLabHeader ? 'd-none' : ''}"
+                                           data-ugtp-id="${data[i].id}">
                                             <i class="fa-solid fa-info-circle"></i>
                                         </a>
                                     </td>
@@ -2116,7 +2118,8 @@ function createChild(row) {
                 data: 'price',
                 width: "111px",
                 orderable: false,
-                className: 'price edit-cell cursor-pointer'
+                className: 'price edit-cell cursor-pointer',
+                visible: !isLabHeader
             },
             {
                 data: 'edit',
