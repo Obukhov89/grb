@@ -742,7 +742,7 @@ $(function ($) {
                                     </td>
                                     <td class="text-end">
                                         <a class="btn btn-primary btn-sm popup-edit-material-info ${isLabHeader ? 'd-none' : ''}"
-                                           data-ugtp-id="${data[i].id}">
+                                           data-ugtp_id="${data[i].id}">
                                             <i class="fa-solid fa-info-circle"></i>
                                         </a>
                                     </td>
