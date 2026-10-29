@@ -5624,11 +5624,11 @@ class DocumentGenerator extends Model
                 }
 
                 $table_result->addRow();
-                $table_result->addCell(2500)->addText($item['Specification'], $FontStyle, $cellAllCentered);
+                $table_result->addCell(2500)->addText($item['Specification'], $FontStyle);
                 $table_result->addCell(1500)->addText($item['unit_name'], $FontStyle, $cellAllCentered);
                 $table_result->addCell(2500)->addText($item['permissible_value'], $FontStyle, $cellAllCentered);
                 $table_result->addCell(2500)->addText($item['Values'], $FontStyle, $cellAllCentered);
-                $table_result->addCell(2500)->addText($item['permissible_value'], $FontStyle);
+                $table_result->addCell(2500)->addText($item['permissible_value'], $FontStyle, $cellAllCentered);
             }
         } else {
             $section = $phpWord->addSection();
