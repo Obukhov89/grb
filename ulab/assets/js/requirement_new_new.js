@@ -1005,6 +1005,16 @@ $(function ($) {
                             >${response.sampling_place ?? ''}</textarea>
                         </div>
                     </div>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Описание этикетки (состав)</label>
+                            <textarea
+                                class="form-control"
+                                name="ticket"
+                                rows="2"
+                            >${response.ticket ?? ''}</textarea>
+                        </div>
+                    </div>
                 
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -1054,7 +1064,7 @@ $(function ($) {
                             <input
                                 type="text"
                                 class="form-control"
-                                name="nd"
+                                name="sampling_by"
                                 value="${escapeHtml(response.sampling_by ?? '')}"
                             >
                         </div>

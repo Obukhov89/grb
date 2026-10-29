@@ -16,8 +16,6 @@ use Mpdf\Mpdf as MpdfLib;
 use \Bitrix\Main\Loader;
 
 
-
-
 class DocumentGenerator extends Model
 {
     // ширина документа в твипах
@@ -1085,9 +1083,9 @@ class DocumentGenerator extends Model
 
         $resInv = $this->DB->Query("SELECT * FROM `INVOICE` WHERE `TZ_ID`=" . $TZ_ID)->Fetch();
 
-        $nember_account_1c = (!empty($resInv['ID']) ?  $invNum : '');
+        $nember_account_1c = (!empty($resInv['ID']) ? $invNum : '');
 
-        $date_account_1c = (!empty($resInv['DATE']) ?  date("d.m.Y", strtotime($resInv['DATE'])) : '');
+        $date_account_1c = (!empty($resInv['DATE']) ? date("d.m.Y", strtotime($resInv['DATE'])) : '');
 
         $arr_data_1c = [
             "fl" => 0,
@@ -2008,10 +2006,12 @@ class DocumentGenerator extends Model
         $gostsInProtocol = [];
         $condititionsInProtocol = [];
         $test = [];
+        $infoMaterialsData = [];
 
         ksort($probeResults, SORT_NUMERIC);
         foreach ($probeResults as $k => $itt) {
             $test[$k] = explode('/', explode('.', $itt['cipher'])[1])[0];
+            $infoMaterialsData = $requirementModel->getDopInfoByUgtpId($itt['id']);
         }
         asort($test, SORT_NUMERIC);
         $ArrayThree = [];
@@ -2217,6 +2217,8 @@ class DocumentGenerator extends Model
         //            $protocolDesc = trim(str_replace(["\r\n", "\n", "\r"], '<w:br/>', html_entity_decode($protocol['DESCRIPTION'])));
         //        }
         //$this->pre($protocolDesc);
+        $manufacturingDate = $infoMaterialsData['manufacturing_date'];
+        $samplingDate = $infoMaterialsData['sampling_date'];
         $protocolInformation = [
             'protocol_type' => htmlspecialchars($protocol['PROTOCOL_TYPE']),
             'tz_id' => htmlspecialchars($protocol['ID_TZ']),
@@ -2290,8 +2292,28 @@ class DocumentGenerator extends Model
             'osk_2_norm' => $protocol['osk_2_norm'],
             'osk_2_fact' => $protocol['osk_2_fact'],
             'osk_1_place' => $protocol['osk_1_place'],
+            'nd' => $infoMaterialsData['nd'],
+            'manufacturer' => $infoMaterialsData['manufacturer'] ?? '--',
+            'batch_size' => $infoMaterialsData['batch_size'] ?? '--',
+            'packing_name' => $infoMaterialsData['packing_name'] ?? '--',
+            'packaging_integrity' => $infoMaterialsData['packaging_integrity'] ?? '--',
+            'manufacturing_date' => $manufacturingDate
+                ? date('d.m.Y', strtotime($manufacturingDate))
+                : '--',
+            'sampling_date' => ($timestamp = strtotime($samplingDate ?? '')) !== false
+                ? date('d.m.Y', $timestamp)
+                : '--',
+            'best_before_date' => $infoMaterialsData['best_before_date'] ?? '--',
+            'storage_conditions' => $infoMaterialsData['storage_conditions'] ?? '--',
+            'label_description' => $infoMaterialsData['label_description'] ?? '--',
+            'delivery_method' => $infoMaterialsData['delivery_method'] ?? '--',
+            'nd_document' => $infoMaterialsData['nd_document'] ?? '--',
+            'sampling_place' => $infoMaterialsData['sampling_place'] ?? '--',
+            'eticket' => $infoMaterialsData['ticket'] ?? '--',
+            'p_sampling_place' => $infoMaterialsData['sampling_by'] ?? '--',
         ];
-        //$this->pre($protocolInformation);
+
+//        $this->pre($protocolInformation);
         //Таблица оборудования
         $oborudData = $oborudModel->getTzObConnectByProtocolId2($protocolID);
         foreach ($oborudData as &$equipment) {
@@ -2341,7 +2363,6 @@ class DocumentGenerator extends Model
             }
             $count_val = 0;
             foreach ($val['gosts']['method'] as $key => $method) {
-
                 if (!$method['is_confirm'] && $method['name'] != 'Подготовка проб') {
                     $_SESSION['message_danger'] = "{$method['name']} вне области, невозможно сформировать протокол!";
                     header("Location: /ulab/result/card_oati/{$protocol['DEAL_ID']}?protocol_id={$protocolID}");
@@ -2368,7 +2389,7 @@ class DocumentGenerator extends Model
                     json_decode($val['measuring_sheet'][$key], true) : json_decode($resultValue['measuring_sheet'], true);
 
                 // Если в ТУ "Текст нормативного значения по ГОСТу" выводиться в протокол, то берем нормативное значение "Текст нормативного значения по ГОСТу"
-                if (/*$protocol['DEAL_ID'] >= DEAL_NEW_RESULT && */empty($condition['is_manual']) && !empty($condition['is_output'])) {
+                if (/*$protocol['DEAL_ID'] >= DEAL_NEW_RESULT && */ empty($condition['is_manual']) && !empty($condition['is_output'])) {
                     $normval = $condition['norm_comment'];
                 } else {
                     $normativeValue = !empty($resultValue['normative_value']) ? trim(htmlspecialchars_decode($resultValue['normative_value'])) : '-';
@@ -2382,6 +2403,8 @@ class DocumentGenerator extends Model
                     '3' => 'Не нормируется',
                 ];
                 $actualValue = $val['actual_value'][$key];
+                $unit_name = $val['unit_id'][$key];
+                $perm_val = $val['permissible_value'][$key];
                 // $matchValue = $protocol['DEAL_ID'] >= DEAL_NEW_RESULT ?
                 //     $match_value[$val['match'][$key]] : $match_value[$resultValue['match']];
 
@@ -2564,20 +2587,20 @@ class DocumentGenerator extends Model
                             $zern = $materialModel->getSieveAndNorm($measuringSheet['zern']);
                             $table = [
                                 'id' => $k,
-                                'name_table'      => '${table_zern}',
-                                'num_table'       => 2,
-                                'a'               => [],
-                                'p'               => [],
-                                'norm'            => [],
-                                'title'           => [],
-                                'name'            => $zern['NAME'],
-                                'a_in_protocol'   => $measuringSheet['a_in_protocol'],
-                                'p_in_protocol'   => $measuringSheet['p_in_protocol'],
+                                'name_table' => '${table_zern}',
+                                'num_table' => 2,
+                                'a' => [],
+                                'p' => [],
+                                'norm' => [],
+                                'title' => [],
+                                'name' => $zern['NAME'],
+                                'a_in_protocol' => $measuringSheet['a_in_protocol'],
+                                'p_in_protocol' => $measuringSheet['p_in_protocol'],
                                 'req_in_protocol' => $measuringSheet['req_in_protocol'],
-                                'initial_mass'    => $measuringSheet['initial_mass'],
-                                'name_material'   => $object,
-                                'cipher'          => $materialInfo['cipher'],
-                                'method'          => [
+                                'initial_mass' => $measuringSheet['initial_mass'],
+                                'name_material' => $object,
+                                'cipher' => $materialInfo['cipher'],
+                                'method' => [
                                     'view' => $methodInfo['view_gost_for_protocol'],
                                     'name' => $methodInfo['mp_name'],
                                     'unit' => $methodInfo['unit_rus']
@@ -2587,9 +2610,9 @@ class DocumentGenerator extends Model
                                 if ($measuringSheet['p063'] != '' && in_array($key, [0, 1])) {
                                     continue;
                                 }
-                                $table['a'][]     = str_replace('.', ',', $measuringSheet['a'][$key]);
-                                $table['p'][]     = str_replace('.', ',', $measuringSheet['p'][$key]);
-                                $table['norm'][]  = $measuringSheet['norm'][$key];
+                                $table['a'][] = str_replace('.', ',', $measuringSheet['a'][$key]);
+                                $table['p'][] = str_replace('.', ',', $measuringSheet['p'][$key]);
+                                $table['norm'][] = $measuringSheet['norm'][$key];
                                 $table['title'][] = $measuringSheet['title'][$key];
                             }
                         }
@@ -2653,8 +2676,7 @@ class DocumentGenerator extends Model
                                     'ugtp_desc2' => $ugtpDesc2
                                 ];
                             }
-                        }
-                        // Данные для отдельной таблицы с единичными значениями, если отмечен checkbox "Выводить единичные значения в протокол?"
+                        } // Данные для отдельной таблицы с единичными значениями, если отмечен checkbox "Выводить единичные значения в протокол?"
                         else if ($measuringSheet['is_single_values']) {
                             $tableData['sred']['name_table'] = '${table_sred}';
 
@@ -2711,7 +2733,7 @@ class DocumentGenerator extends Model
                                     'Result' => $matchValue,
                                     'id' => $k,
                                     'ugtp_desc' => $ugtpDesc,
-                                    'ugtp_desc2' => $ugtpDesc2
+                                    'ugtp_desc2' => $ugtpDesc2,
                                 ];
                             }
                             //                            $this->pre($results);
@@ -2757,10 +2779,6 @@ class DocumentGenerator extends Model
                         $mainDamage = $isIntermediate ? $measuringSheet['main_damage1'] : $measuringSheet['main_damage2'];
                         $controlMass = $isIntermediate ? $measuringSheet['control_mass1'] : $measuringSheet['control_mass2'];
                         $mainMass = $isIntermediate ? $measuringSheet['main_mass1'] : $measuringSheet['main_mass2'];
-                        //                        $controlStrength = $isIntermediate ? implode($eol, $measuringSheet['control_strength1']) :
-                        //                            implode($eol, $measuringSheet['control_strength2']);
-                        //                        $mainStrength = $isIntermediate ? implode($eol, $measuringSheet['main_strength1']) :
-                        //                            implode($eol, $measuringSheet['main_strength2']);
                         $controlStrength = $isIntermediate ? implode($eol, $controlStrength1) :
                             implode($eol, $controlStrength2);
                         $mainStrength = $isIntermediate ? implode($eol, $mainStrength1) :
@@ -2807,23 +2825,23 @@ class DocumentGenerator extends Model
                         $deformationValues = $measuringSheet['deformation_values'];
                         $materialInfo = $gostModel->getMaterialByUgtpId($measuringSheet['ugtp_id']);
                         $table = [
-                            'id'              => $k,
-                            'name_table'      => '${table_deformation}',
-                            'Object'          => $object,
-                            'Specification'   => $method['name'],
+                            'id' => $k,
+                            'name_table' => '${table_deformation}',
+                            'Object' => $object,
+                            'Specification' => $method['name'],
                             'SpecificationTU' => !empty($condition['measured_properties_name']) ? $condition['measured_properties_name'] : '-',
-                            'Ed'              => $method['unit_fsa_id'] == 804 ? '-' : $method['unit_rus'],
-                            'Normdoc'         => !empty($condition['reg_doc'])
+                            'Ed' => $method['unit_fsa_id'] == 804 ? '-' : $method['unit_rus'],
+                            'Normdoc' => !empty($condition['reg_doc'])
                                 ? $condition['reg_doc']
                                 . (!empty($condition['year']) ? '-' . $condition['year'] : '')
                                 . (!empty($condition['clause']) ? ' ' . $condition['clause'] : '')
                                 : '-',
-                            'Normval'         => $normval,
-                            'Normdocmet'      => $method['view_gost_for_protocol'],
-                            'value'           => [],
-                            'difference'      => [],
-                            'com'             => $measuringSheet['com'] ?? '',
-                            'cipher'             => $materialInfo['cipher'] ?? '',
+                            'Normval' => $normval,
+                            'Normdocmet' => $method['view_gost_for_protocol'],
+                            'value' => [],
+                            'difference' => [],
+                            'com' => $measuringSheet['com'] ?? '',
+                            'cipher' => $materialInfo['cipher'] ?? '',
                         ];
 
                         for ($i = 1; $i <= 11; $i++) {
@@ -2841,72 +2859,47 @@ class DocumentGenerator extends Model
                             $zern = $materialModel->getSieveAndNorm($measuringSheet['zern']);
                             $table = [
                                 'id' => $k,
-                                'name_table'      => '${table_zern}',
-                                'type'            => 'asphalt',
-                                'num_table'       => 2,
-                                'fp'              => [],
-                                'a'               => [],
-                                'p'               => [],
-                                'req'             => [],
-                                'norm'            => [],
-                                'title'           => [],
-                                'name'            => $zern['NAME'],
-                                'a_in_protocol'   => $measuringSheet['a_in_protocol'],
-                                'p_in_protocol'   => $measuringSheet['p_in_protocol'],
-                                'fp_in_protocol'   => $measuringSheet['fp_in_protocol'],
+                                'name_table' => '${table_zern}',
+                                'type' => 'asphalt',
+                                'num_table' => 2,
+                                'fp' => [],
+                                'a' => [],
+                                'p' => [],
+                                'req' => [],
+                                'norm' => [],
+                                'title' => [],
+                                'name' => $zern['NAME'],
+                                'a_in_protocol' => $measuringSheet['a_in_protocol'],
+                                'p_in_protocol' => $measuringSheet['p_in_protocol'],
+                                'fp_in_protocol' => $measuringSheet['fp_in_protocol'],
                                 'recept_in_protocol' => $measuringSheet['recept_in_protocol'],
-                                'r'                => [],
+                                'r' => [],
                                 'req_in_protocol' => $measuringSheet['req_in_protocol'],
-                                'initial_mass'    => $measuringSheet['initial_mass'],
-                                'name_material'   => $materialInfo['NAME'],
-                                'group_material'   => $materialInfo['group_name'],
-                                'cipher'          => $materialInfo['cipher'],
-                                'method'          => [
+                                'initial_mass' => $measuringSheet['initial_mass'],
+                                'name_material' => $materialInfo['NAME'],
+                                'group_material' => $materialInfo['group_name'],
+                                'cipher' => $materialInfo['cipher'],
+                                'method' => [
                                     'view' => $methodInfo['view_gost_for_protocol'],
                                     'name' => $methodInfo['mp_name'],
                                     'unit' => $methodInfo['unit_rus']
                                 ],
                             ];
                             foreach ($measuringSheet['in_protocol'] as $key) {
-                                $table['fp'][]     = str_replace('.', ',', $measuringSheet['fp'][$key]);
-                                $table['a'][]     = str_replace('.', ',', $measuringSheet['a'][$key]);
-                                $table['p'][]     = str_replace('.', ',', $measuringSheet['p'][$key]);
-                                $table['req'][]     = str_replace('.', ',', $measuringSheet['norm'][$key]);
-                                $table['r'][]     = str_replace('.', ',', $measuringSheet['r'][$key]);
-                                $table['norm'][]  = $measuringSheet['norm'][$key];
+                                $table['fp'][] = str_replace('.', ',', $measuringSheet['fp'][$key]);
+                                $table['a'][] = str_replace('.', ',', $measuringSheet['a'][$key]);
+                                $table['p'][] = str_replace('.', ',', $measuringSheet['p'][$key]);
+                                $table['req'][] = str_replace('.', ',', $measuringSheet['norm'][$key]);
+                                $table['r'][] = str_replace('.', ',', $measuringSheet['r'][$key]);
+                                $table['norm'][] = $measuringSheet['norm'][$key];
                                 $table['title'][] = $measuringSheet['title'][$key];
                             }
-                            //                            $tableZern['name_table'] = '${table_zern}';
-                            //                            $tableZern['type'] = 'asphalt';
-                            //                            $tableZern['num_table'] = 2;
-                            //                            $tableZern['fp'][] = str_replace('.', ',', $measuringSheet['fp'][$key]);
-                            //                            $tableZern['p'][] = str_replace('.', ',', $measuringSheet['p'][$key]);
-                            //                            $tableZern['a'][] = str_replace('.', ',', $measuringSheet['a'][$key]);
-                            //                            $tableZern['req'][] = str_replace('.', ',', $measuringSheet['norm'][$key]);
-                            //                            $tableZern['a_in_protocol'] = $measuringSheet['a_in_protocol'];
-                            //                            $tableZern['p_in_protocol'] = $measuringSheet['p_in_protocol'];
-                            //                            $tableZern['fp_in_protocol'] = $measuringSheet['fp_in_protocol'];
-                            //                            $tableZern['recept_in_protocol'] = $measuringSheet['recept_in_protocol'];
-                            //                            $tableZern['req_in_protocol'] = $measuringSheet['req_in_protocol'];
-                            //                            $tableZern['r'][] = str_replace('.', ',', $measuringSheet['r'][$key]);
-                            //                            $tableZern['norm'][] = $measuringSheet['norm'][$key];
-                            //                            $tableZern['title'][] = $measuringSheet['title'][$key];
-                            //                            $tableZern['name'] = $zern['NAME'];
-                            //                            $tableZern['initial_mass'] = $measuringSheet['initial_mass'];
-                            //                            $tableZern['name_material'] = $materialInfo['NAME'];
-                            //                            $tableZern['group_material'] = $materialInfo['group_name'];
-                            //                            $tableZern['cipher'] = $materialInfo['cipher'];
-                            //                            $tableZern['method'] = [
-                            //                                'view' => $methodInfo['view_gost_for_protocol'],
-                            //                                'name' => $methodInfo['mp_name'],
-                            //                                'unit' => $methodInfo['unit_rus']
-                            //                            ];
                         }
                         $tableZern[] = $table;
                     } elseif (in_array($measuringSheet['type'], ['concrete_strength_17624_7', 'actual_class_18105_8_4_1'])) {
                         // Проверяем, выбрана ли расчетная документация
                         // (для фактического класса бетона может быть выбрана прочность бетона)
-                        $hasDesignCalculation  = !empty($measuringSheet['design_calculation']);
+                        $hasDesignCalculation = !empty($measuringSheet['design_calculation']);
                         if ($hasDesignCalculation) {
                             $measuringSheet = $requirementModel->getGostToProbe($measuringSheet['design_calculation'])['measuring_sheet'];
                         }
@@ -3041,7 +3034,6 @@ class DocumentGenerator extends Model
                         //}
 
                     } else {
-
                         $results[] = [
                             'Object' => $object,
                             'cipher' => $val['cipher'],
@@ -3058,7 +3050,9 @@ class DocumentGenerator extends Model
                             'Result' => $matchValue,
                             'id' => $k,
                             'ugtp_desc' => $ugtpDesc,
-                            'ugtp_desc2' => $ugtpDesc2
+                            'ugtp_desc2' => $ugtpDesc2,
+                            'permissible_value' => $val['permissible_value'],
+                            'unit_id' => $val['change_unit_id']
                         ];
                     }
                 } else {
@@ -3091,7 +3085,9 @@ class DocumentGenerator extends Model
                             'Result' => $matchValue,
                             'id' => $k,
                             'ugtp_desc' => $ugtpDesc,
-                            'ugtp_desc2' => $ugtpDesc2
+                            'ugtp_desc2' => $ugtpDesc2,
+                            'permissible_value' => $perm_val ?? '--',
+                            'unit_name' => $unit_name ?? '--'
                         ];
                     }
                 }
@@ -3271,9 +3267,8 @@ class DocumentGenerator extends Model
         } elseif ($protocolInformation['protocol_type'] == 60) {
             $template_doc = $_SERVER["DOCUMENT_ROOT"] . '/ProtocolStandartNk2ECP.docx';
         } elseif ($protocolInformation['protocol_type'] == 62) {
-            $template_doc = $_SERVER["DOCUMENT_ROOT"] . '/grb_ilac.docx';
+            $template_doc = $_SERVER["DOCUMENT_ROOT"] . '/protocol_ilac.docx';
         } else {
-            // стандартный шаблон
             $template_doc = $_SERVER["DOCUMENT_ROOT"] . '/ProtocolStandart1.docx';
         }
 
@@ -3900,7 +3895,7 @@ class DocumentGenerator extends Model
                     if ($tableRes['id'] != $curId) {
                         $curId = $tableRes['id'];
                         if (in_array($protocolInformation['protocol_type'], [3, 5, 60])) {
-                            $protocolInformation['Description'] = preg_replace('~<w:(?:br|tab)\s*/>~iu', '',  $protocolInformation['Description']);
+                            $protocolInformation['Description'] = preg_replace('~<w:(?:br|tab)\s*/>~iu', '', $protocolInformation['Description']);
                             $protocolInformation['Description'] = str_replace(["\r\n", "\n", "\r", "\t", "<w:br/>"], '', $protocolInformation['Description']);
                             $protocolInformation['Description'] = preg_replace('~<w:i\b[^>]*/>~iu', '', $protocolInformation['Description']);
                             $protocolInformation['Description'] = preg_replace('~<w:rPr\b[^>]*>.*?</w:rPr>~isu', '', $protocolInformation['Description']);
@@ -4090,9 +4085,9 @@ class DocumentGenerator extends Model
                             $prevWasEmpty = false;
 
                             $cell->addText($lineTrim, ['size' => 10], [
-                                'align'       => 'both',
+                                'align' => 'both',
                                 'spaceBefore' => $firstPrinted ? 5 : 0,
-                                'spaceAfter'  => 0,
+                                'spaceAfter' => 0,
                             ]);
 
                             $firstPrinted = false;
@@ -4300,7 +4295,6 @@ class DocumentGenerator extends Model
         //		$this->pre($gradationRepl);
         // Расчуёт среднего значения с единичными значениями для стандартного протокола
         // (Данные для отдельной таблицы с единичными значениями, если отмечен checkbox "Выводить единичные значения в протокол?" и Тип протокола не упрощённый)
-
 
 
         if (!empty($tableData['sred_only']) && !$protocolShort) {
@@ -4519,7 +4513,7 @@ class DocumentGenerator extends Model
                 }
                 //$table_sred->addCell(null, $cellAllCentered)->addText($tableRes['Normdocmet'], array('size' => 10), $cellAllCentered);
                 $table_sred->addCell(null, $cellAllCentered)->addText($tableRes['SingleValues'], array('size' => 10), $cellAllCentered);
-                $table_sred->addCell(null, $cellAllCentered)->addText($tableRes['Values']  . $additionalTopIndex, array('size' => 10), $cellAllCentered);
+                $table_sred->addCell(null, $cellAllCentered)->addText($tableRes['Values'] . $additionalTopIndex, array('size' => 10), $cellAllCentered);
                 if ($results['no_compliance'] == 0) {
                     $table_sred->addCell(null, $cellAllCentered)->addText($tableRes['Result'], array('size' => 10), $cellAllCentered);
                 }
@@ -4883,9 +4877,9 @@ class DocumentGenerator extends Model
                 $topIndexNumber = 0;
                 $prevCol = [
                     'Specification' => null, // 1 столбец
-                    'Ed'            => null, // 2 столбец
-                    'Normdoc'       => null, // 3 столбец
-                    'Normdocmet'    => null, // 6 столбец
+                    'Ed' => null, // 2 столбец
+                    'Normdoc' => null, // 3 столбец
+                    'Normdocmet' => null, // 6 столбец
                 ];
                 foreach ($results as $key => $tableRes) {
                     if ($key === 'count' || $key === 'name_table' || $key === 'no_compliance') {
@@ -4910,15 +4904,15 @@ class DocumentGenerator extends Model
                     }
                     $tableRes['SingleValues2'] = str_replace(';', "\n<w:br/>", $tableRes['SingleValues2']) . "\n<w:br/>";
                     $table_result->addRow();
-                    $sameSpec   = ($tableRes['Specification'] === $prevCol['Specification']);
-                    $sameEd     = ($tableRes['Ed']            === $prevCol['Ed']);
-                    $sameNormdoc = ($tableRes['Normdoc']       === $prevCol['Normdoc']);
-                    $sameMethod = ($tableRes['Normdocmet']    === $prevCol['Normdocmet']);
+                    $sameSpec = ($tableRes['Specification'] === $prevCol['Specification']);
+                    $sameEd = ($tableRes['Ed'] === $prevCol['Ed']);
+                    $sameNormdoc = ($tableRes['Normdoc'] === $prevCol['Normdoc']);
+                    $sameMethod = ($tableRes['Normdocmet'] === $prevCol['Normdocmet']);
 
-                    $styleSpec   = array_merge($cellAllCentered, ['vMerge' => $sameSpec    ? 'continue' : 'restart']);
-                    $styleEd     = array_merge($cellAllCentered, ['vMerge' => $sameEd      ? 'continue' : 'restart']);
+                    $styleSpec = array_merge($cellAllCentered, ['vMerge' => $sameSpec ? 'continue' : 'restart']);
+                    $styleEd = array_merge($cellAllCentered, ['vMerge' => $sameEd ? 'continue' : 'restart']);
                     $styleNormdoc = array_merge($cellAllCentered, ['vMerge' => $sameNormdoc ? 'continue' : 'restart']);
-                    $styleMethod = array_merge($cellAllCentered, ['vMerge' => $sameMethod  ? 'continue' : 'restart']);
+                    $styleMethod = array_merge($cellAllCentered, ['vMerge' => $sameMethod ? 'continue' : 'restart']);
 
                     // 1) Specification (группируем независимо)
                     $cell = $table_result->addCell(null, $styleSpec);
@@ -4966,9 +4960,9 @@ class DocumentGenerator extends Model
 
                     // обновляем "предыдущее" по каждому столбцу
                     $prevCol['Specification'] = $tableRes['Specification'];
-                    $prevCol['Ed']            = $tableRes['Ed'];
-                    $prevCol['Normdoc']       = $tableRes['Normdoc'];
-                    $prevCol['Normdocmet']    = $tableRes['Normdocmet'];
+                    $prevCol['Ed'] = $tableRes['Ed'];
+                    $prevCol['Normdoc'] = $tableRes['Normdoc'];
+                    $prevCol['Normdocmet'] = $tableRes['Normdocmet'];
                     //                    $table_result->addCell(null, $cellAllCentered)->addText($tableRes['Specification'], $FontStyle, $paragraphStyle);
                     //                    $table_result->addCell(null, $cellAllCentered)->addText($tableRes['Ed'], $FontStyle, $paragraphStyle);
                     ////					if ($results['no_compliance'] == 0) {
@@ -5569,7 +5563,7 @@ class DocumentGenerator extends Model
                 }
             }
             $tableAllResult = [];
-            $complexQueue   = [];
+            $complexQueue = [];
 
             $zernByCipher = [];
             foreach ($tableAllZern as $i => $zMeta) {
@@ -5583,15 +5577,15 @@ class DocumentGenerator extends Model
             foreach ($cipherOrder as $i => $cipher) {
 
                 $zernPlaceholder = $tableAllZern[$i]['name_table'] ?? '${table_zern}';
-                $zernMacro       = preg_replace('/^\$\{|\}$/', '', $zernPlaceholder);
+                $zernMacro = preg_replace('/^\$\{|\}$/', '', $zernPlaceholder);
 
                 $zernTable = $zernByCipher[$cipher] ?? null;
 
                 if ($zernTable) {
                     $tableAllResult[] = [
-                        'type'      => 'zern',
+                        'type' => 'zern',
                         'name_table' => $zernPlaceholder,
-                        'zern_i'    => $i,
+                        'zern_i' => $i,
                     ];
                     $complexQueue[] = [
                         'macro' => $zernMacro,
@@ -5601,9 +5595,9 @@ class DocumentGenerator extends Model
 
                 if (isset($table_result[$cipher])) {
                     $tableAllResult[] = [
-                        'type'       => 'result',
+                        'type' => 'result',
                         'name_table' => '${table_result}',
-                        'cipher'     => $cipher,
+                        'cipher' => $cipher,
                     ];
                     $complexQueue[] = [
                         'macro' => 'table_result',
@@ -5617,14 +5611,12 @@ class DocumentGenerator extends Model
             $table_result = $section->addTable($styleTable);
 
             $table_result->addRow();
-            $table_result->addCell(3900)->addText('НАИМЕНОВАНИЕ ОПРЕДЕЛЯЕМЫХ ПОКАЗАТЕЛЕЙ', $FontStyle, $cellAllCentered);
-            $table_result->addCell(3000)->addText('НД НА МЕТОДИКУ ИССЛЕДОВАНИЙ', $FontStyle, $cellAllCentered);
-            $table_result->addCell(3700)->addText('РЕЗУЛЬТАТЫ ИСПЫТАНИЙ', $FontStyle, $cellAllCentered);
+            $table_result->addCell(2500)->addText('НАИМЕНОВАНИЕ ОПРЕДЕЛЯЕМЫХ ПОКАЗАТЕЛЕЙ', $FontStyle, $cellAllCentered);
+            $table_result->addCell(1500)->addText('ЕДИНЦА ИЗМЕРЕНИЯ', $FontStyle, $cellAllCentered);
+            $table_result->addCell(2100)->addText('НД НА МЕТОДИКУ ИССЛЕДОВАНИЙ', $FontStyle, $cellAllCentered);
+            $table_result->addCell(2100)->addText('РЕЗУЛЬТАТЫ ИСПЫТАНИЙ', $FontStyle, $cellAllCentered);
+            $table_result->addCell(2100)->addText('ДОПУСТИМЫЙ УРОВЕНЬ', $FontStyle, $cellAllCentered);
 
-            // echo '<pre>';
-
-            // print_r($results);
-            // die;
             foreach ($results as $key => $item) {
 
                 if (!is_numeric($key)) {
@@ -5632,16 +5624,11 @@ class DocumentGenerator extends Model
                 }
 
                 $table_result->addRow();
-
-                // Колонка 1: Наименование показателя, ед. изм.
-                $table_result->addCell(3900)->addText($item['Specification'], $FontStyle, $cellAllCentered);
-
-                // Колонка 2: Шифр нормативного документа
-                $normdoc = $item['Normdocmet'] ?? '-';
-                $table_result->addCell(3000)->addText($normdoc, $FontStyle, $cellAllCentered);
-                // Колонка 2: Шифр нормативного документа
-                $normdoc = $item['Values'] ?? '-';
-                $table_result->addCell(3700)->addText($normdoc, $FontStyle, $cellAllCentered);
+                $table_result->addCell(2500)->addText($item['Specification'], $FontStyle, $cellAllCentered);
+                $table_result->addCell(1500)->addText($item['unit_name'], $FontStyle, $cellAllCentered);
+                $table_result->addCell(2500)->addText($item['permissible_value'], $FontStyle, $cellAllCentered);
+                $table_result->addCell(2500)->addText($item['Values'], $FontStyle, $cellAllCentered);
+                $table_result->addCell(2500)->addText($item['permissible_value'], $FontStyle);
             }
         } else {
             $section = $phpWord->addSection();
@@ -6133,7 +6120,7 @@ class DocumentGenerator extends Model
         if (in_array($protocolInformation['protocol_type'], [3, 4, 5, 60])) {
             if (in_array($protocolInformation['protocol_type'], [3, 5, 60])) {
                 $table_information->addRow($rowHeight);
-                $protocolInformation['Description'] = preg_replace('~<w:(?:br|tab)\s*/>~iu', '',  $protocolInformation['Description']);
+                $protocolInformation['Description'] = preg_replace('~<w:(?:br|tab)\s*/>~iu', '', $protocolInformation['Description']);
                 $protocolInformation['Description'] = str_replace(["\r\n", "\n", "\r", "\t", "<w:br/>"], '', $protocolInformation['Description']);
                 $protocolInformation['Description'] = preg_replace('~<w:i\b[^>]*/>~iu', '', $protocolInformation['Description']);
                 $protocolInformation['Description'] = preg_replace('~<w:rPr\b[^>]*>.*?</w:rPr>~isu', '', $protocolInformation['Description']);
@@ -6194,7 +6181,7 @@ class DocumentGenerator extends Model
         $table_information_short->addRow();
         if (
             $protocolInformation['protocol_type'] !== '55' && $protocolInformation['protocol_type'] !== '56'
-            && $protocolInformation['protocol_type'] !== '57'  && $protocolInformation['protocol_type'] !== '58'
+            && $protocolInformation['protocol_type'] !== '57' && $protocolInformation['protocol_type'] !== '58'
         ) {
             $table_information_short->addCell(4540, array('valign' => 'center'))->addText('Заказчик', $FontStyle, $paragraphStyleTableInfo);
         } else {
@@ -6204,7 +6191,7 @@ class DocumentGenerator extends Model
 
         if (
             $protocolInformation['protocol_type'] !== '55' && $protocolInformation['protocol_type'] !== '56'
-            && $protocolInformation['protocol_type'] !== '57'  && $protocolInformation['protocol_type'] !== '58'
+            && $protocolInformation['protocol_type'] !== '57' && $protocolInformation['protocol_type'] !== '58'
         ) {
             $table_information_short->addRow();
             $table_information_short->addCell(4540, array('valign' => 'center'))->addText('Адрес Заказчика юридический/фактический*', $FontStyle, $paragraphStyleTableInfo);
@@ -6214,7 +6201,7 @@ class DocumentGenerator extends Model
         $table_information_short->addRow();
         if (
             $protocolInformation['protocol_type'] !== '55' && $protocolInformation['protocol_type'] !== '56'
-            && $protocolInformation['protocol_type'] !== '57'  && $protocolInformation['protocol_type'] !== '58'
+            && $protocolInformation['protocol_type'] !== '57' && $protocolInformation['protocol_type'] !== '58'
         ) {
             $table_information_short->addCell(4540, array('valign' => 'center'))->addText('ИНН/ОГРН', $FontStyle, $paragraphStyleTableInfo);
         } else {
@@ -6364,7 +6351,6 @@ class DocumentGenerator extends Model
 
             $this->addQrCode($qrPath, $pathDocCurdate);
         }
-
 
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
@@ -7264,7 +7250,6 @@ class DocumentGenerator extends Model
         $outputPath = "archive_{$type}/" . $info['id'] . "/";
 
 
-
         $fullPathDocx = $_SERVER['DOCUMENT_ROOT'] . '/protocol_generator/' . $interimPath;
         $fullPathPDF = $_SERVER['DOCUMENT_ROOT'] . '/protocol_generator/' . $outputPath;
 
@@ -7978,7 +7963,7 @@ class DocumentGenerator extends Model
         if (!empty($_POST['lab'])) {
             $filter['search']['lab'] = $_POST['lab'];
         }
-        $filter['order']['by']  = 'gost_id';
+        $filter['order']['by'] = 'gost_id';
         $filter['order']['dir'] = 'ASC';
 
         $data = $methodModel->getJournalList($filter);
@@ -8060,7 +8045,6 @@ class DocumentGenerator extends Model
             'ru' => "Упд_{$actNum}_{$currentDateTime}",
             'en' => "UPD_{$actNum}_{$currentDateTime}"
         ];
-
 
 
         //Данные документа

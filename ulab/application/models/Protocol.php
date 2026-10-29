@@ -669,7 +669,7 @@ class Protocol extends Model
                         mater.NAME material_name,
                         ugtp.id as ugtp_id, ugtp.new_method_id as method_id, ugtp.tech_condition_id as condition_id, 
                         ugtp.normative_val, ugtp.actual_value, ugtp.match, ugtp.measuring_sheet, mg.name as material_group_name,
-                        ugtp.description as ugtp_desc
+                        ugtp.description as ugtp_desc, ugtp.changed_unit_id,  ugtp.tech_condition_string, ugtp.id as ugtp_id
                     from ulab_material_to_request as umtr
                     left join MATERIALS as mater on mater.ID = umtr.material_id
                     left join materials_groups as mg ON umtr.group = mg.id
@@ -701,17 +701,21 @@ class Protocol extends Model
                 }
             }
 
+            $unitName = $methodsModel->getUnitById($row['changed_unit_id']);
+
             $result[$row['id']]['id'] = $row['id'];
             $result[$row['id']]['mtr_id'] = $row['mtr_id'];
             $result[$row['id']]['deal_id'] = $row['deal_id'];
             $result[$row['id']]['material_id'] = $row['material_id'];
             $result[$row['id']]['probe_number'] = $row['probe_number'];
             $result[$row['id']]['material_number'] = $row['material_number'];
+            $result[$row['id']]['unit_id'][] = $unitName;
+            $result[$row['id']]['permissible_value'] = $row['permissible_value'];
             $result[$row['id']]['cipher'] = $row['cipher'];
             $result[$row['id']]['protocol_id'] = $row['protocol_id'];
             $result[$row['id']]['material_name'] = $row['material_name'];
             $result[$row['id']]['name_for_protocol'] = $row['name_for_protocol'];
-            $result[$row['id']]['ugtp_id'] = $row['ugtp_id'];
+            $result[$row['id']]['ugtp_id'][] = $row['ugtp_id'];
             $result[$row['id']]['quarry'] = $this->getQuarry($row['quarry_id'])['NAME'];
             $result[$row['id']]['normative_val'][] = $row['normative_val'];
             $result[$row['id']]['actual_value'][] = $row['actual_value'];

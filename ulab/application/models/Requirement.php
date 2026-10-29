@@ -4208,10 +4208,11 @@ class Requirement extends Model
             'nd' => $data['nd'],
             'storage_conditions' => $data['storage_conditions'],
             'delivery_method' => $data['delivery_method'],
-            'manufacture_date' => $data['manufacturing_date'],
+            'manufacturing_date' => $data['manufacturing_date'],
             'expiration_date' => $data['expiration_date'],
             'sampling_place' => $data['sampling_place'],
-            'sampling_by' => $data['sampling_by']
+            'sampling_by' => $data['sampling_by'],
+            'ticket' => $data['ticket']
         ];
 
         $where = 'where ugtp_id = ' . $ugtp_id;

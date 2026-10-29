@@ -2594,6 +2594,10 @@ class Methods extends Model
         $this->DB->Query("DELETE FROM ba_oborud_interchangeable WHERE id = '{$id}'");
     }
 
+    public function getUnitById($unit_id){
+        return $this->DB->Query("select unit_rus from ulab_dimension where id = {$unit_id}")->Fetch()['unit_rus'];
+    }
+
     //	public function handleFormSubmission($data)
     //	{
     //		$values = [];
