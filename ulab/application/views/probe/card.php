@@ -103,7 +103,7 @@ if ((int)$this->data['user_id'] === 61)  { $colspan++; }
 
             <div class="d-flex justify-content-between align-items-center mb-2 gap-2 flex-wrap">
                 <button type="button" class="btn btn-outline-secondary" id="toggle-extra-cols">
-                    Дата/Место/Карьер (свернуть/развернуть)
+                    Дата/Место(свернуть/развернуть)
                 </button>
                 <div class="form-group col-sm-2">
                     <label class="form-label mb-1" for="protocolDeadline">Место отбора (общее)</label>

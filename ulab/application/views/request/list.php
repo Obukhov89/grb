@@ -155,303 +155,303 @@
 
 <input type="hidden" id="inp-id-usr" value="<?= $this->data['user_id'] ?>">
 
-<?php if (!empty($this->data['tz_under_consideration']) || !empty($this->data['probe_in_lab'])): ?>
-    <div id="notify_leader" class="bg-light mfp-hide col-xl-8 col-lg-9 m-auto p-3 position-relative">
-        <div class="row">
-            <div class="col">
-                <div class="title mb-3 h-2">
-                    Технические задания на рассмотрении
-                </div>
+<?php //if (!empty($this->data['tz_under_consideration']) || !empty($this->data['probe_in_lab'])): ?>
+<!--    <div id="notify_leader" class="bg-light mfp-hide col-xl-8 col-lg-9 m-auto p-3 position-relative">-->
+<!--        <div class="row">-->
+<!--            <div class="col">-->
+<!--                <div class="title mb-3 h-2">-->
+<!--                    Технические задания на рассмотрении-->
+<!--                </div>-->
+<!---->
+<!--                <div class="line-dashed-small"></div>-->
+<!---->
+<!--                <div class="body mb-3">-->
+<!--                    <table class="table">-->
+<!--                        <tbody>-->
+<!--                            --><?php //foreach ($this->data['tz_under_consideration'] as $row): ?>
+<!--                                <tr class="text-center">-->
+<!--                                    <td class="">--><?php //= $row['REQUEST_TITLE'] ?><!--</td>-->
+<!--                                    <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/request/card/--><?php //= $row['ID_Z'] ?><!--">Карточка</a>-->
+<!--                                    </td>-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/requirement/card/--><?php //= $row['tz_id'] ?><!--">ТЗ</a>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <div class="title mb-3 h-2">-->
+<!--                    Поступившие пробы-->
+<!--                </div>-->
+<!---->
+<!--                <div class="line-dashed-small"></div>-->
+<!--                <div class="body">-->
+<!--                    <table class="table">-->
+<!--                        <tbody>-->
+<!--                            --><?php //foreach ($this->data['probe_in_lab'] as $k => $res): ?>
+<!--                                --><?php //if (count($res['data']) > 5): ?>
+<!--                                    <tr class="text-center probe_row bg-light-secondary">-->
+<!--                                        <td class="">-->
+<!--                                            <a href="--><?php //= URI ?><!--/request/card/--><?php //= $res['data'][0]['ID_Z'] ?><!--">--><?php //= $res['data'][0]['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <a class="more-probe" data-request-id=--><?php //= $k ?><!-->--><?php //= count($res['data']) ?><!-- проб</a>-->
+<!--                                        </td>-->
+<!--                                        <td class="">--><?php //= $res['data'][0]['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                        <td class="">-->
+<!--                                            --><?php
+//                                            echo ($res['sended_count'] ?? '0') . "/" . count($res['data']) . " готовы";
+//                                            ?>
+<!--                                        </td>-->
+<!--                                        <td class=""><a class="accept_all" data-id="--><?php //= $res['data'][0]['ID_Z'] ?><!--" data-id-z="--><?php //= $res['data'][0]['ID_Z'] ?><!--">Принять все</a></td>-->
+<!--                                    </tr>-->
+<!--                                    --><?php //foreach ($res['data'] as $key => $row): ?>
+<!--                                        <tr class="text-center probe_child_--><?php //= $k ?><!-- probe_row d-none">-->
+<!--                                            <td class="">-->
+<!--                                                <a href="--><?php //= URI ?><!--/request/card/--><?php //= $res['data']['ID_Z'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                --><?php //= $row['cipher'] ?>
+<!--                                            </td>-->
+<!--                                            <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                            <td class="">-->
+<!--                                                --><?php //if ($row['date_send']): ?>
+<!--                                                    <span style="color: green;">--><?php //= $row['date_send'] ?><!--</span>-->
+<!--                                                --><?php //else: ?>
+<!--                                                    <span style="color: red;">Проба не готова</span>-->
+<!--                                                --><?php //endif; ?>
+<!--                                            </td>-->
+<!--                                            <td class="">-->
+<!--                                                <a class="accept_probe" data-id="--><?php //= $row['id'] ?><!--" data-id-z="--><?php //= $row[0]['ID_Z'] ?><!--">Принять</a>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                    --><?php //endforeach; ?>
+<!--                                --><?php //else: ?>
+<!--                                    --><?php //foreach ($res['data'] as $key => $row): ?>
+<!--                                        <tr class="text-center probe_row">-->
+<!--                                            <td class="">-->
+<!--                                                <a href="--><?php //= URI ?><!--/request/card/--><?php //= $row['ID_Z'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                --><?php //= $row['cipher'] ?>
+<!--                                            </td>-->
+<!--                                            <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                            <td class="">-->
+<!--                                                --><?php //if ($row['date_send']): ?>
+<!--                                                    <span style="color: green;">--><?php //= $row['date_send'] ?><!--</span>-->
+<!--                                                --><?php //else: ?>
+<!--                                                    <span style="color: red;">Проба не готова</span>-->
+<!--                                                --><?php //endif; ?>
+<!--                                            </td>-->
+<!--                                            <td class="">-->
+<!--                                                <a class="accept_probe" data-id="--><?php //= $row['id'] ?><!--" data-id-z="--><?php //= $res[0]['ID_Z'] ?><!--">Принять</a>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                    --><?php //endforeach; ?>
+<!--                                --><?php //endif; ?>
+<!--                            --><?php //endforeach; ?>
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="col">-->
+<!--                <div class="title mb-3 h-2">-->
+<!--                    Оплаченные пробы-->
+<!--                </div>-->
+<!---->
+<!--                <div class="line-dashed-small"></div>-->
+<!---->
+<!--                <div class="body">-->
+<!--                    <table class="table">-->
+<!--                        <tbody>-->
+<!--                            --><?php //foreach ($this->data['probe_in_lab_payed'] as $k => $res): ?>
+<!--                                <!--                            -->--><?php //?>
+<!--                                --><?php //if (count($res['data']) > 5): ?>
+<!--                                    <tr class="text-center probe_row bg-light-secondary">-->
+<!--                                        <td class="">-->
+<!--                                            <a href="--><?php //= URI ?><!--/request/card/--><?php //= $res['data'][0]['ID_Z'] ?><!--">--><?php //= $res['data'][0]['REQUEST_TITLE'] ?><!----><?php //= $res['data'][0]['certificate'] ?><!--</a>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <a class="more-probe" data-request-id=--><?php //= $k ?><!-->--><?php //= count($res['data']) ?><!-- проб</a>-->
+<!--                                        </td>-->
+<!--                                        <td class="">--><?php //= $res['data'][0]['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                        <td class="">-->
+<!--                                            --><?php
+//                                            echo ($res['sended_count'] ?? '0') . "/" . (count($res['data'])) . " готовы";
+//                                            ?>
+<!--                                        </td>-->
+<!--                                        <td class=""><a class="accept_all" data-id="--><?php //= $res['data'][0]['ID_Z'] ?><!--">Принять все</a></td>-->
+<!--                                    </tr>-->
+<!--                                    --><?php //foreach ($res['data'] as $key => $row): ?>
+<!--                                        <tr class="text-center probe_child_--><?php //= $k ?><!-- probe_row d-none">-->
+<!--                                            <td class="">-->
+<!--                                                <a href="--><?php //= URI ?><!--/request/card/--><?php //= $row['ID_Z'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                --><?php //= $row['cipher'] ?>
+<!--                                            </td>-->
+<!--                                            <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                            <td class="">-->
+<!--                                                --><?php //if ($row['date_send']): ?>
+<!--                                                    <span style="color: green;">--><?php //= $row['date_send'] ?><!--</span>-->
+<!--                                                --><?php //else: ?>
+<!--                                                    <span style="color: red;">Проба не готова</span>-->
+<!--                                                --><?php //endif; ?>
+<!--                                            </td>-->
+<!--                                            <td class="">-->
+<!--                                                <a class="accept_probe" data-id="--><?php //= $row['id'] ?><!--">Принять</a>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                    --><?php //endforeach; ?>
+<!--                                --><?php //else: ?>
+<!--                                    --><?php //foreach ($res['data'] as $key => $row): ?>
+<!--                                        <tr class="text-center probe_row">-->
+<!--                                            <td class="">-->
+<!--                                                <a href="--><?php //= URI ?><!--/request/card/--><?php //= $row['ID_Z'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!----><?php //= $row['certificate'] ?><!--</a>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                --><?php //= $row['cipher'] ?>
+<!--                                            </td>-->
+<!--                                            <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                            <td class="">-->
+<!--                                                --><?php //if ($row['date_send']): ?>
+<!--                                                    <span style="color: green;">--><?php //= $row['date_send'] ?><!--</span>-->
+<!--                                                --><?php //else: ?>
+<!--                                                    <span style="color: red;">Проба не готова</span>-->
+<!--                                                --><?php //endif; ?>
+<!--                                            </td>-->
+<!--                                            <td class="">-->
+<!--                                                <a class="accept_probe" data-id="--><?php //= $row['id'] ?><!--">Принять</a>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                    --><?php //endforeach; ?>
+<!--                                --><?php //endif; ?>
+<!--                            --><?php //endforeach; ?>
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <div class="title mb-3 h-2">-->
+<!--                    Не выбраны ответственные-->
+<!--                </div>-->
+<!---->
+<!--                <div class="line-dashed-small"></div>-->
+<!---->
+<!--                <div class="body mb-3">-->
+<!--                    <table class="table">-->
+<!--                        <tbody>-->
+<!--                            --><?php //foreach ($this->data['request_list_not_assigned'] as $row): ?>
+<!--                                <tr class="text-center">-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/requirement/card/--><?php //= $row['ID'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<?php //endif; ?>
 
-                <div class="line-dashed-small"></div>
-
-                <div class="body mb-3">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($this->data['tz_under_consideration'] as $row): ?>
-                                <tr class="text-center">
-                                    <td class=""><?= $row['REQUEST_TITLE'] ?></td>
-                                    <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                    <td class="">
-                                        <a href="<?= URI ?>/request/card/<?= $row['ID_Z'] ?>">Карточка</a>
-                                    </td>
-                                    <td class="">
-                                        <a href="<?= URI ?>/requirement/card/<?= $row['tz_id'] ?>">ТЗ</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col">
-                <div class="title mb-3 h-2">
-                    Поступившие пробы
-                </div>
-
-                <div class="line-dashed-small"></div>
-                <div class="body">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($this->data['probe_in_lab'] as $k => $res): ?>
-                                <?php if (count($res['data']) > 5): ?>
-                                    <tr class="text-center probe_row bg-light-secondary">
-                                        <td class="">
-                                            <a href="<?= URI ?>/request/card/<?= $res['data'][0]['ID_Z'] ?>"><?= $res['data'][0]['REQUEST_TITLE'] ?></a>
-                                        </td>
-                                        <td>
-                                            <a class="more-probe" data-request-id=<?= $k ?>><?= count($res['data']) ?> проб</a>
-                                        </td>
-                                        <td class=""><?= $res['data'][0]['COMPANY_TITLE'] ?></td>
-                                        <td class="">
-                                            <?php
-                                            echo ($res['sended_count'] ?? '0') . "/" . count($res['data']) . " готовы";
-                                            ?>
-                                        </td>
-                                        <td class=""><a class="accept_all" data-id="<?= $res['data'][0]['ID_Z'] ?>" data-id-z="<?= $res['data'][0]['ID_Z'] ?>">Принять все</a></td>
-                                    </tr>
-                                    <?php foreach ($res['data'] as $key => $row): ?>
-                                        <tr class="text-center probe_child_<?= $k ?> probe_row d-none">
-                                            <td class="">
-                                                <a href="<?= URI ?>/request/card/<?= $res['data']['ID_Z'] ?>"><?= $row['REQUEST_TITLE'] ?></a>
-                                            </td>
-                                            <td>
-                                                <?= $row['cipher'] ?>
-                                            </td>
-                                            <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                            <td class="">
-                                                <?php if ($row['date_send']): ?>
-                                                    <span style="color: green;"><?= $row['date_send'] ?></span>
-                                                <?php else: ?>
-                                                    <span style="color: red;">Проба не готова</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="">
-                                                <a class="accept_probe" data-id="<?= $row['id'] ?>" data-id-z="<?= $row[0]['ID_Z'] ?>">Принять</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <?php foreach ($res['data'] as $key => $row): ?>
-                                        <tr class="text-center probe_row">
-                                            <td class="">
-                                                <a href="<?= URI ?>/request/card/<?= $row['ID_Z'] ?>"><?= $row['REQUEST_TITLE'] ?></a>
-                                            </td>
-                                            <td>
-                                                <?= $row['cipher'] ?>
-                                            </td>
-                                            <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                            <td class="">
-                                                <?php if ($row['date_send']): ?>
-                                                    <span style="color: green;"><?= $row['date_send'] ?></span>
-                                                <?php else: ?>
-                                                    <span style="color: red;">Проба не готова</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="">
-                                                <a class="accept_probe" data-id="<?= $row['id'] ?>" data-id-z="<?= $res[0]['ID_Z'] ?>">Принять</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="title mb-3 h-2">
-                    Оплаченные пробы
-                </div>
-
-                <div class="line-dashed-small"></div>
-
-                <div class="body">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($this->data['probe_in_lab_payed'] as $k => $res): ?>
-                                <!--                            --><?php ?>
-                                <?php if (count($res['data']) > 5): ?>
-                                    <tr class="text-center probe_row bg-light-secondary">
-                                        <td class="">
-                                            <a href="<?= URI ?>/request/card/<?= $res['data'][0]['ID_Z'] ?>"><?= $res['data'][0]['REQUEST_TITLE'] ?><?= $res['data'][0]['certificate'] ?></a>
-                                        </td>
-                                        <td>
-                                            <a class="more-probe" data-request-id=<?= $k ?>><?= count($res['data']) ?> проб</a>
-                                        </td>
-                                        <td class=""><?= $res['data'][0]['COMPANY_TITLE'] ?></td>
-                                        <td class="">
-                                            <?php
-                                            echo ($res['sended_count'] ?? '0') . "/" . (count($res['data'])) . " готовы";
-                                            ?>
-                                        </td>
-                                        <td class=""><a class="accept_all" data-id="<?= $res['data'][0]['ID_Z'] ?>">Принять все</a></td>
-                                    </tr>
-                                    <?php foreach ($res['data'] as $key => $row): ?>
-                                        <tr class="text-center probe_child_<?= $k ?> probe_row d-none">
-                                            <td class="">
-                                                <a href="<?= URI ?>/request/card/<?= $row['ID_Z'] ?>"><?= $row['REQUEST_TITLE'] ?></a>
-                                            </td>
-                                            <td>
-                                                <?= $row['cipher'] ?>
-                                            </td>
-                                            <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                            <td class="">
-                                                <?php if ($row['date_send']): ?>
-                                                    <span style="color: green;"><?= $row['date_send'] ?></span>
-                                                <?php else: ?>
-                                                    <span style="color: red;">Проба не готова</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="">
-                                                <a class="accept_probe" data-id="<?= $row['id'] ?>">Принять</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <?php foreach ($res['data'] as $key => $row): ?>
-                                        <tr class="text-center probe_row">
-                                            <td class="">
-                                                <a href="<?= URI ?>/request/card/<?= $row['ID_Z'] ?>"><?= $row['REQUEST_TITLE'] ?><?= $row['certificate'] ?></a>
-                                            </td>
-                                            <td>
-                                                <?= $row['cipher'] ?>
-                                            </td>
-                                            <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                            <td class="">
-                                                <?php if ($row['date_send']): ?>
-                                                    <span style="color: green;"><?= $row['date_send'] ?></span>
-                                                <?php else: ?>
-                                                    <span style="color: red;">Проба не готова</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="">
-                                                <a class="accept_probe" data-id="<?= $row['id'] ?>">Принять</a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col">
-                <div class="title mb-3 h-2">
-                    Не выбраны ответственные
-                </div>
-
-                <div class="line-dashed-small"></div>
-
-                <div class="body mb-3">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($this->data['request_list_not_assigned'] as $row): ?>
-                                <tr class="text-center">
-                                    <td class="">
-                                        <a href="<?= URI ?>/requirement/card/<?= $row['ID'] ?>"><?= $row['REQUEST_TITLE'] ?></a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
-
-<?php if (!empty($this->data['not_sended_tz'])): ?>
-    <div id="notify_leader" class="bg-light mfp-hide col-xl-5 col-lg-7 m-auto p-3 position-relative" style="width: 1200px">
-        <div class="row">
-            <div class="col">
-                <div class="title mb-3 h-2">
-                    ТЗ не отправлено на подтверждение
-                </div>
-
-                <div class="line-dashed-small"></div>
-
-                <div class="body mb-3">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($this->data['not_sended_tz'] as $row): ?>
-                                <tr class="text-center">
-                                    <td class="">
-                                        <a href="<?= URI ?>/request/card/<?= $row['ID_Z'] ?>"><?= $row['REQUEST_TITLE'] ?></a>
-                                    </td>
-                                    <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                    <td class="">
-                                        <a href="<?= URI ?>/requirement/card_new_new/<?= $row['ID'] ?>">ТЗ</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col">
-                <div class="title mb-3 h-2">
-                    ТЗ возвращено на доработку
-                </div>
-
-                <div class="line-dashed-small"></div>
-
-                <div class="body mb-3">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($this->data['returned_tz'] as $row): ?>
-                                <tr class="text-center">
-                                    <td class="">
-                                        <a href="<?= URI ?>/request/card/<?= $row['ID_Z'] ?>"><?= $row['REQUEST_TITLE'] ?></a>
-                                    </td>
-                                    <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                    <td class="">
-                                        <a href="<?= URI ?>/requirement/card_new_new/<?= $row['ID'] ?>">ТЗ</a>
-                                    </td>
-                                </tr>
-                                <tr class="">
-                                    <td colspan="3">
-                                        <div class="d-flex flex-column">
-                                            <?php foreach ($row['comments'] as $value): ?>
-                                                <span class="text-danger"><?= $value['user']['short_name'] . ': ' . $value['desc'] ?></span>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col">
-                <div class="title mb-3 h-2">
-                    ТЗ подтверждено
-                </div>
-
-                <div class="line-dashed-small"></div>
-
-                <div class="body mb-3">
-                    <table class="table">
-                        <tbody>
-                            <?php foreach ($this->data['confirmed_tz'] as $row): ?>
-                                <tr class="text-center">
-                                    <td class="">
-                                        <a href="<?= URI ?>/request/card/<?= $row['ID_Z'] ?>"><?= $row['REQUEST_TITLE'] ?></a>
-                                    </td>
-                                    <td class=""><?= $row['COMPANY_TITLE'] ?></td>
-                                    <td class="">
-                                        <a href="<?= URI ?>/requirement/card_new_new/<?= $row['ID'] ?>">ТЗ</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
+<?php //if (!empty($this->data['not_sended_tz'])): ?>
+<!--    <div id="notify_leader" class="bg-light mfp-hide col-xl-5 col-lg-7 m-auto p-3 position-relative" style="width: 1200px">-->
+<!--        <div class="row">-->
+<!--            <div class="col">-->
+<!--                <div class="title mb-3 h-2">-->
+<!--                    ТЗ не отправлено на подтверждение-->
+<!--                </div>-->
+<!---->
+<!--                <div class="line-dashed-small"></div>-->
+<!---->
+<!--                <div class="body mb-3">-->
+<!--                    <table class="table">-->
+<!--                        <tbody>-->
+<!--                            --><?php //foreach ($this->data['not_sended_tz'] as $row): ?>
+<!--                                <tr class="text-center">-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/request/card/--><?php //= $row['ID_Z'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                    </td>-->
+<!--                                    <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/requirement/card_new_new/--><?php //= $row['ID'] ?><!--">ТЗ</a>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <div class="title mb-3 h-2">-->
+<!--                    ТЗ возвращено на доработку-->
+<!--                </div>-->
+<!---->
+<!--                <div class="line-dashed-small"></div>-->
+<!---->
+<!--                <div class="body mb-3">-->
+<!--                    <table class="table">-->
+<!--                        <tbody>-->
+<!--                            --><?php //foreach ($this->data['returned_tz'] as $row): ?>
+<!--                                <tr class="text-center">-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/request/card/--><?php //= $row['ID_Z'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                    </td>-->
+<!--                                    <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/requirement/card_new_new/--><?php //= $row['ID'] ?><!--">ТЗ</a>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <tr class="">-->
+<!--                                    <td colspan="3">-->
+<!--                                        <div class="d-flex flex-column">-->
+<!--                                            --><?php //foreach ($row['comments'] as $value): ?>
+<!--                                                <span class="text-danger">--><?php //= $value['user']['short_name'] . ': ' . $value['desc'] ?><!--</span>-->
+<!--                                            --><?php //endforeach; ?>
+<!--                                        </div>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <div class="title mb-3 h-2">-->
+<!--                    ТЗ подтверждено-->
+<!--                </div>-->
+<!---->
+<!--                <div class="line-dashed-small"></div>-->
+<!---->
+<!--                <div class="body mb-3">-->
+<!--                    <table class="table">-->
+<!--                        <tbody>-->
+<!--                            --><?php //foreach ($this->data['confirmed_tz'] as $row): ?>
+<!--                                <tr class="text-center">-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/request/card/--><?php //= $row['ID_Z'] ?><!--">--><?php //= $row['REQUEST_TITLE'] ?><!--</a>-->
+<!--                                    </td>-->
+<!--                                    <td class="">--><?php //= $row['COMPANY_TITLE'] ?><!--</td>-->
+<!--                                    <td class="">-->
+<!--                                        <a href="--><?php //= URI ?><!--/requirement/card_new_new/--><?php //= $row['ID'] ?><!--">ТЗ</a>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            --><?php //endforeach; ?>
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<?php //endif; ?>
 
 <div class="line-dashed"></div>
 

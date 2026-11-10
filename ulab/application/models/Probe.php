@@ -1075,7 +1075,7 @@ class Probe extends Model
                 $labsArray [] = $value['short_name'];
             }
 
-            $currentProbeState = 'МФЦ';
+            $currentProbeState = 'КМО';
 
             $currentProbeToLab = $this->DB->Query("SELECT id FROM probe_to_lab WHERE umtr_id = '{$row['id']}'")->Fetch()['id'];
 

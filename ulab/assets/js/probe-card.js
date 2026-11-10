@@ -201,7 +201,7 @@ $(function ($) {
                     const isHandOver = item.is_hand_over === true || item.is_hand_over === 1 || item.is_hand_over === '1';
 
                     if (isHandOver) {
-                        if (item.state === 'МФЦ') {
+                        if (item.state === 'КМО') {
                             return `<a href="/ulab/probe/transferProbe/${id}">Передать</a>`;
                         }
                         return `<a href="#" class="disabled" onclick="return false;">Передано</a>`;

@@ -384,57 +384,57 @@ $(function ($) {
         }
     })
 
-    /*journal modal window*/
-    if (window.location.pathname === '/ulab/request/list/') {
-
-        $.ajax({
-            url: '/ulab/request/getCheckTzAjax/',
-            method: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                let content = `<table class="table table-striped table-modal"><tbody>`;
-
-                data.forEach(function (item) {
-                    //TODO: Изменить ссылку на крточку заявки
-                    content  += `<tr class="align-middle text-nowrap">
-                                    <td>
-                                        <span title="${item.REQUEST_TITLE}">${item.cropRequestTitle}</span>
-                                    </td>
-                                    <td>
-                                        <span title="${item.COMPANY_TITLE}">${item.cropCompanyTitle}</span>
-                                    </td>
-                                    <td class="${item.bgColor}">
-                                        <span title="${item.status}">${item.cropStatus}</span>
-                                    </td>
-                                    <td>
-                                        <!--a href="/request_card.php?ID=${item.ID_Z}" target="_blank">
-                                            <div class="card-icon" title="Карточка заявки"></div>
-                                        </a-->
-                                        <a href="/ulab/request/card/${item.ID_Z}" target="_blank">
-                                            <div class="card-icon" title="Карточка заявки"></div>
-                                        </a>
-                                    </td>
-                                </tr>`;
-                })
-
-                content += `</tbody></table>`;
-
-                let modal = $modal({
-                    title: 'Техническое задание на рассмотрении',
-                    content: content,
-                    footerButtons: [
-                        {
-                            class: 'btn btn__ok',
-                            text: 'ОК',
-                            handler: 'modalHandlerOk'
-                        }
-                    ]
-                });
-
-                modal.show();
-            }
-        });
-    }
+    // /*journal modal window*/
+    // if (window.location.pathname === '/ulab/request/list/') {
+    //
+    //     $.ajax({
+    //         url: '/ulab/request/getCheckTzAjax/',
+    //         method: 'GET',
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             let content = `<table class="table table-striped table-modal"><tbody>`;
+    //
+    //             data.forEach(function (item) {
+    //                 //TODO: Изменить ссылку на крточку заявки
+    //                 content  += `<tr class="align-middle text-nowrap">
+    //                                 <td>
+    //                                     <span title="${item.REQUEST_TITLE}">${item.cropRequestTitle}</span>
+    //                                 </td>
+    //                                 <td>
+    //                                     <span title="${item.COMPANY_TITLE}">${item.cropCompanyTitle}</span>
+    //                                 </td>
+    //                                 <td class="${item.bgColor}">
+    //                                     <span title="${item.status}">${item.cropStatus}</span>
+    //                                 </td>
+    //                                 <td>
+    //                                     <!--a href="/request_card.php?ID=${item.ID_Z}" target="_blank">
+    //                                         <div class="card-icon" title="Карточка заявки"></div>
+    //                                     </a-->
+    //                                     <a href="/ulab/request/card/${item.ID_Z}" target="_blank">
+    //                                         <div class="card-icon" title="Карточка заявки"></div>
+    //                                     </a>
+    //                                 </td>
+    //                             </tr>`;
+    //             })
+    //
+    //             content += `</tbody></table>`;
+    //
+    //             let modal = $modal({
+    //                 title: 'Техническое задание на рассмотрении',
+    //                 content: content,
+    //                 footerButtons: [
+    //                     {
+    //                         class: 'btn btn__ok',
+    //                         text: 'ОК',
+    //                         handler: 'modalHandlerOk'
+    //                     }
+    //                 ]
+    //             });
+    //
+    //             modal.show();
+    //         }
+    //     });
+    // }
 
     $('body').on('click', '.accept_probe', function () {
         let idRequest = $(this).data('id'),
@@ -601,194 +601,194 @@ $(function ($) {
         $(`.probe_child_${reqId}`).toggleClass('d-none')
     })
 
-    $('body').on('click', '.stage', function () {
-        $.ajax({
-            url: '/ulab/status/getStatusForDealAjax',
-            data: {
-                deal_id: $(this).data('deal-id')
-            },
-            method: 'POST',
-            success: function (json) {
-                let responseArray = JSON.parse(json)
-                let body = document.querySelector('.offcanvas-body')
-
-                console.log(responseArray)
-
-                let mainContainer = ''
-                body.innerHTML = ''
-
-                for(const [key, value] of Object.entries(responseArray.statuses)) {
-                    let table = ''
-                    mainContainer = ''
-
-                    if(key === responseArray.title) {
-                        mainContainer +=
-                            `
-                            <header class="panel-heading" style="display: flex; justify-content: space-between; align-items: center; background-color: #dffff0;">
-                                <div class="d-flex gap-2" style="padding: 8px">
-                                    <div style="width: 30px; height: 30px; border-radius: 20% !important; background-color: ${value[0]['group_color']}"></div>
-                                    <span>${key}</span>
-                                </div>
-                                <span class="tools float-end">
-                                    <a href="#" class="fa fa-chevron-up"></a>
-                                </span>
-                            </header>
-                            `
-
-                        table +=
-                            `
-                                <div class="panel-body" style="background-color: #dffff0">
-                                <table class="table" style="background-color: #dffff0">
-                            `
-                    }else if(key === responseArray.next_title) {
-                        mainContainer +=
-                            `
-                            <div style="display: flex; flex-direction: column; margin: 0; align-items: center; justify-content: center">
-                                <h5 style="color: #FF0000">${responseArray.next_comment}</h5>
-                            </div>
-                            <header class="panel-heading" style="display: flex; justify-content: space-between; align-items: center; background-color: #fdffde;">
-                                <div class="d-flex gap-2" style="padding: 8px">
-                                    <div style="width: 30px; height: 30px; border-radius: 20% !important; background-color: ${value[0]['group_color']}"></div>
-                                    <span>${key}</span>
-                                </div>
-                                <span class="tools float-end">
-                                    <a href="#" class="fa fa-chevron-up"></a>
-                                </span>
-                            </header>   
-                            `
-
-                        table +=
-                            `
-                                <div class="panel-body" style="background-color: #fdffde">
-                                <table class="table" style="background-color: #fdffde">
-                            `
-                    }else {
-                        mainContainer +=
-                            `
-                            <header class="panel-heading" style="display: flex; justify-content: space-between; align-items: center">
-                                <div class="d-flex gap-2" style="padding: 8px">
-                                    <div style="width: 30px; height: 30px; border-radius: 20% !important; background-color: ${value[0]['group_color']}"></div>
-                                    <span>${key}</span>
-                                </div>
-                                <span class="tools float-end">
-                                    <a href="#" class="fa fa-chevron-down"></a>
-                                </span>
-                            </header>
-                            `
-
-                        table +=
-                            `
-                                <div class="panel-body" style="display: none;">
-                                <table class="table">
-                            `
-                    }
-
-                    console.log(value)
-
-                    table +=
-                        `
-                        <thead>
-                        </thead>
-                        <tbody>
-                        `
-
-                    for(const [k, v] of Object.entries(value)) {
-                        table += `<tr>`
-
-                        if(v.header_status === "1") {
-                            table +=
-                                `
-                                 <td style="font-size: 12px; width: 310px">
-                                    <div style="display: flex; align-items: center; gap: 5px;">
-                                        ${v.name} <span class="redStars">*</span>
-                                    </div>
-                                 </td>
-                                `
-                        }else{
-                            table +=
-                                `
-                                <td style="font-size: 12px">${v.name}</td>
-                                `
-                        }
-
-                        if(v.date) {
-                            let dateArray = v.date.split(' ')
-                            let shortDateArray = dateArray[0].split('-')
-                            let timeArray = dateArray[1].split(':')
-
-                            let day = shortDateArray[2];
-                            let month = shortDateArray[1];
-                            let year = shortDateArray[0];
-                            let minutes = timeArray[1];
-                            let hours = timeArray[0];
-
-                            if(day !== '00') {
-                                if(hours !== '00') {
-                                    table +=
-                                        `
-                                    <td style="font-size: 12px; width: 125px">${day}.${month}.${year} ${hours}:${minutes}</td>
-                                    <td style="font-size: 12px; width: 115px">
-                                        <div>
-                                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#7CC504" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#7CC504"><path fill="#7CC504" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
-                                        </div>
-                                    </td>
-                                    </tr>
-                                `
-                                }else {
-                                    table +=
-                                        `
-                                    <td style="font-size: 12px; width: 125px">${day}.${month}.${date.getFullYear()} --</td>
-                                    <td style="font-size: 12px; width: 115px">
-                                        <div>
-                                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#7CC504" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#7CC504"><path fill="#7CC504" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
-                                        </div>
-                                    </td>
-                                    </tr>
-                                `
-                                }
-                            }else {
-                                table +=
-                                    `
-                                    <td style="font-size: 12px; width: 125px">--</td>
-                                    <td style="font-size: 12px; width: 115px">
-                                        <div>
-                                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#7CC504" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#7CC504"><path fill="#7CC504" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
-                                        </div>
-                                    </td>
-                                    </tr>
-                                `
-                            }
-                        }else {
-                            table +=
-                                `
-                                <td style="font-size: 12px; width: 125px">--</td>
-                                <td style="font-size: 12px; width: 115px">
-                                    <div>
-                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#c0c0c0" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#c0c0c0"><path fill="#c0c0c0" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
-                                    </div>
-                                </td>
-                                </tr>
-                                `
-                        }
-                    }
-
-                    table +=
-                        `
-                        </tbody>
-                        </table>
-                        </div>
-                        </div>
-                        `
-
-                    mainContainer += table
-                    mainContainer = `<div class="panel panel-default">` + mainContainer + `</div>`
-
-                    body.innerHTML += mainContainer
-                }
-            },
-            error: function () {
-                console.log('error')
-            }
-        })
-    })
+    // $('body').on('click', '.stage', function () {
+    //     $.ajax({
+    //         url: '/ulab/status/getStatusForDealAjax',
+    //         data: {
+    //             deal_id: $(this).data('deal-id')
+    //         },
+    //         method: 'POST',
+    //         success: function (json) {
+    //             let responseArray = JSON.parse(json)
+    //             let body = document.querySelector('.offcanvas-body')
+    //
+    //             console.log(responseArray)
+    //
+    //             let mainContainer = ''
+    //             body.innerHTML = ''
+    //
+    //             for(const [key, value] of Object.entries(responseArray.statuses)) {
+    //                 let table = ''
+    //                 mainContainer = ''
+    //
+    //                 if(key === responseArray.title) {
+    //                     mainContainer +=
+    //                         `
+    //                         <header class="panel-heading" style="display: flex; justify-content: space-between; align-items: center; background-color: #dffff0;">
+    //                             <div class="d-flex gap-2" style="padding: 8px">
+    //                                 <div style="width: 30px; height: 30px; border-radius: 20% !important; background-color: ${value[0]['group_color']}"></div>
+    //                                 <span>${key}</span>
+    //                             </div>
+    //                             <span class="tools float-end">
+    //                                 <a href="#" class="fa fa-chevron-up"></a>
+    //                             </span>
+    //                         </header>
+    //                         `
+    //
+    //                     table +=
+    //                         `
+    //                             <div class="panel-body" style="background-color: #dffff0">
+    //                             <table class="table" style="background-color: #dffff0">
+    //                         `
+    //                 }else if(key === responseArray.next_title) {
+    //                     mainContainer +=
+    //                         `
+    //                         <div style="display: flex; flex-direction: column; margin: 0; align-items: center; justify-content: center">
+    //                             <h5 style="color: #FF0000">${responseArray.next_comment}</h5>
+    //                         </div>
+    //                         <header class="panel-heading" style="display: flex; justify-content: space-between; align-items: center; background-color: #fdffde;">
+    //                             <div class="d-flex gap-2" style="padding: 8px">
+    //                                 <div style="width: 30px; height: 30px; border-radius: 20% !important; background-color: ${value[0]['group_color']}"></div>
+    //                                 <span>${key}</span>
+    //                             </div>
+    //                             <span class="tools float-end">
+    //                                 <a href="#" class="fa fa-chevron-up"></a>
+    //                             </span>
+    //                         </header>
+    //                         `
+    //
+    //                     table +=
+    //                         `
+    //                             <div class="panel-body" style="background-color: #fdffde">
+    //                             <table class="table" style="background-color: #fdffde">
+    //                         `
+    //                 }else {
+    //                     mainContainer +=
+    //                         `
+    //                         <header class="panel-heading" style="display: flex; justify-content: space-between; align-items: center">
+    //                             <div class="d-flex gap-2" style="padding: 8px">
+    //                                 <div style="width: 30px; height: 30px; border-radius: 20% !important; background-color: ${value[0]['group_color']}"></div>
+    //                                 <span>${key}</span>
+    //                             </div>
+    //                             <span class="tools float-end">
+    //                                 <a href="#" class="fa fa-chevron-down"></a>
+    //                             </span>
+    //                         </header>
+    //                         `
+    //
+    //                     table +=
+    //                         `
+    //                             <div class="panel-body" style="display: none;">
+    //                             <table class="table">
+    //                         `
+    //                 }
+    //
+    //                 console.log(value)
+    //
+    //                 table +=
+    //                     `
+    //                     <thead>
+    //                     </thead>
+    //                     <tbody>
+    //                     `
+    //
+    //                 for(const [k, v] of Object.entries(value)) {
+    //                     table += `<tr>`
+    //
+    //                     if(v.header_status === "1") {
+    //                         table +=
+    //                             `
+    //                              <td style="font-size: 12px; width: 310px">
+    //                                 <div style="display: flex; align-items: center; gap: 5px;">
+    //                                     ${v.name} <span class="redStars">*</span>
+    //                                 </div>
+    //                              </td>
+    //                             `
+    //                     }else{
+    //                         table +=
+    //                             `
+    //                             <td style="font-size: 12px">${v.name}</td>
+    //                             `
+    //                     }
+    //
+    //                     if(v.date) {
+    //                         let dateArray = v.date.split(' ')
+    //                         let shortDateArray = dateArray[0].split('-')
+    //                         let timeArray = dateArray[1].split(':')
+    //
+    //                         let day = shortDateArray[2];
+    //                         let month = shortDateArray[1];
+    //                         let year = shortDateArray[0];
+    //                         let minutes = timeArray[1];
+    //                         let hours = timeArray[0];
+    //
+    //                         if(day !== '00') {
+    //                             if(hours !== '00') {
+    //                                 table +=
+    //                                     `
+    //                                 <td style="font-size: 12px; width: 125px">${day}.${month}.${year} ${hours}:${minutes}</td>
+    //                                 <td style="font-size: 12px; width: 115px">
+    //                                     <div>
+    //                                         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#7CC504" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#7CC504"><path fill="#7CC504" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
+    //                                     </div>
+    //                                 </td>
+    //                                 </tr>
+    //                             `
+    //                             }else {
+    //                                 table +=
+    //                                     `
+    //                                 <td style="font-size: 12px; width: 125px">${day}.${month}.${date.getFullYear()} --</td>
+    //                                 <td style="font-size: 12px; width: 115px">
+    //                                     <div>
+    //                                         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#7CC504" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#7CC504"><path fill="#7CC504" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
+    //                                     </div>
+    //                                 </td>
+    //                                 </tr>
+    //                             `
+    //                             }
+    //                         }else {
+    //                             table +=
+    //                                 `
+    //                                 <td style="font-size: 12px; width: 125px">--</td>
+    //                                 <td style="font-size: 12px; width: 115px">
+    //                                     <div>
+    //                                         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#7CC504" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#7CC504"><path fill="#7CC504" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
+    //                                     </div>
+    //                                 </td>
+    //                                 </tr>
+    //                             `
+    //                         }
+    //                     }else {
+    //                         table +=
+    //                             `
+    //                             <td style="font-size: 12px; width: 125px">--</td>
+    //                             <td style="font-size: 12px; width: 115px">
+    //                                 <div>
+    //                                     <svg width="20px" height="20px" viewBox="0 0 24 24" fill="#c0c0c0" x="188.5" y="188.5" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="#c0c0c0"><path fill="#c0c0c0" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1Zm4.768 9.14a1 1 0 1 0-1.536-1.28l-4.3 5.159l-2.225-2.226a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.475-.067l5-6Z" clip-rule="evenodd"/></g></svg>
+    //                                 </div>
+    //                             </td>
+    //                             </tr>
+    //                             `
+    //                     }
+    //                 }
+    //
+    //                 table +=
+    //                     `
+    //                     </tbody>
+    //                     </table>
+    //                     </div>
+    //                     </div>
+    //                     `
+    //
+    //                 mainContainer += table
+    //                 mainContainer = `<div class="panel panel-default">` + mainContainer + `</div>`
+    //
+    //                 body.innerHTML += mainContainer
+    //             }
+    //         },
+    //         error: function () {
+    //             console.log('error')
+    //         }
+    //     })
+    // })
 })
