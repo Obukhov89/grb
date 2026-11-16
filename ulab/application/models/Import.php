@@ -415,4 +415,27 @@ class Import extends Model
 
         return $result;
     }
+
+    public function updateDiapasonMethods($data){
+        $where = 'where id = '. $data['id'];
+
+        $arrUpdate = [
+            'definition_range_1' => $data['definition_range_1'],
+            'definition_range_2' => $data['definition_range_2'],
+            'definition_range_type' => $data['definition_range_type'],
+            'unit_id' => $data['unit_id']
+        ];
+
+        $this->DB->Update('ulab_methods', $arrUpdate, $where);
+    }
+
+    public function updateDiapasonMethodsFacts($data){
+        $where = 'where id = '. $data['id'];
+
+        $arrUpdate = [
+            'facts_select' => "'{$data['facts_select']}'",
+        ];
+
+        $this->DB->Update('ulab_methods', $arrUpdate, $where);
+    }
 }

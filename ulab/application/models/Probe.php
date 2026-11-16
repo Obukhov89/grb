@@ -597,7 +597,7 @@ class Probe extends Model
         foreach ($probes as $val) {
             $currentVal = [];
 
-            $currentVal['cipher'] = $data['ACT_NUM'] . '.' . $i . "/$curYearCipher";
+            $currentVal['cipher'] = $data['deal_id'] . '.' . $i;
             $currentVal['in_act'] = 1;
             if (!empty($data['place_all'])) {
                 $currentVal['place'] = $data['place_all'];

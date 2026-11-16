@@ -2418,4 +2418,32 @@ class ImportController extends Controller
         return $str;
     }
 
+
+    public function importCsvMethodsDiapasons()
+    {
+        $importModel = $this->model('Import');
+        $file1 = $_SERVER['DOCUMENT_ROOT'] . '/ulab/csv_1.csv';
+        $file = $_SERVER['DOCUMENT_ROOT'] . '/ulab/csv_2.csv';
+
+        $data = $importModel->parseCsv($file, ',');
+        $data2 = $importModel->parseCsv($file, ',');
+
+        $headers = array_shift($data['data']);
+        $headers2 = array_shift($data2['data']);
+
+        foreach ($data['data'] as $row) {
+            $item = array_combine($headers, $row);
+
+            $importModel->updateDiapasonMethods($item);
+        }
+
+        foreach ($data2['data'] as $row) {
+            $item = array_combine($headers2, $row);
+
+            $importModel->updateDiapasonMethodsFacts($item);
+        }
+
+
+    }
+
 }

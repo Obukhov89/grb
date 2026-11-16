@@ -961,9 +961,6 @@ $(function ($) {
         const button = $(this);
         const ugtpId = button.data('ugtp_id');
 
-        console.log(ugtpId);
-
-
         $.ajax({
             url: '/ulab/requirement/dopInfoAjax',
             type: 'POST',
@@ -1015,7 +1012,17 @@ $(function ($) {
                             >${response.ticket ?? ''}</textarea>
                         </div>
                     </div>
-                
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Наименование образца для испытателя</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="for_tester_name"
+                                value="${response.for_tester_name ?? ''}"
+                            >
+                        </div>
+                    </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Упаковка</label>
@@ -2015,10 +2022,10 @@ function createChild(row) {
                 <th scope="col" style="width: 2%"></th>
                 <th scope="col" style="width: 16%">НД</th>
                 <th scope="col" style="width: 16%">Допустимое значение</th>
-                <th scope="col" style="width: 16%">Нормы посева (микробиология)</th>
+                <th scope="col" style="width: 10%">Нормы посева (микробиология)</th>
                 <th scope="col" style="width: 9%">Ед. измерения</th>
-                <th scope="col" style="width: 9%">Исполнитель</th>
-                <th scope="col" style="width: 10%">Цена</th>
+                <th scope="col" style="width: 20%">Исполнитель</th>
+                <th scope="col" style="width: 8%">Цена</th>
                 <th scope="col" style="width: 3%"></th>
             </tr>
         </thead>
@@ -2121,8 +2128,12 @@ function createChild(row) {
             {
                 data: 'assigned_name',
                 orderable: false,
-                className: 'assigned_name edit-cell cursor-pointer'
-
+                className: 'assigned_name',
+                render: function (data, type, row) {
+                    return `<select class="form-control select2-assigned">` +
+                        getHtmlOptionAssignedByMethod(row.new_method_id, row.assigned_id) +
+                        `</select>`;
+                }
             },
             {
                 data: 'price',

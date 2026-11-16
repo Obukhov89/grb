@@ -4212,7 +4212,8 @@ class Requirement extends Model
             'expiration_date' => $data['expiration_date'],
             'sampling_place' => $data['sampling_place'],
             'sampling_by' => $data['sampling_by'],
-            'ticket' => $data['ticket']
+            'ticket' => $data['ticket'],
+            'for_tester_name' => $data['for_tester_name']
         ];
 
         $where = 'where ugtp_id = ' . $ugtp_id;
