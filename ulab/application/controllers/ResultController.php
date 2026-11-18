@@ -5753,7 +5753,6 @@ class ResultController extends Controller
         $resultModel = $this->model('Result');
 
         $location = "/result/card_oati/{$_POST['tz_id']}";
-        
         $response = $resultModel->rejectResults($_POST);
         $this->redirect($location);
     }

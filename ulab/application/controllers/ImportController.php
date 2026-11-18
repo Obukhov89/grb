@@ -2425,7 +2425,7 @@ class ImportController extends Controller
         $file1 = $_SERVER['DOCUMENT_ROOT'] . '/ulab/csv_1.csv';
         $file = $_SERVER['DOCUMENT_ROOT'] . '/ulab/csv_2.csv';
 
-        $data = $importModel->parseCsv($file, ',');
+        $data = $importModel->parseCsv($file1, ',');
         $data2 = $importModel->parseCsv($file, ',');
 
         $headers = array_shift($data['data']);
