@@ -5752,8 +5752,9 @@ class ResultController extends Controller
         /** @var Result $resultModel */
         $resultModel = $this->model('Result');
 
+        $location = "/result/card_oati/{$_POST['tz_id']}";
+        
         $response = $resultModel->rejectResults($_POST);
-
-        echo json_encode($response);
+        $this->redirect($location);
     }
 }
