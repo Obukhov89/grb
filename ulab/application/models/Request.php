@@ -1405,6 +1405,7 @@ class Request extends Model
             $row['dateCreateRu'] = !empty($row['DATE_CREATE_TIMESTAMP']) && $row['DATE_CREATE_TIMESTAMP'] != "0000-00-00 00:00:00"
                 ? date('d.m.Y', strtotime($row['DATE_CREATE_TIMESTAMP']))
                 : '';
+            $row['is_lab_header'] = $isLabHeader;
 
             $result[] = $row;
         }

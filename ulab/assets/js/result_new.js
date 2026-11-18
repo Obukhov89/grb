@@ -626,8 +626,6 @@ $(function ($) {
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data);
-                // Если успех - перезагружаем страницу
                 if (data.success === true) {
                     location.reload();
                 } else {
@@ -642,51 +640,38 @@ $(function ($) {
         });
     });
 
-    $body.on('click', '.btn_reject', function (e) {
+    $body.on('click', '.btn_reject', async function (e) {
         e.preventDefault();
 
-        let $btn = $(this);
-        let probeIdList = $(".probe-check:checked").map(function () {
+        const $btn = $(this);
+        const probeIdList = $('.probe-check:checked').map(function () {
             return $(this).val();
         }).get();
-        let tz_id = $('input[name="tz_id"]').val();
-        let deal_id = $('input[name="deal_id"]').val();
+        const tz_id = $('input[name="tz_id"]').val();
+        const deal_id = $('input[name="deal_id"]').val();
+        $('input[name="probe_id_list_reject"]').val(probeIdList)
 
         if (probeIdList.length === 0) {
             alert('Выберите хотя бы одну запись для отклонения');
             return;
         }
 
-        if (!confirm('Вы уверены, что хотите отправить выбранные результаты на доработку?')) {
-            return;
-        }
-
-        $btn.prop('disabled', true).text('Отклонение...');
-
-        $.ajax({
-            method: "POST",
-            url: "/ulab/result/rejectResultsAjax",
-            data: {
-                deal_id: deal_id,
-                tz_id: tz_id,
-                ugtp_arr: probeIdList
+        $.magnificPopup.open({
+            items: {
+                src: '#comment_reject_form',
+                type: 'inline',
+                fixedContentPos: false,
             },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                if (data.success === true) {
-                    location.reload();
-                } else {
-                    $btn.prop('disabled', false).text('Отклонить');
+            callbacks: {
+                beforeOpen: function () {
+                    this._confirmed = false;
+                },
+                close: function () {
+                    resolve(this._confirmed === true);
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Ошибка:', error);
-                $btn.prop('disabled', false).text('Отклонить');
             }
         });
 
-        console.log(probeIdList);
     });
 
     $body.on('click', '.btn_start', function () {

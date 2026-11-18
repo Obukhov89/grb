@@ -271,14 +271,14 @@
 <!--                    <table class="table">-->
 <!--                        <tbody>-->
 <!--                            --><?php //foreach ($this->data['probe_in_lab_payed'] as $k => $res): ?>
-<!--                                <!--                            -->--><?php //?>
+<!--                                                            --><?php //?>
 <!--                                --><?php //if (count($res['data']) > 5): ?>
 <!--                                    <tr class="text-center probe_row bg-light-secondary">-->
 <!--                                        <td class="">-->
 <!--                                            <a href="--><?php //= URI ?><!--/request/card/--><?php //= $res['data'][0]['ID_Z'] ?><!--">--><?php //= $res['data'][0]['REQUEST_TITLE'] ?><!----><?php //= $res['data'][0]['certificate'] ?><!--</a>-->
 <!--                                        </td>-->
 <!--                                        <td>-->
-<!--                                            <a class="more-probe" data-request-id=--><?php //= $k ?><!-->--><?php //= count($res['data']) ?><!-- проб</a>-->
+<!--                                            <a class="more-probe" data-request-id=--><?php //= $k ?><!--<?php //= count($res['data']) ?> проб</a>-->
 <!--                                        </td>-->
 <!--                                        <td class="">--><?php //= $res['data'][0]['COMPANY_TITLE'] ?><!--</td>-->
 <!--                                        <td class="">-->

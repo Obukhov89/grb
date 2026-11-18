@@ -195,24 +195,6 @@
                             </div>
                         </div> -->
                     </div>
-                    <div class="row" style="margin-top: 1rem">
-                        <div>Подтверждение результатов:</div>
-                        <?php foreach ($this->data['info_status'] as $item_status) : ?>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="status-item" style="border-left: 4px solid <?= $item_status['color'] ?>;">
-                                    <div class="status-lab">
-                                        <i class="fas fa-flask"></i>
-                                        <span><?= $item_status['name_lab'] ?></span>
-                                    </div>
-                                    <div class="status-text" style="color: <?= $item_status['color'] ?>;">
-                                        <span class="status-dot"
-                                              style="background: <?= $item_status['color'] ?>;"></span>
-                                        <?= $item_status['status'] ?>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
                     <!--./wrapper-info-header-->
                 </div>
                 <!--./panel-body-->
@@ -1301,6 +1283,26 @@
         <button type="submit" class="btn btn-primary">Старт</button>
     </form>
 
+    <form id="comment_reject_form" method="post" action="/ulab/result/rejectResultsAjax/"
+          class="bg-light mfp-hide col-md-5 m-auto p-3 position-relative">
+        <div class="title mb-3 h-2">Комментарий</div>
+        <div class="line-dashed-small"></div>
+
+        <input name="deal_id" value="<?= $this->data['deal_id'] ?>" type="hidden">
+        <input name="tz_id" value="<?= $this->data['tz_id'] ?>" type="hidden">
+        <input class="probe-id-list" name="probe_id_list_reject" value="" type="hidden">
+
+        <textarea class="form-control mw-100 additional-information"
+                  id="comment_reject" name="comment"></textarea>
+
+        <button type="submit" class="btn btn-primary btn_confirm" style="margin-top:1rem">
+            Отправить на доработку
+        </button>
+        <button type="button" class="btn btn-secondary btn_cancel" style="margin-top:1rem">
+            Отмена
+        </button>
+    </form>
+
 
     <form id="unbound-protocol-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative" method="post"
           action="<?= URI ?>/result/unboundProtocol">
@@ -1311,6 +1313,7 @@
         <div class="line-dashed-small"></div>
 
         <input name="deal_id" value="<?= $this->data['deal_id'] ?>" type="hidden">
+        <input name="tz_id" value="<?= $this->data['tz_id'] ?>" type="hidden">
         <input class="probe-id-list" name="probe_id_list" value="" type="hidden">
 
         <div class="row mb-3">

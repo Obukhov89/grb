@@ -2018,13 +2018,14 @@ class Methods extends Model
                     d.unit_rus, d.name as unit_name, d.fsa_id as unit_fsa_id,
                     g.reg_doc, g.year, g.description, g.materials,
                     p.fsa_id as mp_fsa_id, p.name as mp_name,
-                    ml.name as measurement_name, ml.name_ru as measurement_name_ru
+                    ml.name as measurement_name, ml.name_ru as measurement_name_ru, umtr.deal_id as deal_id
                 from `ulab_gost_to_probe` as gtp
                 left join `ulab_methods` as m on m.id = gtp.method_id 
                 left join `ulab_gost` as g on g.id = m.gost_id 
                 left join `ulab_dimension` as d on d.id = m.unit_id
                 left join ulab_measured_properties as p on p.id = m.measured_properties_id 
-                left join ulab_measurement as ml on ml.id = m.measurement_id 
+                left join ulab_measurement as ml on ml.id = m.measurement_id
+                left join ulab_material_to_request as umtr on umtr.id = gtp.material_to_request_id
                 where gtp.id = {$ugtpId}"
         );
 
@@ -2037,6 +2038,7 @@ class Methods extends Model
             $result['assigned'] = $this->getAssigned($result['id']);
             $result['view_gost'] = "{$result['reg_doc']}{$strYear}{$strClause} | {$result['name']}";
             $result['view_gost_for_protocol'] = "{$result['reg_doc']}{$strYear}{$strClause}";
+            $result['deal_id'] = $result['deal_id'];
         }
 
         return $result;

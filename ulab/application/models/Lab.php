@@ -171,7 +171,7 @@ class Lab extends Model
      */
     public function get($labId)
     {
-        if (empty($id)) { return []; }
+        if (empty($labId)) { return []; }
 
         return $this->DB->Query("select * from ba_laba where ID = {$labId}")->Fetch();
     }

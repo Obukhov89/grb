@@ -8,6 +8,7 @@ let $strTotal = null
 let $strTotalDns = null
 let $inputTotal = null
 let $inputDiscount = null
+let allProbes = null
 
 let methodInfo = null
 
@@ -152,8 +153,9 @@ function refreshMethodFilterAfterProbeDelete() {
     let allProbes = $('#journal_material_2').DataTable().rows({search: 'applied'}).data().toArray();
 
     // Собираем id всех проб
-    let allProbeIds = allProbes.map(item => item.id);
+    allProbeIds = allProbes.map(item => item.id);
 
+    console.log(allProbes);
     if (allProbeIds.length === 0) {
         updateMethodFilterSelect([]);
         return;
@@ -623,6 +625,7 @@ $(function ($) {
             dataSrc: function (json) {
                 setGroups(json.data);
 
+                allProbes = json.data;
                 console.log(json.data)
 
                 return json.data
@@ -1558,37 +1561,36 @@ $(function ($) {
         const $btn = $(this)
         const dealId = $('#deal_id').val()
 
+        console.log(allProbes);
+
         let dateLeader = $('#date-start-leader').val()
         let daysLeader = $('#days-leader').val()
         let leaderId = $('#leader-id').val()
 
-        if (!dateLeader || !daysLeader) {
-            showErrorMessage("Заполните ориентировочную дату начала и кол-во рабочий дней!")
+        $btn.find('i').removeClass().addClass('fa-solid fa-arrows-rotate spinner-animation')
+        $btn.addClass('disable')
+        $('.not_approve_tz').addClass('disable')
 
-            window.scrollTo(0, 0)
-        } else {
-            $btn.find('i').removeClass().addClass('fa-solid fa-arrows-rotate spinner-animation')
-            $btn.addClass('disable')
-            $('.not_approve_tz').addClass('disable')
+        $.ajax({
+            method: 'POST',
+            data: {
+                tz_id: tzId,
+                deal_id: dealId,
+                date_leader: dateLeader,
+                days_leader: daysLeader,
+                leader_id: leaderId,
+                probes_arr: allProbes
 
-            $.ajax({
-                method: 'POST',
-                data: {
-                    tz_id: tzId,
-                    deal_id: dealId,
-                    date_leader: dateLeader,
-                    days_leader: daysLeader,
-                    leader_id: leaderId
-                },
-                url: '/ulab/requirement/confirmTzApproveAjax',
-                dataType: 'json',
-            }).always(function (data) {
-                $block.find('.icon').addClass('text-green').find('i').removeClass().addClass('fa-regular fa-circle-check').attr('title', 'ТЗ потверждено')
-                $btn.find('i').removeClass().addClass('fa-regular fa-circle-check')
+            },
+            url: '/ulab/requirement/confirmTzApproveAjax',
+            dataType: 'json',
+        }).always(function (data) {
+            $block.find('.icon').addClass('text-green').find('i').removeClass().addClass('fa-regular fa-circle-check').attr('title', 'ТЗ потверждено')
+            $btn.find('i').removeClass().addClass('fa-regular fa-circle-check')
 
-                location.reload()
-            })
-        }
+            // location.reload()
+        })
+
     })
 
     // отправить и одобрить тз
@@ -2128,9 +2130,9 @@ function createChild(row) {
             {
                 data: 'assigned_name',
                 orderable: false,
-                className: 'assigned_name',
+                className: 'assigned_name save-cell',
                 render: function (data, type, row) {
-                    return `<select class="form-control select2-assigned">` +
+                    return `<select class="form-control select2-assigned ">` +
                         getHtmlOptionAssignedByMethod(row.new_method_id, row.assigned_id) +
                         `</select>`;
                 }

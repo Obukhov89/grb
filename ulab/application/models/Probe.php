@@ -1309,63 +1309,15 @@ class Probe extends Model
 
     public function sendNotify($arrHeadLabs, $tzId)
     {
-        $serverName = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
-        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            ? 'https'
-            : 'http';
-
-        $url = $scheme . '://' . $serverName . '/ulab/requirement/card_new_new/' . (int)$tzId;
-
-        $chatManager = new CIMChat();
-        $adminId = 61;
-
-        $location =
+        $noteModel = new Notification();
 
         $titleChat = 'Уведомления по заявкам';
+        $url = '/ulab/requirement/card_new_new/' . (int)$tzId;
+        $message = 'Поступила новая заявка. Назначьте ответственных. ';
+        $description = 'Системные уведомления по заявкам';
 
-        foreach ($arrHeadLabs as $headLab) {
-            $headLab = (int)$headLab;
-
-            $query = $this->DB->Query("
-                SELECT r.CHAT_ID
-                FROM b_im_relation r
-                INNER JOIN b_im_chat c ON c.ID = r.CHAT_ID
-                WHERE r.USER_ID = {$headLab}
-                  AND c.TITLE = '" . $this->DB->ForSql($titleChat) . "'
-                LIMIT 1
-            ");
-
-            $chat = $query->Fetch();
-
-            if ($chat) {
-                $chatId = (int)$chat['CHAT_ID'];
-                // Отправляем сообщение
-                if ((int)$chatId > 0) {
-                    CIMChat::AddMessage([
-                        'TO_CHAT_ID' => (int)$chatId,
-                        'FROM_USER_ID' => (int)$adminId,
-                        'MESSAGE' => 'Поступила новая заявка. Назначьте ответственных. ' . $url,
-                    ]);
-                }
-            } else {
-                $chatId = $chatManager->Add([
-                    'TITLE' => $titleChat,
-                    'DESCRIPTION' => 'Системные уведомления по заявкам',
-                    'COLOR' => 'MINT',
-                    'TYPE' => IM_MESSAGE_CHAT,
-                    'AUTHOR_ID' => (int)$adminId,
-                    'USERS' => [(int)$adminId, $headLab],
-                ]);
-
-                // Отправляем сообщение
-                if ((int)$chatId > 0) {
-                    CIMChat::AddMessage([
-                        'TO_CHAT_ID' => (int)$chatId,
-                        'FROM_USER_ID' => (int)$adminId,
-                        'MESSAGE' => 'Поступила новая заявка. Назначьте ответственных. ' . $url,
-                    ]);
-                }
-            }
+        foreach ($arrHeadLabs as $headLab){
+            $noteModel->sendNotifyToUser($titleChat, $message, $description, $headLab, $url);
         }
     }
 

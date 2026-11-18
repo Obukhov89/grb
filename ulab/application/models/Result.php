@@ -854,7 +854,8 @@ class Result extends Model
                 gtp.*, gtp.id as ugtp_id, gtp.protocol_id as gtp_protocol_id, gtp.assigned_id, 
                 mtr.*, mtr.id as mtr_id, mtr.id as umtr_id, 
                 m.ID as material_id, m.NAME as material_name,
-                mtr.deal_id, tz.REQUEST_TITLE, mg.name as material_group_name
+                mtr.deal_id, tz.REQUEST_TITLE, mg.name as material_group_name,
+                dr.for_tester_name
             FROM ulab_material_to_request as mtr
             inner join MATERIALS as m ON m.ID = mtr.material_id
             left join materials_groups as mg ON mtr.group = mg.id
@@ -862,6 +863,7 @@ class Result extends Model
             inner join ba_tz as tz on tz.ID_Z = mtr.deal_id
             inner join ulab_methods as method on method.id = gtp.method_id
             left join ulab_methods_lab as uml on uml.method_id = method.id
+            left join dop_info_requirement as dr on dr.ugtp_id = gtp.material_to_request_id
             WHERE method.is_selection = 0 and {$whereDealId} and {$where}
             {$methodFilter}
             group by gtp.id, mtr.id
@@ -901,7 +903,12 @@ class Result extends Model
                 $row['material_name'] .= " ({$row['material_group_name']})";
             }
 
-            $row['material_cipher'] = "{$row['material_name']} {$row['material_group_name']} ({$row['name_for_protocol']}) | {$row['cipher']}";
+            if ($permUser['id'] == 6){
+                $row['material_cipher'] = "{$row['for_tester_name']} {$row['material_group_name']} ({$row['name_for_protocol']}) | {$row['cipher']}";
+            } else{
+                $row['material_cipher'] = "{$row['material_name']} {$row['material_group_name']} ({$row['name_for_protocol']}) | {$row['cipher']}";
+            }
+
 
             if (!empty($row['assigned_id'])) {
                 $row['assigned_user'] = $userModel->getUserData($row['assigned_id'])['short_name'];
@@ -1856,7 +1863,8 @@ class Result extends Model
             'ugtp_id' => $ugtpId,
             'state' => "'start'",
             'date' => '"' . date('Y-m-d') . '"',
-            'user' => (int)$_SESSION['SESS_AUTH']['USER_ID']
+            'user' => (int)$_SESSION['SESS_AUTH']['USER_ID'],
+            'id_lab' => $method['laba'][0]
         ];
 
         $result = $this->DB->Insert('ulab_start_trials', $data);
@@ -1924,10 +1932,12 @@ class Result extends Model
      * @param int $ugtpId
      * @return array
      */
-    public function stopTrial(int $ugtpId): array
+    public function stopTrial(int $ugtpId, $deal_id): array
     {
         $resultModel = new Result;
         $methodsModel = new Methods;
+        $notifyModel = new Notification();
+        $labModel = new Lab();
 
         $isSuccess = true;
         $errors = []; // тексты сообщений ошибок
@@ -1950,15 +1960,41 @@ class Result extends Model
             'ugtp_id' => $ugtpId,
             'state' => "'complete'",
             'date' => '"' . date('Y-m-d') . '"',
-            'user' => (int)$_SESSION['SESS_AUTH']['USER_ID']
+            'user' => (int)$_SESSION['SESS_AUTH']['USER_ID'],
+            'id_lab' => $method['laba'][0]
         ];
 
         $result = $this->DB->Insert('ulab_start_trials', $data);
+
+        $allProbesSql = $this->DB->Query("select count(*) count_probe 
+                                                from ulab_start_trials ust
+                                                left join ulab_gost_to_probe ugtp on ugtp.id = ust.ugtp_id
+                                                left join ulab_material_to_request umtr on umtr.id = ugtp.material_to_request_id
+                                                where umtr.deal_id = {$deal_id} and ust.id_lab = {$method['laba'][0]}")->Fetch();
+
+        $countPorbesComplete = $this->DB->Query("select count(*) count_complete 
+                                                from ulab_start_trials ust
+                                                left join ulab_gost_to_probe ugtp on ugtp.id = ust.ugtp_id
+                                                left join ulab_material_to_request umtr on umtr.id = ugtp.material_to_request_id
+                                                where umtr.deal_id = {$deal_id} and state = 'complete' 
+                                                  and ust.id_lab = {$method['laba'][0]}")->Fetch();
+
+        if ($allProbesSql['count_probe'] == $countPorbesComplete['count_complete']) {
+            $labInfo = $labModel->get($method['laba'][0]);
+            $titleChat = 'Уведомления по результатам испытаний';
+            $url = '/ulab/result/card_oati/' . (int)$method['deal_id'];
+            $message = 'Испытания по вашей лаборатории завершены. Проверьте результаты. ';
+            $description = 'Системные уведомления по заявкам';
+            $user_to = $labInfo['HEAD_ID'];
+
+            $notifyModel->sendNotifyToUser($titleChat, $message, $description, $user_to, $url);
+        }
 
         if (empty(intval($result))) {
             $errors = ["Не удалось завершить испытание для методики {$anchor}"];
             $isSuccess = false;
         }
+
 
         return [
             'success' => $isSuccess,
@@ -3734,6 +3770,7 @@ class Result extends Model
     {
         $labModel = new Lab();
         $userModel = new User();
+        $notification = new Notification();
 
         $tz_id = $data['tz_id'];
 
@@ -3747,6 +3784,29 @@ class Result extends Model
             $result = $this->DB->Update('results_approve', $arrUpdate, $where);
 
             if ($result !== false) {
+                $allCountSql = $this->DB->Query("select count(*) as count_all from results_approve where id_tz = {$tz_id}")->Fetch();
+                $countAllApproveSql = $this->DB->Query("select count(*) as count_all_approve 
+                                                from results_approve where id_tz = {$tz_id} and status = 'approve'")->Fetch();
+
+                if ($allCountSql['count_all'] == $countAllApproveSql['count_all_approve']) {
+                    $kmoList = $labModel->getLabAndUser(4);
+                    $ids = [];
+                    foreach ($kmoList as $lab) {
+                        foreach (($lab['users'] ?? []) as $user) {
+                            $ids[] = $user['id'];
+                        }
+                    }
+
+                    $titleChat = 'Завершение испытаний';
+                    $url = '/ulab/result/card_oati/' . (int)$data['tz_id'];
+                    $message = 'Все испытания завершены. Сформируйте протокол. ';
+                    $description = 'Системные уведомления по заявкам';
+
+                    foreach ($ids as $user_id) {
+                        $notification->sendNotifyToUser($titleChat, $message, $description, $user_id, $url);
+                    }
+                }
+
                 return [
                     'success' => true,
                     'message' => 'Результаты успешно подтверждены',
@@ -3759,19 +3819,20 @@ class Result extends Model
                     'code' => 500
                 ];
             }
+        } else {
+            return [
+                'success' => false,
+                'message' => 'У вас нет прав для подтверждения результатов',
+                'code' => 403
+            ];
         }
-
-        return [
-            'success' => false,
-            'message' => 'У вас нет прав для подтверждения результатов',
-            'code' => 403
-        ];
     }
 
     public function rejectResults($arrProbes)
     {
         $labModel = new Lab();
         $userModel = new User();
+        $notification = new Notification();
 
         $currUser = $userModel->getCurrentUser();
         $labUser = $labModel->getLabByUserId($currUser['ID']);
@@ -3784,10 +3845,42 @@ class Result extends Model
             ];
         }
 
+        $tz_data = $this->DB->Query("select REQUEST_TITLE from ba_tz where ID = {$arrProbes['tz_id']}")->Fetch();
+        $ugtp_arr = explode(',', $arrProbes['probe_id_list_reject']);
+
+        $methods = [];
+        foreach ($ugtp_arr as $ugtp) {
+            $sqlData = $this->DB->Query("select m.name as method_name, ust.user as id_user
+                                 from ulab_gost_to_probe as ugtp
+                                 left join ulab_methods m on m.id = ugtp.new_method_id 
+                                 left join ulab_start_trials ust on ust.ugtp_id = ugtp.id
+                                 where ugtp.id = " . (int)$ugtp);
+
+            while ($row = $sqlData->Fetch()) {
+                if (!empty($row['method_name']) && !empty($row['id_user'])) {
+                    $methods[$row['id_user']][] = $row['method_name'];
+                }
+            }
+        }
+
+        foreach ($methods as $id_user => &$list) {
+            $list = implode(', ', array_unique($list));
+        }
+        unset($list);
+
+        $titleChat = 'Возврат в работу';
+        $description = 'Системные уведомления по заявкам';
+        $baseMessage = $arrProbes['comment'] . ' в заявке № ' . $tz_data['REQUEST_TITLE'] . ' по следующим показателям: ';
+
+        foreach ($methods as $user_id => $method) {
+            $message = $baseMessage . $method;
+            $notification->sendNotifyToUser($titleChat, $message, $description, $user_id);
+        }
+
         $arrUpdate = ['status' => "'rejected'"];
         $where = "where id_tz = " . $arrProbes['tz_id'] . " and lab_id = " . $labUser['ID'];
 
-        foreach ($arrProbes['ugtp_arr'] as $probe) {
+        foreach ($ugtp_arr as $probe) {
             $this->DB->Query("delete from ulab_start_trials where ugtp_id = {$probe} and state = 'complete'");
         }
 

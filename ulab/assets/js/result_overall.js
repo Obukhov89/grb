@@ -164,6 +164,7 @@ $(function ($) {
             },
             url : '/ulab/result/getMethodsProbeJournalAjax/',
             dataSrc: function (json) {
+                console.log(json.data);
                 $('.count_deal').text(json.count_deal)
                 $('.count_method').text(json.recordsFiltered)
                 return json.data
@@ -678,6 +679,8 @@ $(function ($) {
             return $(this).val();
         }).get()
 
+        const dealId = $('#deal_id').val()
+
         if ( probeIdList.length === 0 ) {
             return false
         }
@@ -692,6 +695,7 @@ $(function ($) {
             dataType: "text",
             data: {
                 probe_id_list: probeIdList,
+                deal_id: dealId
             },
             success: function () {
                 journalDataTable.on('draw', function () {

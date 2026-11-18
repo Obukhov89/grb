@@ -104,7 +104,7 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <!-- <div class="form-group">
+                            <div class="form-group">
                                 <label class="form-label mb-1" for="day_to_test">Срок проведения испытаний</label>
                                 <div class="input-group mb-3">
                                     <input
@@ -113,7 +113,7 @@
                                         id="day_to_test"
                                         name="tz[DAY_TO_TEST]"
                                         value="<?= $this->data['tz']['DAY_TO_TEST'] ?>"
-                                        aria-describedby="basic-addon2" readonly>
+                                        aria-describedby="basic-addon2">
                                     <select class="input-group-text col-3 clear_confirm_change type_of_day" id="basic-addon2" name="tz[type_of_day]">
                                         <option value="work_day" <?= $this->data['tz']['type_of_day'] == 'work_day' ? 'selected' : '' ?>>рабочих дней</option>
                                         <option value="day" <?= $this->data['tz']['type_of_day'] == 'day' ? 'selected' : '' ?>>дней</option>
@@ -121,7 +121,7 @@
                                         <option value="custom" <?= $this->data['tz']['type_of_day'] == 'custom' ? 'selected' : '' ?>>своя дата</option>
                                     </select>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                         <div class="col-sm-6 d-flex flex-column justify-content-center">
                             <label class="form-label mb-1">Основание для формирования протокола</label>
@@ -656,30 +656,30 @@
                             <span class="fw-bold">Сохраните техническое задание</span>
                         <?php endif; ?>
                     </div>
-                    <?php if (in_array($this->data['curr_user'], array_column($this->data['lab_head']['user'], 'user_id'))): ?>
-                        <div class="col">
-                            <div class="mb-3">
-                                <label class="form-label">Ориентировочная дата начала <span
-                                            class="redStars">*</span></label>
-
-                                <input type="date" id="date-start-leader" name="form_leader[date_start]"
-                                       class="form-control"
-                                       value="<?= $this->data['form_leader']['date_start'] ?? '' ?>"
-                                       onkeydown="return false" required min="<?= date('Y-m-d') ?>">
-                            </div>
-
-                            <div class="">
-                                <label class="form-label">Количество рабочих дней <span
-                                            class="redStars">*</span></label>
-
-                                <input type="hidden" id="leader-id" name="form_leader[user_id]"
-                                       value="<?= $this->data['curr_user'] ?>">
-                                <input type="number" id="days-leader" name="form_leader[days]" class="form-control"
-                                       min="0" step="1" value="<?= $this->data['form_leader']['days'] ?? '1' ?>"
-                                       required>
-                            </div>
-                        </div>
-                    <?php endif; ?>
+<!--                    --><?php //if (in_array($this->data['curr_user'], array_column($this->data['lab_head']['user'], 'user_id'))): ?>
+<!--                        <div class="col">-->
+<!--                            <div class="mb-3">-->
+<!--                                <label class="form-label">Ориентировочная дата начала <span-->
+<!--                                            class="redStars">*</span></label>-->
+<!---->
+<!--                                <input type="date" id="date-start-leader" name="form_leader[date_start]"-->
+<!--                                       class="form-control"-->
+<!--                                       value="--><?php //= $this->data['form_leader']['date_start'] ?? '' ?><!--"-->
+<!--                                       onkeydown="return false" required min="--><?php //= date('Y-m-d') ?><!--">-->
+<!--                            </div>-->
+<!---->
+<!--                            <div class="">-->
+<!--                                <label class="form-label">Количество рабочих дней <span-->
+<!--                                            class="redStars">*</span></label>-->
+<!---->
+<!--                                <input type="hidden" id="leader-id" name="form_leader[user_id]"-->
+<!--                                       value="--><?php //= $this->data['curr_user'] ?><!--">-->
+<!--                                <input type="number" id="days-leader" name="form_leader[days]" class="form-control"-->
+<!--                                       min="0" step="1" value="--><?php //= $this->data['form_leader']['days'] ?? '1' ?><!--"-->
+<!--                                       required>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    --><?php //endif; ?>
                     <?php if (!empty($this->data['confirm_not_approve_history'])): ?>
                         <div class="col">
                             <table class="table">

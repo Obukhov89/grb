@@ -125,41 +125,41 @@ class RequestController extends Controller
 
             //// блок заполения формы htmlentities($script, ENT_QUOTES, 'UTF-8');
 
-            $this->data['request']['company']['ID']     = $deal['COMPANY_ID'];
-            $this->data['request']['company']['TITLE']  = htmlentities($deal['COMPANY_TITLE'], ENT_QUOTES, 'UTF-8');
-            $this->data['request']['REQ_TYPE']          = $deal['TYPE_ID'];
+            $this->data['request']['company']['ID'] = $deal['COMPANY_ID'];
+            $this->data['request']['company']['TITLE'] = htmlentities($deal['COMPANY_TITLE'], ENT_QUOTES, 'UTF-8');
+            $this->data['request']['REQ_TYPE'] = $deal['TYPE_ID'];
 
-            $this->data['request']['INN']               = htmlentities($clientCompany['RQ_INN']);
-            $this->data['request']['OGRNIP']            = htmlentities($clientCompany['RQ_OGRNIP']);
-            $this->data['request']['OGRN']              = htmlentities($clientCompany['RQ_OGRN']);
-            $this->data['request']['ADDR']              = htmlentities($clientCompany['RQ_ACCOUNTANT']);
-            $this->data['request']['ACTUAL_ADDRESS']    = htmlentities($clientCompany['address'][1]['ADDRESS_1']);
-            $this->data['request']['mailingAddress']    = htmlentities($clientCompany['RQ_COMPANY_NAME']);
-            $this->data['request']['EMAIL']             = htmlentities($clientCompany['RQ_FIRST_NAME']);
-            $this->data['request']['POST_MAIL']         = htmlentities($clientCompany['RQ_EMAIL']);
-            $this->data['request']['PHONE']             = htmlentities($clientCompany['RQ_PHONE']);
-            $this->data['request']['CONTACT']           = htmlentities($clientCompany['RQ_NAME']);
-            $this->data['request']['KPP']               = htmlentities($clientCompany['RQ_KPP']);
-            $this->data['request']['Position2']         = htmlentities($clientCompany['RQ_COMPANY_REG_DATE']);
-            $this->data['request']['DirectorFIO']       = htmlentities($clientCompany['RQ_DIRECTOR']);
-            $this->data['request']['RaschSchet']        = htmlentities($clientCompany['RQ_ACC_NUM']);
-            $this->data['request']['KSchet']            = htmlentities($clientCompany['RQ_COR_ACC_NUM']);
-            $this->data['request']['l_schet']           = htmlentities($clientCompany['COMMENTS']);
-            $this->data['request']['BankName']          = htmlentities($clientCompany['RQ_BANK_NAME']);
-            $this->data['request']['CompanyFullName']   = htmlentities($clientCompany['RQ_COMPANY_FULL_NAME']);
-            $this->data['request']['BIK']               = htmlentities($clientCompany['RQ_BIK']);
+            $this->data['request']['INN'] = htmlentities($clientCompany['RQ_INN']);
+            $this->data['request']['OGRNIP'] = htmlentities($clientCompany['RQ_OGRNIP']);
+            $this->data['request']['OGRN'] = htmlentities($clientCompany['RQ_OGRN']);
+            $this->data['request']['ADDR'] = htmlentities($clientCompany['RQ_ACCOUNTANT']);
+            $this->data['request']['ACTUAL_ADDRESS'] = htmlentities($clientCompany['address'][1]['ADDRESS_1']);
+            $this->data['request']['mailingAddress'] = htmlentities($clientCompany['RQ_COMPANY_NAME']);
+            $this->data['request']['EMAIL'] = htmlentities($clientCompany['RQ_FIRST_NAME']);
+            $this->data['request']['POST_MAIL'] = htmlentities($clientCompany['RQ_EMAIL']);
+            $this->data['request']['PHONE'] = htmlentities($clientCompany['RQ_PHONE']);
+            $this->data['request']['CONTACT'] = htmlentities($clientCompany['RQ_NAME']);
+            $this->data['request']['KPP'] = htmlentities($clientCompany['RQ_KPP']);
+            $this->data['request']['Position2'] = htmlentities($clientCompany['RQ_COMPANY_REG_DATE']);
+            $this->data['request']['DirectorFIO'] = htmlentities($clientCompany['RQ_DIRECTOR']);
+            $this->data['request']['RaschSchet'] = htmlentities($clientCompany['RQ_ACC_NUM']);
+            $this->data['request']['KSchet'] = htmlentities($clientCompany['RQ_COR_ACC_NUM']);
+            $this->data['request']['l_schet'] = htmlentities($clientCompany['COMMENTS']);
+            $this->data['request']['BankName'] = htmlentities($clientCompany['RQ_BANK_NAME']);
+            $this->data['request']['CompanyFullName'] = htmlentities($clientCompany['RQ_COMPANY_FULL_NAME']);
+            $this->data['request']['BIK'] = htmlentities($clientCompany['RQ_BIK']);
 
-            $this->data['request']['DOGOVOR_NUM']       = $baTz['DOGOVOR_NUM'];
-            $this->data['request']['check_ip']          = $baTz['CHECK_IP'];
-            $this->data['request']['order_type']          = $baTz['order_type'];
-            $this->data['request']['PositionGenitive']  = htmlentities($baTz['POSIT_LEADS']);
+            $this->data['request']['DOGOVOR_NUM'] = $baTz['DOGOVOR_NUM'];
+            $this->data['request']['check_ip'] = $baTz['CHECK_IP'];
+            $this->data['request']['order_type'] = $baTz['order_type'];
+            $this->data['request']['PositionGenitive'] = htmlentities($baTz['POSIT_LEADS']);
 
-            $this->data['request']['addEmail']          = $baTz['addMail'];
+            $this->data['request']['addEmail'] = $baTz['addMail'];
 
-            $this->data['request']['ACTS_BASIS']        = htmlentities($clientCompany['address'][1]['ADDRESS_2']);
+            $this->data['request']['ACTS_BASIS'] = htmlentities($clientCompany['address'][1]['ADDRESS_2']);
 
-            $this->data['request']['assign']            = $user->getAssignedByDealId($dealId);
-            $this->data['request']['material']          = $material->getMaterialsToRequest($dealId);
+            $this->data['request']['assign'] = $user->getAssignedByDealId($dealId);
+            $this->data['request']['material'] = $material->getMaterialsToRequest($dealId);
 
             //// конец блока заполения формы
         }
@@ -195,7 +195,7 @@ class RequestController extends Controller
         /** @var Status $statusModel */
         $statusModel = $this->model('Status');
 
-        $location   = empty($_POST['id']) ? '/request/new/' : "/request/edit/{$_POST['id']}";
+        $location = empty($_POST['id']) ? '/request/new/' : "/request/edit/{$_POST['id']}";
         $successMsg = empty($_POST['id']) ? 'Заявка успешно создана' : "Заявка успешно изменена";
 
         // сохраним пост в сессию, что бы при ошибке не заполнять поля заново
@@ -371,7 +371,7 @@ class RequestController extends Controller
                 $this->showErrorMessage($valid['error']);
                 $this->redirect($location);
             }
-            if ((int) $item['count'] <= 0) {
+            if ((int)$item['count'] <= 0) {
                 $this->showErrorMessage("Количество материала должно быть больше нуля");
                 $this->redirect($location);
             }
@@ -446,37 +446,37 @@ class RequestController extends Controller
         ];
 
         $dataBank = [
-            'ENTITY_ID'                 => $companyId,
-            'ENTITY_TYPE_ID'            => CCrmOwnerType::Company,
-            'PRESET_ID'                 => $resetId,
-            'NAME'                      => $_POST['company'],
-            'SORT'                      => 500,
-            'ACTIVE'                    => 'Y',
-            'RQ_INN'                    => $_POST['INN'],
-            'RQ_ACCOUNTANT'             => $_POST['ADDR'],
-            'RQ_OGRN'                   => $_POST['OGRN'],
-            'RQ_OGRNIP'                 => $_POST['OGRNIP'],
-            'RQ_EMAIL'                  => $_POST['POST_MAIL'],
-            'RQ_PHONE'                  => $_POST['PHONE'],
-            'RQ_NAME'                   => $_POST['CONTACT'],
-            'RQ_KPP'                    => $_POST['KPP'],
-            'RQ_COMPANY_REG_DATE'       => $_POST['Position2'],
-            'RQ_COMPANY_FULL_NAME'      => $_POST['CompanyFullName'],
-            'RQ_DIRECTOR'               => $_POST['DirectorFIO'],
-            'RQ_ACC_NUM'                => $_POST['RaschSchet'],
-            'RQ_COR_ACC_NUM'            => $_POST['KSchet'],
-            'RQ_BIK'                    => $_POST['BIK'],
-            'RQ_BANK_NAME'              => $_POST['BankName'],
-            'RQ_FIRST_NAME'             => $_POST['EMAIL'],
-            'RQ_COMPANY_NAME'           => $_POST['mailingAddress'],
-            'RQ_ADDR'                   => [
+            'ENTITY_ID' => $companyId,
+            'ENTITY_TYPE_ID' => CCrmOwnerType::Company,
+            'PRESET_ID' => $resetId,
+            'NAME' => $_POST['company'],
+            'SORT' => 500,
+            'ACTIVE' => 'Y',
+            'RQ_INN' => $_POST['INN'],
+            'RQ_ACCOUNTANT' => $_POST['ADDR'],
+            'RQ_OGRN' => $_POST['OGRN'],
+            'RQ_OGRNIP' => $_POST['OGRNIP'],
+            'RQ_EMAIL' => $_POST['POST_MAIL'],
+            'RQ_PHONE' => $_POST['PHONE'],
+            'RQ_NAME' => $_POST['CONTACT'],
+            'RQ_KPP' => $_POST['KPP'],
+            'RQ_COMPANY_REG_DATE' => $_POST['Position2'],
+            'RQ_COMPANY_FULL_NAME' => $_POST['CompanyFullName'],
+            'RQ_DIRECTOR' => $_POST['DirectorFIO'],
+            'RQ_ACC_NUM' => $_POST['RaschSchet'],
+            'RQ_COR_ACC_NUM' => $_POST['KSchet'],
+            'RQ_BIK' => $_POST['BIK'],
+            'RQ_BANK_NAME' => $_POST['BankName'],
+            'RQ_FIRST_NAME' => $_POST['EMAIL'],
+            'RQ_COMPANY_NAME' => $_POST['mailingAddress'],
+            'RQ_ADDR' => [
                 1 => [
                     'ADDRESS_1' => $_POST["ACTUAL_ADDRESS"],
                     'ADDRESS_2' => $_POST['ACTS_BASIS'],
-                    'REGION'    => $_POST['OGRNIP']
+                    'REGION' => $_POST['OGRNIP']
                 ]
             ],
-            'COMMENTS'                  => $_POST['l_schet'],
+            'COMMENTS' => $_POST['l_schet'],
         ];
 
         $saveMail = serialize($_POST['addEmail']);
@@ -718,7 +718,7 @@ class RequestController extends Controller
             $this->redirect('/request/list/');
         }
 
-        $dealId = (int) $dealId;
+        $dealId = (int)$dealId;
 
         /** @var Request $request */
         $request = $this->model('Request');
@@ -743,31 +743,36 @@ class RequestController extends Controller
 
         $tzId = $requirement->getTzIdByDealId($dealId);
 
-        $deal                   = $request->getDealById($dealId);
-        $companyDataRequisite   = $company->getRequisiteByCompanyId($deal['COMPANY_ID']);
-        $companyData            = $company->getById($deal['COMPANY_ID']);
-        $requestData            = $request->getTzByDealId($dealId);
-        $orderData              = $requirement->getContracts($dealId);
-        $dogovorData            = $requirement->getDogovor($dealId);
-        $tzDoc                  = $requirement->getTzDoc($tzId);
-        $protocolData           = $requirement->getProtocols($tzId);
-        $invoiceData            = $request->getInvoice($tzId);
-        $act                    = $requirement->getAct($tzId);
-        $actVr                  = $requirement->getActVr($tzId);
-        $userFields             = $request->getCrmUserFields($dealId);
-        $proposalData           = $requirement->getKP($tzId);
-        $materialData           = $requirement->getMaterialProbeGostToRequest($dealId);
-        $quarry                 = $requirement->getQuarry();
-        $actBase                = $requirement->getActBase($dealId);
-        $countResults           = $resultModel->getCountTrialResults($dealId);
-        $isResults              = $resultModel->isResultNotEmpty($dealId);
-        $permissionInfo         = $permissionModel->getUserPermission($_SESSION['SESS_AUTH']['USER_ID']);
-        $dateRequestUPD         = $request->getDateRequestUPD($dealId);
+        $deal = $request->getDealById($dealId);
+        $companyDataRequisite = $company->getRequisiteByCompanyId($deal['COMPANY_ID']);
+        $companyData = $company->getById($deal['COMPANY_ID']);
+        $requestData = $request->getTzByDealId($dealId);
+        $orderData = $requirement->getContracts($dealId);
+        $dogovorData = $requirement->getDogovor($dealId);
+        $tzDoc = $requirement->getTzDoc($tzId);
+        $protocolData = $requirement->getProtocols($tzId);
+        $invoiceData = $request->getInvoice($tzId);
+        $act = $requirement->getAct($tzId);
+        $actVr = $requirement->getActVr($tzId);
+        $userFields = $request->getCrmUserFields($dealId);
+        $proposalData = $requirement->getKP($tzId);
+        $materialData = $requirement->getMaterialProbeGostToRequest($dealId);
+        $quarry = $requirement->getQuarry();
+        $actBase = $requirement->getActBase($dealId);
+        $countResults = $resultModel->getCountTrialResults($dealId);
+        $isResults = $resultModel->isResultNotEmpty($dealId);
+        $permissionInfo = $permissionModel->getUserPermission($_SESSION['SESS_AUTH']['USER_ID']);
+        $dateRequestUPD = $request->getDateRequestUPD($dealId);
 
+//        echo '<pre>';
+//        print_r($isResults);
+//        echo '<pre>';
+//        print_r($countResults);
+//        die;
         $currUserId = $user->getCurrentUserId();
         $labInfo = $labModel->getLabByUserId($currUserId);
         $this->data['isLabHeader'] = false;
-        if ($labInfo['HEAD_ID'] == $currUserId){
+        if ($labInfo['HEAD_ID'] == $currUserId) {
             $this->data['isLabHeader'] = true;
         }
 
@@ -820,12 +825,12 @@ class RequestController extends Controller
 
         $isConfirm = $request->isConfirmTz($tzId);
 
-        $this->data['deal_id']  = $dealId;
-        $this->data['tz_id']    = $tzId;
+        $this->data['deal_id'] = $dealId;
+        $this->data['tz_id'] = $tzId;
 
         $this->data['not_need_send'] = $requestData['not_need_send'];
 
-        $this->data['doc_id']  = $dogovorData['ID'] ?? '';
+        $this->data['doc_id'] = $dogovorData['ID'] ?? '';
         $this->data['attach1'] = $dogovorData['ACTUAL_VER'] ?? '';
         $this->data['attach2'] = $invoiceData['ACTUAL_VER'] ?? '';
         $this->data['attach3'] = $tzDoc['ACTUAL_VER'] ?? '';
@@ -836,7 +841,7 @@ class RequestController extends Controller
         $this->data['result_refactoring_start_id'] = $request->getResultRefactoringStartId();
 
         $this->data['request'] = $requestData;
-        $this->data['quarry']  = $quarry;
+        $this->data['quarry'] = $quarry;
 
         $this->data['is_deal_nk'] = $deal['TYPE_ID'] == 4 && $dealId < DEAL_NEW_NK;
         $this->data['is_deal_pr'] = $deal['TYPE_ID'] == 7;
@@ -880,7 +885,7 @@ class RequestController extends Controller
 
         $this->data['act_vr']['NUMBRE'] =
 
-            $this->data['tz_doc'] = $tzDoc;
+        $this->data['tz_doc'] = $tzDoc;
         $this->data['first_protocol'] = $protocolData[0] ?? [];
 
         $this->data['date_tz_create'] = date('d.m.Y', strtotime($deal['DATE_CREATE']));
@@ -990,7 +995,7 @@ class RequestController extends Controller
         $this->data['attach']['date_send'] = !empty($tzDoc['SEND_DATE']) ? StringHelper::dateRu($tzDoc['SEND_DATE']) : 'Не отправлен';
         $this->data['attach']['actual_ver'] = $tzDoc['ACTUAL_VER'];
         $this->data['attach']['is_disable_form'] = !$this->data['is_deal_osk'] && (
-            !$isExistTz || !empty($requestData['dateEnd']) || !$isConfirm || !empty($actVr));
+                !$isExistTz || !empty($requestData['dateEnd']) || !$isConfirm || !empty($actVr));
         $this->data['attach']['is_disable_form_for_rostovskaya'] = $isConfirm && in_array($_SESSION['SESS_AUTH']['USER_ID'], [220]);
         $this->data['attach']['is_disable_form_test'] = !$this->data['is_deal_osk'];
         //            empty($requestData['TZ']) || !empty($requestData['dateEnd']) /*|| !$isConfirm*/ || !empty($actVr);
@@ -1004,7 +1009,7 @@ class RequestController extends Controller
         $this->data['invoice']['date'] = !empty($invoiceData['DATE']) ? StringHelper::dateRu($invoiceData['DATE']) : '--';
         $this->data['invoice']['date_send'] = !empty($invoiceData['SEND_DATE']) ? StringHelper::dateRu($invoiceData['SEND_DATE']) : 'Не отправлен';
         $this->data['invoice']['is_disable_form'] = !$this->data['is_deal_osk'] && (
-            !$isExistTz ||  empty($requestData['DOGOVOR_NUM']) || !empty($requestData['dateEnd']) || !empty($requestData['TAKEN_ID_DEAL']) || !$isConfirm);
+                !$isExistTz || empty($requestData['DOGOVOR_NUM']) || !empty($requestData['dateEnd']) || !empty($requestData['TAKEN_ID_DEAL']) || !$isConfirm);
         $this->data['invoice']['is_disable_form_for_rostovskaya'] = $isConfirm && in_array($_SESSION['SESS_AUTH']['USER_ID'], [220]);
 
         //        echo '1 - ' . !$this->data['is_deal_osk'];
@@ -1054,13 +1059,13 @@ class RequestController extends Controller
         $this->data['payment']['check'] = !empty($requestData['price_discount']) && $isExistTz && $this->data['payment']['surcharge'] == 0;
         $this->data['payment']['is_disable_form'] = ((float)$requestData['OPLATA'] == (float)$requestData['price_discount']) && ($_SESSION['SESS_AUTH']['USER_ID'] != 25);
 
-        $this->data['payment']['pay']   = $requestData['OPLATA'];
+        $this->data['payment']['pay'] = $requestData['OPLATA'];
         $this->data['payment']['datePayment'] =
             !empty($requestData['DATE_OPLATA']) && $requestData['DATE_OPLATA'] !== '01.01.1970' ?
-            StringHelper::dateRu($requestData['DATE_OPLATA']) : '--';
+                StringHelper::dateRu($requestData['DATE_OPLATA']) : '--';
 
 
-        if ((float) $requestData['OPLATA'] > (float) $this->data['payment']['price']) {
+        if ((float)$requestData['OPLATA'] > (float)$this->data['payment']['price']) {
             $this->data['payment']['status'] = 'Переплата';
         } elseif (!empty($this->data['payment']['price']) && $this->data['payment']['surcharge'] == 0) {
             $this->data['payment']['status'] = 'Оплачено полностью';
@@ -1105,7 +1110,7 @@ class RequestController extends Controller
             }
 
             $yearDir = date("Y", strtotime($protocol['DATE']));
-            $dir  = PROTOCOL_PATH . "archive/{$requestData['ID']}{$yearDir}/{$protocol['ID']}/";
+            $dir = PROTOCOL_PATH . "archive/{$requestData['ID']}{$yearDir}/{$protocol['ID']}/";
             $link = $dealId >= DEAL_START_NEW_AREA ? "/ulab/generator/ProtocolDocument/{$protocol['ID']}" : "/protocol_generator/protocol_multiple_protocols.php?ID={$dealId}&TZ_ID={$requestData['ID']}&PROTOCOL_ID={$protocol['ID']}";
 
             $whyDisableMail = '';
@@ -1126,21 +1131,22 @@ class RequestController extends Controller
             }
 
             $this->data['protocol'][] = [
-                'id'        => $protocol['ID'],
-                'check'     => !empty($protocol['NUMBER']),
-                'number'    => $protocol['NUMBER'],
-                'year'      => $yearDir,
-                'title'     => $title,
-                'sig'       => $protocolModel->getSigFile($dir),
-                'pdf'       => !empty($protocol['PDF']) ? "/pdf/{$protocol['ID']}/{$protocol['PDF']}" : $protocolModel->getPdfFile($dir),
-                'date'      => !empty($protocol['DATE']) ? StringHelper::dateRu($protocol['DATE']) : '--',
+                'id' => $protocol['ID'],
+                'check' => !empty($protocol['NUMBER']),
+                'number' => $protocol['NUMBER'],
+                'year' => $yearDir,
+                'title' => $title,
+                'sig' => $protocolModel->getSigFile($dir),
+                'pdf' => !empty($protocol['PDF']) ? "/pdf/{$protocol['ID']}/{$protocol['PDF']}" : $protocolModel->getPdfFile($dir),
+                'date' => !empty($protocol['DATE']) ? StringHelper::dateRu($protocol['DATE']) : '--',
                 'date_send' => !empty($protocol['PROTOCOL_SEND_DATETIME']) ? StringHelper::dateRu($protocol['PROTOCOL_SEND_DATETIME']) : 'Не отправлен',
-                'link'      => $link,
-                'outLis'    => !empty($protocol['PDF']) ? 1 : 0,
-                'actual_version'  => !empty($protocol['PDF']) ? $protocol['PDF'] : ($protocol['ACTUAL_VERSION'] ? unserialize($protocol['ACTUAL_VERSION']) : ''),
-                'is_disable_form' => /*$requestData['STAGE_ID'] == '4' ||*/ $requestData['STAGE_ID'] == 'WON' || empty($protocol['NUMBER']) /*|| !empty($actVr)*/,
+                'link' => $link,
+                'outLis' => !empty($protocol['PDF']) ? 1 : 0,
+                'actual_version' => !empty($protocol['PDF']) ? $protocol['PDF'] : ($protocol['ACTUAL_VERSION'] ? unserialize($protocol['ACTUAL_VERSION']) : ''),
+                'is_disable_form' => /*$requestData['STAGE_ID'] == '4' ||*/
+                    $requestData['STAGE_ID'] == 'WON' || empty($protocol['NUMBER']) /*|| !empty($actVr)*/,
                 'is_disable_mail' =>
-                empty($protocol['NUMBER'])
+                    empty($protocol['NUMBER'])
                     || empty($protocol['ACTUAL_VERSION'])
                     || (
                         ($companyData[COMPANY_GOOD] == 0 && empty($requestData['OPLATA']))
@@ -1148,10 +1154,10 @@ class RequestController extends Controller
                         && !in_array($_SESSION['SESS_AUTH']['USER_ID'], [9, 33])
                     ),
                 'why_disable_mail' => $whyDisableMail,
-                'is_enable_ecp'  =>
-                !empty($protocol['ID'])
+                'is_enable_ecp' =>
+                    !empty($protocol['ID'])
                     && !empty($protocol['NUMBER'])
-                    && !empty($protocol['PROTOCOL_TYPE'])  || $protocol['PROTOCOL_TYPE'] == '0'
+                    && !empty($protocol['PROTOCOL_TYPE']) || $protocol['PROTOCOL_TYPE'] == '0'
                     && in_array($protocol['PROTOCOL_TYPE'], [1, 33, 34])
                     && empty($protocol['PROTOCOL_OUTSIDE_LIS']),
                 //                'is_enable_ecp'  => false,
@@ -1167,11 +1173,13 @@ class RequestController extends Controller
         //
         // Результаты испытаний
         //$this->data['results']['check'] = $dealId >= DEAL_START_NEW_AREA ? !empty($countResults['count_utr']) : !empty($requestData['RESULTS']);
-        $this->data['results']['check'] = $dealId >= DEAL_START_NEW_AREA ?
-            ($dealId >= DEAL_NEW_RESULT ? $isResults : !empty($countResults['count_utr'])) : !empty($requestData['RESULTS']);
+//        $this->data['results']['check'] = $dealId >= DEAL_START_NEW_AREA ?
+//            ($dealId >= DEAL_NEW_RESULT ? $isResults : !empty($countResults['count_utr'])) : !empty($requestData['RESULTS']);
+        $this->data['results']['check'] = (bool)$isResults || !empty($countResults['count_utr']);
         $this->data['results']['is_disabled'] = (!$this->data['is_deal_pr'] && !$requestData['order_type'] == 2 && !$this->data['is_deal_osk'] && !$this->data['is_deal_sc'] && empty($requestData['TAKEN_ID_DEAL'])) &&
             (empty($requestData) || empty($requestData['ACT_NUM']) || empty($invoiceData)) /*|| !$isConfirm
-            || (!$this->data['payment']['check'] && !$this->data['is_good_company'])*/;
+            || (!$this->data['payment']['check'] && !$this->data['is_good_company'])*/
+        ;
 
         if (!empty($requestData['DATE_RESULTS'])) {
             $this->data['results']['date'] = StringHelper::dateRu($requestData['DATE_RESULTS']);
@@ -1198,13 +1206,13 @@ class RequestController extends Controller
 
         // Проверка на доступ к ручному завершению испытаний (может завершить Руководитель ИЦ и Админ)
         /**
-        define("ADMIN_PERMISSION", (int)env('ADMIN_PERMISSION', 2)); // id роли "Админ"
-        define("HEAD_LAB_PERMISSION", (int)env('HEAD_LAB_PERMISSION', 4)); // id роли "Руководитель лаборатории"
-        define("HEAD_IC_PERMISSION", (int)env('HEAD_IC_PERMISSION', 3)); // id роли "Руководитель ИЦ"
-        todo: в конфиге эти определения не работают
+         * define("ADMIN_PERMISSION", (int)env('ADMIN_PERMISSION', 2)); // id роли "Админ"
+         * define("HEAD_LAB_PERMISSION", (int)env('HEAD_LAB_PERMISSION', 4)); // id роли "Руководитель лаборатории"
+         * define("HEAD_IC_PERMISSION", (int)env('HEAD_IC_PERMISSION', 3)); // id роли "Руководитель ИЦ"
+         * todo: в конфиге эти определения не работают
          */
-        $this->data['complete']['may_return'] = in_array($permissionInfo['id'],  [2, 3, 4]) && !$hasEndChecks && $_SESSION['SESS_AUTH']['USER_ID'] != 88;
-        $this->data['complete']['may_complete'] = in_array($permissionInfo['id'],  [2, 3, 4]) &&
+        $this->data['complete']['may_return'] = in_array($permissionInfo['id'], [2, 3, 4]) && !$hasEndChecks && $_SESSION['SESS_AUTH']['USER_ID'] != 88;
+        $this->data['complete']['may_complete'] = in_array($permissionInfo['id'], [2, 3, 4]) &&
             ($deal['STAGE_ID'] == 'PREPARATION' || $deal['STAGE_ID'] == 'PREPAYMENT_INVOICE' ||
                 $deal['STAGE_ID'] == 'EXECUTING' || $deal['STAGE_ID'] == 'FINAL_INVOICE' || $deal['STAGE_ID'] == 1 || $deal['STAGE_ID'] == 'WON-NO-ACT' || $hasNotNew && !$hasEndChecks);
         if (!empty($this->data['is_deal_pr'])) {
@@ -1228,7 +1236,6 @@ class RequestController extends Controller
         $this->data['act_complete']['is_disable_mail'] = empty($actVr) || 0;
 
 
-
         //// Список версий
         // Протокол
         $this->data['file']['protocol'] = [];
@@ -1238,14 +1245,14 @@ class RequestController extends Controller
 
                 if (empty($protocol['PROTOCOL_OUTSIDE_LIS']) && empty($protocol['PDF'])) {
                     $year = date("Y", strtotime($protocol['DATE']));
-                    $dir  = PROTOCOL_PATH . "archive/{$requestData['ID']}{$year}/{$protocol['ID']}/";
+                    $dir = PROTOCOL_PATH . "archive/{$requestData['ID']}{$year}/{$protocol['ID']}/";
                     $path = "/protocol_generator/archive/{$requestData['ID']}{$year}/{$protocol['ID']}/";
                     $files = $request->getFilesFromDir($dir, ['signed.docx', 'forsign.docx', 'qrNEW.png']);
                 } else {
                     //                    $dir  = "/home/bitrix/www/ulab/upload/result/pdf/{$protocol['ID']}/";
                     //                    $path = "/ulab/upload/result/pdf/{$protocol['ID']}/";
 
-                    $dir  = "/home/bitrix/www/pdf/{$protocol['ID']}/";
+                    $dir = "/home/bitrix/www/pdf/{$protocol['ID']}/";
                     $path = "/pdf/{$protocol['ID']}/";
                     $files = $request->getFilesFromDir($dir);
                 }
@@ -1259,7 +1266,7 @@ class RequestController extends Controller
             }
         } else {
             $year = date("Y", strtotime($requestData['DATE_ACT']));
-            $dir  = PROTOCOL_PATH . "archive/{$requestData['ID']}{$year}/";
+            $dir = PROTOCOL_PATH . "archive/{$requestData['ID']}{$year}/";
             $path = "/protocol_generator/archive/{$requestData['ID']}{$year}/";
             $files = $request->getFilesFromDir($dir, ['signed.docx', 'forsign.docx', 'qrNEW.png']);
             $this->data['file']['protocol'][0]['number'] = $requestData['NUM_P'];
@@ -1272,7 +1279,7 @@ class RequestController extends Controller
         // КП
         $this->data['file']['kp']['files'] = [];
         if (!empty($proposalData)) {
-            $dir  = PROTOCOL_PATH . "archive_kp/{$dealId}/";
+            $dir = PROTOCOL_PATH . "archive_kp/{$dealId}/";
             $path = "/protocol_generator/archive_kp/{$dealId}/";
             $files = $request->getFilesFromDir($dir);
 
@@ -1316,7 +1323,7 @@ class RequestController extends Controller
         // Счет-оферта
         $this->data['file']['offer']['files'] = [];
         if (!empty($dogovorData)) {
-            $dir  = PROTOCOL_PATH . "archive_dog/{$tzId}/";
+            $dir = PROTOCOL_PATH . "archive_dog/{$tzId}/";
             $path = "/protocol_generator/archive_dog/{$tzId}/";
             $files = $request->getFilesFromDir($dir);
 
@@ -1329,7 +1336,7 @@ class RequestController extends Controller
         // Прил. к договору (тз)
         $this->data['file']['tz']['files'] = [];
         //        if ( !empty($proposalData) ) {
-        $dir  = PROTOCOL_PATH . "archive_tz/{$requestData['ID']}/";
+        $dir = PROTOCOL_PATH . "archive_tz/{$requestData['ID']}/";
         $path = "/protocol_generator/archive_tz/{$requestData['ID']}/";
         $files = $request->getFilesFromDir($dir);
 
@@ -1342,7 +1349,7 @@ class RequestController extends Controller
         // Счет
         $this->data['file']['invoice']['files'] = [];
         if (!empty($invoiceData)) {
-            $dir  = PROTOCOL_PATH . "archive_acc/{$dealId}/";
+            $dir = PROTOCOL_PATH . "archive_acc/{$dealId}/";
             $path = "/protocol_generator/archive_acc/{$dealId}/";
             $files = $request->getFilesFromDir($dir);
 
@@ -1355,7 +1362,7 @@ class RequestController extends Controller
         // Акт ВР
         $this->data['file']['act']['files'] = [];
         if (!empty($actVr)) {
-            $dir  = PROTOCOL_PATH . "archive_aktvr/{$dealId}/";
+            $dir = PROTOCOL_PATH . "archive_aktvr/{$dealId}/";
             $path = "/protocol_generator/archive_aktvr/{$dealId}/";
             $files = $request->getFilesFromDir($dir);
 
@@ -1377,7 +1384,7 @@ class RequestController extends Controller
 
         // Фото
         $this->data['file']['photo']['files'] = [];
-        $dir  = "/home/bitrix/www/photo/{$dealId}/";
+        $dir = "/home/bitrix/www/photo/{$dealId}/";
         $path = "/photo/{$dealId}/";
         $files = $request->getFilesFromDir($dir);
 
@@ -1499,7 +1506,7 @@ class RequestController extends Controller
                 /** @var Requirement $requirement */
                 $requirement = $this->model('Requirement');
 
-                $tzId  = $requirement->getTzIdByDealId($dealId);
+                $tzId = $requirement->getTzIdByDealId($dealId);
                 $actVr = $requirement->getActVr($tzId);
 
                 if (empty($actVr['SEND_DATE'])) {
@@ -1532,6 +1539,15 @@ class RequestController extends Controller
         /** @var Status $status */
         $status = $this->model('Status');
 
+        $user = $this->model('User');
+
+        $currUserId = $user->getCurrentUserId();
+        $labInfo = $lab->getLabByUserId($currUserId);
+        $isLabHeader = false;
+        if ($labInfo['HEAD_ID'] == $currUserId) {
+            $isLabHeader = true;
+        }
+
         $this->data['lab'] = $lab->getList();
         $this->data['date_start'] = $request->getDateStart();
 
@@ -1543,6 +1559,8 @@ class RequestController extends Controller
         $this->data['not_sended_tz'] = [];
 
         $this->data['statuses'] = $status->getStatusList();
+
+        $this->data['lab_header'] = $isLabHeader;
 
         if (in_array($_SESSION['SESS_AUTH']['USER_ID'], [296, 297, 299, 298, 300])) {
             $this->data['tz_under_consideration'] = $request->tzUnderConsideration($_SESSION['SESS_AUTH']['USER_ID']);
@@ -1735,7 +1753,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
         /** @var User $user */
         $user = $this->model('User');
@@ -1761,7 +1779,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
         /** @var User $user */
         $user = $this->model('User');
@@ -1772,8 +1790,8 @@ class RequestController extends Controller
 
         $filter = [
             'paginate' => [
-                'length'    => $_POST['length'],  // кол-во строк на страницу
-                'start'      => $_POST['start'],  // текущая страница
+                'length' => $_POST['length'],  // кол-во строк на страницу
+                'start' => $_POST['start'],  // текущая страница
             ],
             'search' => [],
             'order' => []
@@ -1786,7 +1804,7 @@ class RequestController extends Controller
         }
 
         if (isset($_POST['order']) && !empty($_POST['columns'])) {
-            $filter['order']['by']  = $_POST['columns'][$_POST['order'][0]['column']]['data'];
+            $filter['order']['by'] = $_POST['columns'][$_POST['order'][0]['column']]['data'];
             $filter['order']['dir'] = $_POST['order'][0]['dir'];
         }
 
@@ -1811,7 +1829,6 @@ class RequestController extends Controller
         }
 
         $data = $request->getDataToJournalRequests($userId, $filter);
-
 
 
         $recordsTotal = $data['recordsTotal'];
@@ -1840,7 +1857,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
 
         /** @var User $user */
@@ -1901,6 +1918,7 @@ class RequestController extends Controller
 
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
+
     /**
      * получает данные договоров
      * передается ид компании через POST
@@ -1954,7 +1972,7 @@ class RequestController extends Controller
             return;
         }
 
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
 
         $response = $request->saveSign($dealId, $_POST['src']);
@@ -1993,7 +2011,7 @@ class RequestController extends Controller
             return;
         }
 
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
 
         $response = $request->saveSign($dealId, $_POST['src'], $_POST['actId']);
@@ -2008,7 +2026,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
 
         if (isset($_FILES['file'])) {
@@ -2025,7 +2043,7 @@ class RequestController extends Controller
 
         $APPLICATION->RestartBuffer();
 
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
 
         if (isset($_FILES['file'])) {
@@ -2052,7 +2070,7 @@ class RequestController extends Controller
 
     public function dwnImage($dealId)
     {
-        /** @var  Request $request*/
+        /** @var  Request $request */
         $request = $this->model('Request');
 
         if (isset($_FILES['photo']) && !empty($_FILES['photo'])) {

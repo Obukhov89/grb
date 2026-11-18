@@ -351,7 +351,6 @@ class ResultController extends Controller
 
         /** @var Requirement $requirementModel */
         $requirementModel = $this->model('Requirement');
-
         if (empty($dealId)) {
             $dealId = 0;
         }
@@ -465,7 +464,7 @@ class ResultController extends Controller
         $this->data['is_deal_pr'] = $deal['TYPE_ID'] == 7;
         $this->data['is_deal_sc'] = $deal['TYPE_ID'] == 8;
         $this->data['is_deal_osk'] = $deal['TYPE_ID'] == 'COMPLEX';
-        $this->data['start_stop_active'] = ($dealId >= DEAL_START_STOP_TESTS) && !$this->data['is_deal_osk'] && !$this->data['is_deal_sc'];
+        $this->data['start_stop_active'] = !$this->data['is_deal_osk'] && !$this->data['is_deal_sc'];
 
         $selected = isset($_GET['selected']) ? $this->data['selected_protocol_id'] : null;
 
@@ -1308,6 +1307,10 @@ class ResultController extends Controller
             $this->redirect('/request/list/');
         }
 
+//        echo '<pre>';
+//        print_r($_POST);
+//        die;
+
         /** @var Request $request */
         $request = $this->model('Request');
         /** @var Result $resultModel */
@@ -2095,7 +2098,6 @@ class ResultController extends Controller
 
 
     /**
-     * @deprecated
      * route /result/insertUpdate/
      * Сохраняем, обновляем данные результов испытаний
      */
@@ -3176,7 +3178,7 @@ class ResultController extends Controller
         }
 
         $dealId = (int)$_POST['deal_id'];
-        $method = $dealId >= DEAL_START_NEW_AREA ? 'resultCard' : 'card';
+        $method = 'resultCard';
         $selected = $_POST['selected'] ? '&selected' : '';
         $location = $protocolId ? "/result/{$method}/{$_POST['deal_id']}?protocol_id={$protocolId}{$selected}" : "/result/{$method}/{$_POST['deal_id']}";
         $successMessage = isset($_POST['edit_results']) ?
@@ -3255,7 +3257,7 @@ class ResultController extends Controller
 
 
         $dealId = (int)$_POST['deal_id'];
-        $location = "/result/" . ($dealId >= DEAL_START_NEW_AREA ? 'resultCard' : 'card') . "/{$dealId}";
+        $location = "/result/resultCard/{$dealId}";
 
 
         $deal = $request->getDealById($dealId);
@@ -3327,7 +3329,7 @@ class ResultController extends Controller
 
 
         $dealId = (int)$_POST['deal_id'];
-        $method = $dealId >= DEAL_START_NEW_AREA ? 'resultCard' : 'card';
+        $method = 'resultCard';
         $selected = $_POST['selected'] ? '&selected' : '';
         $location = $protocolId ? "/result/{$method}/{$_POST['deal_id']}?protocol_id={$protocolId}{$selected}" : "/result/{$method}/{$_POST['deal_id']}";
 
@@ -3983,7 +3985,7 @@ class ResultController extends Controller
         $this->data['is_deal_pr'] = $deal['TYPE_ID'] == 7;
         $this->data['is_deal_sc'] = $deal['TYPE_ID'] == 8;
         $this->data['is_deal_osk'] = $deal['TYPE_ID'] == 'COMPLEX';
-        $this->data['start_stop_active'] = ($dealId >= DEAL_START_STOP_TESTS) && !$this->data['is_deal_osk'] && !$this->data['is_deal_sc'];
+        $this->data['start_stop_active'] = !$this->data['is_deal_osk'] && !$this->data['is_deal_sc'];
 
         $noOA = [];
         $selected = isset($_GET['selected']) ? $this->data['selected_protocol_id'] : null;
@@ -5497,7 +5499,6 @@ class ResultController extends Controller
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-
     /**
      *
      */
@@ -5635,7 +5636,7 @@ class ResultController extends Controller
         $resultModel = $this->model('Result');
 
         foreach ($_POST['probe_id_list'] as $ugtpId) {
-            $resultModel->stopTrial($ugtpId);
+            $resultModel->stopTrial($ugtpId, $_POST['deal_id']);
         }
     }
 

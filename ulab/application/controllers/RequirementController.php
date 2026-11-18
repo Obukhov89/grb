@@ -473,7 +473,7 @@ class RequirementController extends Controller
         $currUserId = $userModel->getCurrentUserId();
         $labInfo = $labModel->getLabByUserId($currUserId);
         $this->data['isLabHeader'] = false;
-        if ($labInfo['HEAD_ID'] == $currUserId){
+        if ($labInfo['HEAD_ID'] == $currUserId) {
             $this->data['isLabHeader'] = true;
         }
 
@@ -1298,12 +1298,15 @@ class RequirementController extends Controller
 
         /** @var Requirement $requirementModel */
         $requirementModel = $this->model('Requirement');
+        $ids = array_column($_POST['probes_arr'], 'id');
+
 
         $dataForTzLabDuration = [
             'dealId' => $_POST['deal_id'],
             'dateLeader' => $_POST['date_leader'],
             'daysLeader' => $_POST['days_leader'],
             'leaderId' => $_POST['leader_id'],
+            'ids' => $ids
         ];
 
         $requirementModel->confirmTzApprove($_POST['tz_id'], $_SESSION['SESS_AUTH']['USER_ID'], $dataForTzLabDuration);

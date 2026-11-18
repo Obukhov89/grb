@@ -1807,6 +1807,7 @@ class Requirement extends Model
         $labHead = $this->getLabHead($dealId);
 
         $requestModel = new Request();
+        $probeModel = new Probe();
 
         $tzId = $requestModel->getTzIdByDealId($dealId)['ID'];
 
@@ -1824,6 +1825,8 @@ class Requirement extends Model
 
             $this->DB->Insert('CHECK_TZ', $sqlData);
         }
+
+
     }
 
 
@@ -1918,6 +1921,7 @@ class Requirement extends Model
      */
     public function confirmTzApprove($tzId, $userId, $dataForLabDuration = [])
     {
+        $probeModel = new Probe();
         $data = [
             'confirm' => 1,
             'date_reply' => date('Y-m-d H:i:s'),
@@ -1928,14 +1932,18 @@ class Requirement extends Model
         $this->DB->Update('CHECK_TZ', $sqlData, "where tz_id = {$tzId} and leader = {$userId}");
 
         if ($dataForLabDuration) {
-            $labId = $this->DB->Query("SELECT ID FROM ba_laba WHERE HEAD_ID = '{$dataForLabDuration['leaderId']}'")->Fetch()['ID'];
+            $labId = $this->DB->Query("SELECT ID FROM ba_laba WHERE HEAD_ID = '{$_SESSION['SESS_AUTH']['USER_ID']}'")->Fetch()['ID'];
             $info = $this->DB->Query("select id from ulab_tz_lab_duration where deal_id = {$dataForLabDuration['dealId']} and lab_id = {$labId}")->Fetch();
             $dateStart = date('Y-m-d', strtotime($dataForLabDuration['dateLeader']));
-            if (!empty($info)) {
-                $this->DB->Query("delete from ulab_tz_lab_duration where id = {$info['id']}");
-                $this->DB->Query("INSERT INTO ulab_tz_lab_duration(deal_id, lab_id, date_start, days) VALUES('{$dataForLabDuration['dealId']}', '{$labId}', '{$dateStart}', '{$dataForLabDuration['daysLeader']}')");
-            } else {
-                $this->DB->Query("INSERT INTO ulab_tz_lab_duration(deal_id, lab_id, date_start, days) VALUES('{$dataForLabDuration['dealId']}', '{$labId}', '{$dateStart}', '{$dataForLabDuration['daysLeader']}')");
+//            if (!empty($info)) {
+//                $this->DB->Query("delete from ulab_tz_lab_duration where id = {$info['id']}");
+//                $this->DB->Query("INSERT INTO ulab_tz_lab_duration(deal_id, lab_id, date_start, days) VALUES('{$dataForLabDuration['dealId']}', '{$labId}', '{$dateStart}', '{$dataForLabDuration['daysLeader']}')");
+//            } else {
+//                $this->DB->Query("INSERT INTO ulab_tz_lab_duration(deal_id, lab_id, date_start, days) VALUES('{$dataForLabDuration['dealId']}', '{$labId}', '{$dateStart}', '{$dataForLabDuration['daysLeader']}')");
+//            }
+
+            foreach ($dataForLabDuration['ids'] as $id) {
+                $probeModel->takeProbe($id, $_SESSION['SESS_AUTH']['USER_ID']);
             }
         }
     }
@@ -2903,6 +2911,7 @@ class Requirement extends Model
      */
     public function addMethodsToProbe($probeIdList, $data)
     {
+        $probeModel = new Probe();
         foreach ($probeIdList as $probeId) {
             $sql = $this->DB->Query("select max(gost_number) as gost_number from ulab_gost_to_probe where material_to_request_id = {$probeId}")->Fetch();
             $gostNumber = $sql['gost_number'];
@@ -2927,6 +2936,8 @@ class Requirement extends Model
                 ];
 
                 $this->DB->Insert('ulab_gost_to_probe', $sqlData);
+
+                $probeModel->transferProbe($probeId);
             }
         }
     }
