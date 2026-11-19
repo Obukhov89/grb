@@ -373,23 +373,12 @@ $(function ($) {
                 className: '',
                 render: function (data, type, item) {
                     let html = `<div class="form-text text-danger text-start">${item.out_range ?? ''}</div>`
-                    let readonly = item.confirm_oa_readonly ? 'readonly' : ''
 
-                    if (item.readonly_actual_value) {
-                        html += `<input ${item.actual_value_type}
-                                    class="me-2 actual-value actual-value-${item.ugtp_id} w-100 border p-2 bg-light-secondary"
-                                    name="uncertainty_value[${item.mtr_id}][${item.ugtp_id}]"
-                                    value="${item.uncertainty == null ? '' : item.uncertainty}"
-                                    title="Доступно для редактирования если нет номера протокола или есть номер но протокол на редактировании и у методики ф/значение текстом или у методики ф/значение не текстом и нет листа измерения"
-                                    readonly>`
-                    } else {
-                        html += `<div class="d-flex actual-value-wrapper mb-1">
-                                    <input ${item.actual_value_type}
-                                            class="me-2 actual-value actual-value-${item.ugtp_id} w-100 border p-2 "
-                                            name="uncertainty_value[${item.mtr_id}][${item.ugtp_id}]"
-                                            value="${item.uncertainty}" ${readonly}>
-                                </div>`
-                    }
+                    html += `<div class="d-flex actual-value-wrapper mb-1">
+                ${item.uncertainty != null && item.uncertainty !== ''
+                        ? `<span class="actual-value actual-value-${item.ugtp_id}${item.readonly_actual_value ? ' bg-light-secondary' : ''}">±${item.uncertainty}</span>`
+                        : ''}
+                            </div>`
 
                     return html
                 }

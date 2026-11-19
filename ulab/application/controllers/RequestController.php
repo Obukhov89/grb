@@ -776,6 +776,16 @@ class RequestController extends Controller
             $this->data['isLabHeader'] = true;
         }
 
+//
+//        echo '<pre>';
+//        print_r($permissionInfo);
+//        die;
+        $this->data['isLaborant'] = false;
+
+        if ($permissionInfo['id'] == 6) {
+            $this->data['isLaborant'] = true;
+        }
+
         $userFiles = $request->getFilesFromDir(UPLOAD_DIR . "/request/{$dealId}");
         $techFiles = $request->getFilesFromDir(UPLOAD_DIR . "/request_tech/{$dealId}");
 

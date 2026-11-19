@@ -216,7 +216,7 @@
                                         <th scope="col">ТУ</th>
                                         <th scope="col">Нормативное значение</th>
                                         <th scope="col">Фактическое значение</th>
-                                        <th scope="col">Соответствие требованиям</th>
+                                        <th scope="col">Неопределенность/погрешность</th>
                                         <th scope="col">В ОА</th>
                                         <th scope="col">Ответственный</th>
                                     </tr>

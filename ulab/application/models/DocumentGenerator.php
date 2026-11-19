@@ -2355,6 +2355,7 @@ class DocumentGenerator extends Model
         $tableResults = [];
 
         foreach ($probeResults as $k => $val) {
+
             $object = $val['material_name'] . ' ' . $val['name_for_protocol'] . ' (' . $val['cipher'] . ')';
             if ($protocolID == 6179) {
                 $object = $val['name_for_protocol'] . ' (' . $val['cipher'] . ')';
@@ -3092,6 +3093,8 @@ class DocumentGenerator extends Model
                     }
                 }
             }
+
+//            die;
 
             if ($protocol['NO_COMPLIANCE']) {
                 $results['no_compliance'] = 1;
@@ -5618,7 +5621,6 @@ class DocumentGenerator extends Model
             $table_result->addCell(2100)->addText('ДОПУСТИМЫЙ УРОВЕНЬ', $FontStyle, $cellAllCentered);
 
             foreach ($results as $key => $item) {
-
                 if (!is_numeric($key)) {
                     continue;
                 }
@@ -5626,7 +5628,7 @@ class DocumentGenerator extends Model
                 $table_result->addRow();
                 $table_result->addCell(2500)->addText($item['Specification'], $FontStyle);
                 $table_result->addCell(1500)->addText($item['unit_name'], $FontStyle, $cellAllCentered);
-                $table_result->addCell(2500)->addText($item['permissible_value'], $FontStyle, $cellAllCentered);
+                $table_result->addCell(2500)->addText($item['Normdocmet'], $FontStyle, $cellAllCentered);
                 $table_result->addCell(2500)->addText($item['Values'], $FontStyle, $cellAllCentered);
                 $table_result->addCell(2500)->addText($item['permissible_value'], $FontStyle, $cellAllCentered);
             }

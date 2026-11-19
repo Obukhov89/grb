@@ -157,7 +157,7 @@
                     </div>
             </div>
 
-            <div class="panel panel-default" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+            <div class="panel panel-default" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                 <header class="panel-heading">
                     Общая информация
                     <span class="tools float-end">
@@ -264,7 +264,7 @@
                                         </a>
                                     <?php endif; ?>
                                 </td>
-                                <td class="w30">
+                                <td class="w30" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                     <a class="no-decoration me-1 popup-mail"
                                         data-id="<?= $this->data['deal_id'] ?>"
                                         data-type="1"
@@ -283,7 +283,7 @@
                                 <td class="w30"></td>
                             </tr>
 
-                            <tr class="<?= $this->data['proposal']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                            <tr class="<?= $this->data['proposal']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                 <td><strong>Коммерческое предложение</strong></td>
                                 <td>
                                     <?= $this->data['proposal']['number'] ?>
@@ -337,7 +337,7 @@
                                 <td></td>
                             </tr>
 
-                            <tr class="<?= $this->data['order']['check'] ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                            <tr class="<?= $this->data['order']['check'] ?>" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                 <td><strong>Договор</strong></td>
                                 <td>
                                     <?php if ($this->data['order']['is_generated']): ?>
@@ -397,7 +397,7 @@
                                 <td></td>
                             </tr>
 
-                            <tr class="<?= $this->data['attach']['check'] ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                            <tr class="<?= $this->data['attach']['check'] ?>" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                 <td><strong>Прил. к договору (ТЗ)</strong></td>
                                 <td>
                                     <?= $this->data['attach']['number'] ?>
@@ -488,7 +488,7 @@
                                 </td>
                             </tr>
 
-                            <tr class="<?= $this->data['invoice']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                            <tr class="<?= $this->data['invoice']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                 <td><strong>Счет</strong></td>
                                 <td><?= $this->data['invoice']['number'] ?></td>
                                 <td><?= $this->data['invoice']['date'] ?></td>
@@ -555,7 +555,7 @@
                                 <td></td>
                             </tr>
 
-                            <tr class="<?= $this->data['payment']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                            <tr class="<?= $this->data['payment']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                 <td><strong>Оплата</strong></td>
                                 <td><?= $this->data['payment']['status'] ?></td>
                                 <td><?= $this->data['payment']['datePayment'] ?></td>
@@ -571,7 +571,7 @@
                             </tr>
 
                             <?php if ($this->data['deal_id'] != 15554 && $this->data['deal_id'] != 16166 && $this->data['deal_id'] != 17409): ?>
-                                <tr class="<?= $this->data['sample']['check'] ? 'table-green' : '' ?>">
+                                <tr class="<?= $this->data['sample']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                     <td><strong>Акт приемки проб</strong></td>
                                     <td>
                                         <?php if ($this->data['sample']['check']): ?>
@@ -672,7 +672,7 @@
                                         <td></td>
                                     </tr>
                                 <?php endforeach; ?>
-                                <tr>
+                                <tr style="<?= $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                     <td><strong>Акт приемки проб</strong></td>
                                     <td>
                                         Не сформировано
@@ -718,7 +718,7 @@
                                 </tr>
                             <?php endif; ?>
 
-                            <tr class="<?= $this->data['results']['check'] ? 'table-green' : '' ?>">
+                            <tr class="<?= $this->data['results']['check'] ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                 <td><strong>Результаты испытаний</strong></td>
                                 <td>
                                     <?php if ($this->data['results']['check']): ?>
@@ -765,7 +765,7 @@
                             </tr>
 
                             <?php if (empty($this->data['protocol'])): ?>
-                                <tr style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                                <tr style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                     <td><strong>Протокол</strong></td>
                                     <td>
                                         Не сформирован
@@ -898,7 +898,7 @@
                                 <?php endforeach; ?>
                             <?php endif; ?>
 
-                            <tr class="<?= !empty($this->data['is_end_test']) ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] ? 'display: none;' : '' ?>">
+                            <tr class="<?= !empty($this->data['is_end_test']) ? 'table-green' : '' ?>" style="<?= $this->data['isLabHeader'] || $this->data['isLaborant'] ? 'display: none;' : '' ?>">
                                 <td><strong>Завершение испытаний</strong></td>
                                 <td><?= $this->data['is_end_test'] ? 'Завершено' : 'Не завершено' ?></td>
                                 <td><?= $this->data['complete']['date'] ?></td>
@@ -1013,7 +1013,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>">
                 <div class="panel-body">
                     <form action="<?= URI ?>/request/addComment/<?= $this->data['deal_id'] ?>" method="post">
                         <div class="row">
@@ -1029,7 +1029,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>">
                 <header class="panel-heading">
                     История изменений комментариев
                     <span class="tools float-end">
@@ -1055,11 +1055,11 @@
                 </div>
             </div>
 
-            <a id="close_app" class="btn btn-primary popup-with-form" href="#finish-modal-form">Завершить заявку</a>
+            <a id="close_app" class="btn btn-primary popup-with-form" href="#finish-modal-form" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>">Завершить заявку</a>
 
-            <div class="line-dashed"></div>
+            <div class="line-dashed" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>"></div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>">
                 <header class="panel-heading">
                     Документы клиента
                     <span class="tools float-end">
@@ -1102,7 +1102,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>">
                 <header class="panel-heading">
                     Технические документы
                     <span class="tools float-end">
@@ -1145,7 +1145,7 @@
             </div>
 
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>">
                 <header class="panel-heading">
                     Списки версий
                     <span class="tools float-end">
@@ -1221,7 +1221,7 @@
                 </div>
             </div>
 
-            <div class="line-dashed"></div>
+            <div class="line-dashed" style="<?=$this->data['isLaborant'] ? 'display: none;' : '' ?>"></div>
 
 
             <form id="act-probe-modal-form" class="bg-light mfp-hide col-md-4 m-auto p-3 position-relative"
